@@ -1,0 +1,99 @@
+# Gate 3c: is the edge criterion a STATE THRESHOLD or SEED x GAIN = THRESHOLD?
+#
+# History
+#  2026-11-16 user decisions (Gate 3b accepted; Gate 3c specified):
+#   - existing data only, NO new MC; criteria written here before any run; Gate 3 split and primary metric
+#     (test-ray median |ln(s_pred/s_c)|, q90, 2000 bootstrap resamples with the Gate 3 seed).
+#   0. independent check of the background derivation and numbers (check_m1.py did not reach us: the claims are
+#      checked as stated in the message), including "MFE is exactly quasi-linear in y = (a4..a8)".
+#   1. theory quantity u_th = a3 + y^T W y, threshold |u_th| = c*, on the test rays:
+#      (a) W = W_inf (Lyapunov), fit c* only; (b) W = kappa W_inf, fit kappa and c*; (c) W = W(T), fit T and c*;
+#      (d) controls: 100 random symmetric matrices with the norm of W_inf, and the instantaneous coefficient F,
+#          each fitted like (b).
+#      CRITERION: (b) or (c) median <= 0.05 -> "theory quantity holds"; >= 0.10 -> "does not hold".
+#   2. merged candidate (seed x gain): gain (i) of Gate 3 with the x-independent transient started from
+#      (a1, a2, u_th, a9) instead of (a1, a2, a3, a9); P(0) and everything else unchanged; u_th with the kappa of
+#      item 1 (b), frozen.
+#      forward: c* fitted only on the random train rays, frozen; report random test rays, the noise family eps > 0
+#               per eps (is there still an eps trend?), and the 680 left-peak rays.
+#      reverse: c* = c*_0 = 7.151 of Gate 3 (pure-a3 ray), predicting the random rays directly.
+#      CRITERION: both directions median <= 0.05 and family error not varying with eps -> "two families unified";
+#                 either direction >= 0.10 -> "does not hold".
+#   Report negative results as they are. 0.05 / 0.10 are the user's thresholds (unchanged).
+#
+# Choices made here that the user did not specify (flagged in the report, all fixed before the first run):
+#   (c1) theory objects at the laminar state: A_y = y block of the Jacobian at a = lam; F = y-y block of the a3
+#        equation (da3/dt = -d3 a3 + y^T F y exactly); d3 = (beta^2 + gamma^2)/Re; B = A_y + d3/2 (stable,
+#        max Re eig(B) = -0.0035); W_inf from B^T W + W B = -F; W(T) = W_inf - e^{B^T T} W_inf e^{B T}.
+#   (c2) threshold rule for every item-1 candidate: B where |u_th| >= c* (side +1: laminar has u_th = 0). The final
+#        c* and all metrics use the Gate 3 grid rule (fit_cstar on the 1000-point ray grid, both sides allowed as
+#        in Gate 3). kappa and T are chosen by minimising the TRAIN median |ln| with the analytic first crossing of
+#        |p s + q s^2| = c* along each ray (same c* rule, same grid limits), as the Gate 3b additive theta search.
+#   (c3) kappa grid: 0 and +-10^linspace(-3, 3, 241) (both signs: needed for the random controls; for W_inf the
+#        theory sign is +), then 201 log-spaced points between the neighbours of the best (linear between
+#        -1e-3 and 1e-3 if the best is 0).
+#   (c4) T grid: 0 and geomspace(0.1, 1e4, 401), then 201 log-spaced points between the neighbours of the best
+#        (linear on [0, 0.1] if the best is 0). W(T) has its own magnitude: no extra kappa in (c).
+#   (c5) random controls: R = (A + A^T)/2 with A_ij ~ N(0, 1) (5 x 5), scaled to |R|_F = |W_inf|_F, seeds
+#        derive_seed(seed, "random_W", i). F is scaled to |W_inf|_F before the kappa search (kappa is reported
+#        in F's own units as well). Reported: the distribution of the 100 test medians and the fraction <= (b).
+#   (c6) the item-1 criterion uses the test medians of (b) and (c): holds if min <= 0.05; does not hold if both
+#        >= 0.10; otherwise intermediate.
+#   (c7) item 2 sigma: random rays sigma = 3e-8 (Gate 3 choice g1; sigma = 0 is computed in the same integration
+#        and reported); family rays sigma = 0 (their s_c is deterministic; as Gate 3b h8).
+#   (c8) item 2 forward: c* by the Gate 3 rule on the random TRAIN rays (side chosen there), frozen. "Forward
+#        median" in the criterion = test rays (1448). The family and the left peak are reported with the same
+#        frozen c*.
+#   (c9) item 2 reverse: c*_0 = 7.150683993300665 (Gate 3 results.json gain_a3.i.zero_fit_c_star), side +1.
+#        "Reverse median" in the criterion = test rays (1448); all 10 000 rays reported as well (c*_0 is fitted on
+#        no random ray).
+#   (c10) "family error does not vary with eps": the 16 (angle, draw) pairs share their y direction across eps
+#        (Gate 2 c7), so the eps trend = median over the 16 pairs of e(eps = 1e-6) - e(eps = 1e-2) (signed ln
+#        error, forward c*). Flat if |trend| <= 0.05 (my threshold, same scale as the user's 0.05). Per-eps signed
+#        medians and the range of the three are reported too.
+#   (c11) item-2 criterion: unified if forward <= 0.05 and reverse <= 0.05 and |trend| <= 0.05; does not hold if
+#        forward >= 0.10 or reverse >= 0.10; otherwise intermediate (written as it is).
+#   (c12) left peak: Gate 3b definition (Gate 3 gain (i) c at the edge < -4.5 at sigma = 3e-8; 680 rays at full
+#        scale); reported on all of them and on their test subset (the forward c* is one scalar fitted on train
+#        rays, so most peak rays are in-sample for it).
+#   (c13) checks (not criteria): with kappa = 0 the merged code path must reproduce the Gate 3 gain grid on the
+#        first 20 rays; on the pure-a3 ray (y0 = 0, u_th = a3) the merged candidate equals gain (i) (recomputed on
+#        the Gate 3 a3 grid), so c*_0 carries over unchanged.
+name: gate3c_mfe
+seed: 20261120
+device: cuda
+
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate3_run: experiments/20261116_gate3_mfe_v2               # includes the gain-grid chunks (hard links to v1)
+  gate3b_run: experiments/20261116_gate3b_mfe_v1
+  gate3_seed: 20261118                                        # ray subset (--frac) and bootstrap resamples as Gate 3
+
+threshold_prediction:
+  bootstrap: 2000
+  n_levels: 1000
+  n_refine: 1000
+
+item1:
+  kappa_grid: {log10_min: -3.0, log10_max: 3.0, n_per_sign: 241, refine: 201}
+  T_grid: {min: 0.1, max: 1.0e4, n: 401, refine: 201}
+  n_random_controls: 100
+  criterion: {holds_median: 0.05, fails_median: 0.10}
+
+item2:
+  W: W_inf
+  kappa_from: "item 1 (b)"
+  T_g: 4000.0
+  dt: 0.25
+  sigmas: [0.0, 3.0e-8]
+  sigma_random: 3.0e-8
+  sigma_family: 0.0
+  c_star_0: 7.150683993300665
+  family: {eps_used: [1.0e-6, 1.0e-4, 1.0e-2], grid_points: 4000, trend_pair: [1.0e-6, 1.0e-2], trend_flat_max: 0.05}
+  left_peak_cut: -4.5
+  rows_per_chunk: 1000
+  check_rays_kappa0: 20
+  criterion: {holds_median: 0.05, fails_median: 0.10}
+
+timing:
+  frac: 0.01

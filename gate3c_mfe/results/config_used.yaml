@@ -1,0 +1,56 @@
+name: gate3c_mfe
+seed: 20261120
+device: cuda
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate3_run: experiments/20261116_gate3_mfe_v2
+  gate3b_run: experiments/20261116_gate3b_mfe_v1
+  gate3_seed: 20261118
+threshold_prediction:
+  bootstrap: 2000
+  n_levels: 1000
+  n_refine: 1000
+item1:
+  kappa_grid:
+    log10_min: -3.0
+    log10_max: 3.0
+    n_per_sign: 241
+    refine: 201
+  T_grid:
+    min: 0.1
+    max: 1.0e4
+    n: 401
+    refine: 201
+  n_random_controls: 100
+  criterion:
+    holds_median: 0.05
+    fails_median: 0.1
+item2:
+  W: W_inf
+  kappa_from: item 1 (b)
+  T_g: 4000.0
+  dt: 0.25
+  sigmas:
+  - 0.0
+  - 3.0e-08
+  sigma_random: 3.0e-08
+  sigma_family: 0.0
+  c_star_0: 7.150683993300665
+  family:
+    eps_used:
+    - 1.0e-06
+    - 0.0001
+    - 0.01
+    grid_points: 4000
+    trend_pair:
+    - 1.0e-06
+    - 0.01
+    trend_flat_max: 0.05
+  left_peak_cut: -4.5
+  rows_per_chunk: 1000
+  check_rays_kappa0: 20
+  criterion:
+    holds_median: 0.05
+    fails_median: 0.1
+timing:
+  frac: 0.01

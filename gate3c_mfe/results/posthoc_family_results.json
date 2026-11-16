@@ -1,0 +1,106 @@
+{
+ "note": "post-hoc, descriptive; frozen item-1 thresholds on the noise family (eps > 0, 48 rays); signed ln(s_pred/s_c)",
+ "models": {
+  "(b) kappa W_inf": {
+   "c_star": 0.0031297625044912495,
+   "by_eps": {
+    "1e-06": {
+     "n": 16,
+     "signed_median": -0.4845355619221996,
+     "signed_median_finite_only": -0.4884984678461648,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.488846384902204,
+     "frac_no_crossing": 0.125
+    },
+    "0.0001": {
+     "n": 16,
+     "signed_median": -0.2930248470767385,
+     "signed_median_finite_only": -0.2975198903051166,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.3017552588810255,
+     "frac_no_crossing": 0.125
+    },
+    "0.01": {
+     "n": 16,
+     "signed_median": -0.09194105200962666,
+     "signed_median_finite_only": -0.09813391103912927,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.10768709466358439,
+     "frac_no_crossing": 0.125
+    }
+   },
+   "eps_trend_median_1e-6_minus_1e-2": -0.3858849400302584,
+   "n_pairs_both_finite": 14,
+   "per_angle_signed_median": {
+    "0": -0.28886819487641535,
+    "22.5": -0.3567926682782101,
+    "45": -0.31471286942118226,
+    "67.5": -0.2965540448607089,
+    "90": Infinity,
+    "112.5": -0.2724928748227211,
+    "135": -0.2856117154348672,
+    "157.5": -0.3356897032841406
+   },
+   "all_median_abs": 0.33221602682740903
+  },
+  "(c) W(T)": {
+   "c_star": 0.0031311358077305887,
+   "by_eps": {
+    "1e-06": {
+     "n": 16,
+     "signed_median": -0.4840968093221685,
+     "signed_median_finite_only": -0.48805976182347655,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.4884076890521172,
+     "frac_no_crossing": 0.125
+    },
+    "0.0001": {
+     "n": 16,
+     "signed_median": -0.2925861045312601,
+     "signed_median_finite_only": -0.29708119438733016,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.30131655282692504,
+     "frac_no_crossing": 0.125
+    },
+    "0.01": {
+     "n": 16,
+     "signed_median": -0.09150112890966922,
+     "signed_median_finite_only": -0.09769453808864981,
+     "no_crossing_angles": [
+      90.0
+     ],
+     "median_abs": 0.10724807445817319,
+     "frac_no_crossing": 0.125
+    }
+   },
+   "eps_trend_median_1e-6_minus_1e-2": -0.3858849893662719,
+   "n_pairs_both_finite": 14,
+   "per_angle_signed_median": {
+    "0": -0.28842940580847065,
+    "22.5": -0.3563540859098455,
+    "45": -0.31427417355017084,
+    "67.5": -0.29611532854974953,
+    "90": Infinity,
+    "112.5": -0.27205415902824726,
+    "135": -0.2851730195082611,
+    "157.5": -0.33525112091724907
+   },
+   "all_median_abs": 0.33177738775659327
+  }
+ },
+ "reference_gate3b_M1_signed_by_eps": {
+  "1e-06": -0.4969126442185144,
+  "0.0001": -0.295835942101379,
+  "0.01": -0.09744420771977147
+ }
+}
