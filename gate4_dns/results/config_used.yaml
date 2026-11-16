@@ -1,0 +1,85 @@
+name: gate4_dns
+seed: 20261117
+device: cuda
+system:
+  Re: 400.0
+  Lx_over_pi: 4.0
+  Lz_over_pi: 2.0
+  Ly_ext: 4.0
+re_fallback:
+- 600.0
+- 800.0
+grids:
+- - 48
+  - 24
+  - 24
+- - 64
+  - 32
+  - 32
+- - 96
+  - 48
+  - 48
+checks_4a:
+  laminar_rhs_max: 1.0e-12
+  div_max: 1.0e-10
+  sym_residual_max: 1.0e-12
+  galerkin:
+    n_states: 100
+    s_max: 0.3
+    tol: 1.0e-10
+  linear:
+    amplitude: 1.0e-08
+    t_max: 100.0
+    tol_decay: 1.0e-08
+    tol_streak: 1.0e-06
+  work:
+    n_fields: 8
+    tol: 1.0e-10
+  dt:
+    candidates:
+    - 0.25
+    - 0.125
+    - 0.0625
+    - 0.03125
+    E0: 0.001
+    t_max: 200.0
+    n_dirs: 4
+    tol: 0.0001
+  batch:
+    batch_size: 64
+    position: 37
+    tol: 1.0e-12
+  courant_max: 2.0
+pilot:
+  n_dirs_min: 16
+  n_amp: 8
+  E_range:
+  - 1.0e-06
+  - 0.3
+  T_pilot: 3000.0
+  record_every: 1.0
+  time_cap_min: 45
+  histogram:
+    E_range:
+    - 0.0
+    - 2.0
+    bins: 200
+    smooth_bins: 5
+    laminar_mode_E_max: 0.05
+    clear_ratio: 3.0
+    turbulent_mass_min: 0.02
+  r_A_candidates_mantissa:
+  - 1
+  - 2
+  - 5
+  n_rebound_random: 64
+  undecided_max: 0.01
+  T_det_step: 250.0
+s_c:
+  n_coarse: 12
+  rel_tol: 0.001
+convergence:
+  tol: 0.02
+  time_cap_min: 60
+timing:
+  frac: 0.01

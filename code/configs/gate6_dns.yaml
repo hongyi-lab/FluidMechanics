@@ -1,0 +1,35 @@
+# Gate 6 (DNS): the second gate (seed x gain) and the composite criterion. Only if time allows; F first, then R, W.
+# Written 2026-11-17 before any Gate 4/5/6 run (user task of 00:10; lines 0.10 / 0.25 / [0.7, 1.3] are the user's).
+# Starts only after the Gate 5 ground truth is complete.
+#
+# User spec:
+#   seed gain: dy/dt = -Pw[(M.grad) y + (y.grad) M] - grad pi + lap y / Re, Pw = 1 - P0, M(t; s) = U + s P0 delta(t) + s^2 q(t),
+#     y(0) = s Pw delta(0); c(s) = ln( max_{0 <= t <= 1500} ||y||^2 / ||U||^2 ); flag maxima at t = 1500.
+#     per ray 13 amplitudes around s_c (ln s equally spaced within +-0.9); first crossing by linear interpolation; out of
+#     range -> clamp to the end point and count.
+#   c* = mean over the two F rays with eps = 1e-6 of c at their edge. composite s_pred = max(s_i, s_ii).
+#   CRITERIA:
+#     6.1 F, the other 14 rays: median |ln(s_pred/s_c)| <= 0.10 holds, >= 0.25 does not hold (between: partly). Also (i)
+#         alone, (ii) alone, signed error per eps, fraction where each condition binds.
+#     6.2 constant-free slope: predicted d ln s_c / d ln eps = -2 / (dc/d ln s at the edge); ratio to the measured slope over
+#         eps = 1e-6 .. 1e-2 in [0.7, 1.3] -> holds.
+#     6.3 (time permitting) composite on R last 12 and W, same lines as 6.1.
+#
+# Choices made here that the user did not specify (flagged):
+#   (g1) rotational form: dy/dt = P Pw [M x curl(y) + y x curl(M)] + nu lap y (equal to the user's form after projection);
+#        M, delta, q advanced in the same Lawson RK4 steps as y (exact coupling at the stages); Gate 4 resolution and dt;
+#        max over output times every 1.0 up to 1500.
+#   (g2) amplitudes: ln s = ln s_c(DNS) + linspace(-0.9, 0.9, 13); c at the edge = the middle point (exactly s_c).
+#        First crossing of c* along increasing s by linear interpolation in (ln s, c); below the first point -> s_lo of
+#        the 13 (clamped, counted); never crossed -> s_hi (clamped, counted).
+#   (g3) 6.2: dc/d ln s at the edge = central difference (c[7] - c[5]) / (2 * 0.15) on the 13-point grid, per F ray with
+#        eps in {1e-6, 1e-4, 1e-2}; predicted slope = -2 / mean of those six values; measured slope = mean over the two
+#        draws of (ln s_c(1e-2) - ln s_c(1e-6)) / ln(1e4). Ratio = predicted / measured. Each draw also reported.
+#   (g4) "fraction where each condition binds" as Gate 3d (d6): s_i > s_ii -> (i), s_ii > s_i -> (ii), ties separate.
+name: gate6_dns
+seed: 20261119
+device: cuda
+gain: {T_end: 1500.0, output_every: 1.0, n_amp: 13, ln_half_width: 0.9}
+criteria:
+  composite: {holds_median: 0.10, fails_median: 0.25}
+  slope_ratio: [0.7, 1.3]
