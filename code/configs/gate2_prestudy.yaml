@@ -1,0 +1,70 @@
+# Gate 2 pre-study (one page for the user to confirm before any full labelling).
+# Written 2026-11-15 before the pre-study runs. Rules for choosing E_B, r_A, the two sigma levels and
+# the integration step are fixed here; the values they produce go to gate2_mfe.yaml after confirmation.
+#
+# Already seen before writing this file (exploratory, 256 random rays, RK4 dt 0.25, E_B = 0.3 provisional):
+#   tr S1 = 2.99e5 (Lyapunov, sigma = 1), linear optimal energy growth G_max = 1542 at t = 104 (pure a3),
+#   deterministic edge energy E_c along rays: min 1.3e-5, median 1.3e-4; near-edge trajectories linger
+#   for thousands of time units. Hence T_max = 6000 below.
+name: gate2_prestudy
+seed: 20261117
+device: cuda
+system: {kind: mfe, Re: 400.0, Lx_over_pi: 4.0, Lz_over_pi: 2.0}
+
+heun_dt:                       # stochastic Heun (Gate 0 code); deterministic accuracy rule as in Gate 1
+  candidates: [0.1, 0.05, 0.025, 0.01]
+  reference_rk4_dt: 0.0025
+  n_states: 64
+  spinup_time: 500.0
+  horizon: 10.0
+  tolerance: 1.0e-6
+
+histograms:                    # 1e4 deterministic trajectories (Gate 1 ICs, RK4 dt 0.25), t in (0, 1e4], every 1.0
+  n_ic: 10000
+  t_max: 10000.0
+  E_range: [0.0, 2.0]
+  a1_range: [-0.5, 1.5]
+  bins: 200
+  smooth_bins: 5
+  # valley = minimum of the smoothed density between the laminar mode and the turbulent mode
+  laminar_mode_E_max: 0.05      # laminar mode searched for E < 0.05 (a1 > 0.95)
+  turbulent_mode_E_min: 0.2     # turbulent mode = argmax for E > 0.2 (a1 < 0.8)
+  E_B_rule: "E_B = E-valley rounded to 2 significant digits; B = {E >= E_B}. a1-valley reported only."
+
+edge_scan:                     # deterministic, RK4 dt 0.25
+  n_dir: 4096
+  E_grid: [1.0e-8, null, 48]   # 48 log-spaced energies from 1e-8 to E_B (s = sqrt(E))
+  n_bisect: 20
+  T: 8000.0
+  r_det: 1.0e-10               # deterministic "decayed" set
+  refine: {n_best: 32, n_perturb: 64, rounds: 3, scale: 0.1}
+  r_A_rule: "largest value in {1,2,5} x 10^k with r_A <= min E_c / 10 (min over random, refined and optimal-growth directions)"
+  r_A_check: {n_random: 10000}  # deterministic: no state on the sphere E = r_A (random + refined + optimal) may reach B
+
+lyapunov:
+  tail_samples: 10000000
+
+T_max: 6000.0
+sigma_grid: [1.0e-8, 3.0e-8, 1.0e-7, 3.0e-7, 1.0e-6, 3.0e-6, 1.0e-5, 3.0e-5, 1.0e-4, 3.0e-4, 1.0e-3]
+spontaneous:                   # from the laminar state, A empty, B absorbing, within T_max
+  n_paths: 10000
+  sigmas: [1.0e-6, 1.0e-5, 1.0e-4, 3.0e-4, 1.0e-3]
+  record_every_time: 50.0
+  burn_in: 500.0
+sigma_rule: >
+  sigma_hi = largest grid sigma with E_ss(sigma) <= r_A / 10 and spontaneous-transition fraction (Clopper-Pearson
+  95% upper bound) <= 1e-3 (the fraction is taken as non-decreasing in sigma: below the smallest simulated sigma the
+  smallest simulated value applies); sigma_lo = sigma_hi / 10.
+A_boundary:                    # states just outside A: E = 1.1 r_A
+  E_factor: 1.1
+  n_random: 1000
+  M_random: 20
+  M_worst: 200                 # each refined minimal-E_c direction and the optimal-growth direction
+rays:
+  choose: [refined_min, random_q10, random_q50, random_q90, optimal_growth, random_extra]
+  coarse_u: [-0.1, -0.01, -0.001, -0.0001, -1.0e-5, -1.0e-6, -1.0e-7, 0.0, 1.0e-7, 1.0e-6, 1.0e-5, 0.0001, 0.001, 0.01, 0.1]
+  M_coarse: 64
+  n_fine: 21
+  M_fine: 200
+  fine_bracket_q: [0.02, 0.98]
+dt_check: "fine profiles repeated with dt/2; report |s50(dt) - s50(dt/2)| / (s95 - s05)"

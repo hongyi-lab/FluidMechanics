@@ -1,0 +1,25 @@
+# Gate 2 pre-study, supplementary checks. Written 2026-11-15 after the coarse ray scan showed that on the
+# pure-a3 ray (linear optimal-growth direction) q = 1 even at 0.9 x the deterministic s_c. Reason:
+# {a4..a8 = 0} is invariant (fixed set of T_Lx/2), turbulence cannot develop inside it, and the deterministic
+# trajectory reaches B = {E >= 0.29} by lift-up transient growth alone; noise breaks the symmetry.
+# Two questions, both description only:
+#  S1  where is the noisy transition on the a3 ray (wide scan below the deterministic s_c)?
+#  S2  is B = {E >= E_B} "committed": do paths that enter B behave like turbulence afterwards?
+name: gate2_prestudy_supp
+seed: 20261118
+device: cuda
+prestudy_run: experiments/20261115_gate2_prestudy_v2     # E_B, r_A, sigma, dt, T_max and rays taken from here
+S1_a3_ray:
+  s_over_sc_grid: [0.02, 0.03, 0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+  M_coarse: 64
+  n_fine: 21
+  M_fine: 200
+  max_zoom: 3
+S2_B_commitment:
+  sigma: sigma_hi
+  start: "the s50 state (q ~ 0.5) of each of the 6 pre-study rays, plus the a3-ray s50 from S1"
+  M: 200                       # paths per start state; B entries are the absorption states of the paths that hit B
+  follow_time: 1000.0          # after entering B: free noisy evolution (no absorption)
+  decayed: 0.001               # Gate 1 lifetime criterion: E < 1e-3
+  reference: "genuine turbulence decays within 1000 with probability 1 - exp(-1000/10500) = 0.09 (Gate 1)"
+  x_dependent_energy: "sum_{i=4..8} a_i^2 at B entry (zero in the T_Lx/2-invariant subspace), reported per entry"

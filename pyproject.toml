@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "committor"
+version = "0.1.0"
+description = "Monte Carlo committor estimation and reaction-coordinate ranking (MFE shear-flow model and controls)"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["code/src"]
+
+[tool.pytest.ini_options]
+testpaths = ["code/tests"]

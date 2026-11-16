@@ -1,0 +1,138 @@
+# Gate 2: labels for the MFE model. NOT EXECUTED: waiting for user confirmation of this file and the 1% timing.
+#
+# History
+#  2026-11-15 (after Gate 0): H1 tested by a ray threshold-energy scan; report the fraction of rays without a
+#    transition below the cap (and the cap) and the fraction of rays with a non-monotone fate along the ray.
+#  2026-11-15 (after the Gate 2 pre-study, docs/reports/gate2_prestudy_zh.md), user decisions:
+#   - values accepted: sigma = 3e-8, 3e-7; A: E < 5e-7; B: E >= 0.29; stochastic Heun dt = 0.01, Brownian bridge,
+#     T_max = 6000.
+#   - pre-study section 6: option 1 (keep the definitions, change the Gate 3 evaluation). No change of the noise
+#     structure, no change of A.
+#   - the full MC labelling is replaced by:
+#     1. generic states get DETERMINISTIC labels: per ray, the first-transition amplitude s_c is located
+#        deterministically; a state's label is its deterministic fate. MC only for the family in item 3.
+#     2. Gate 3 primary metric = threshold prediction error (gate3_mfe.yaml).
+#     3. a noise-active family with MC committor: directions in the (a2, a3) plane at several angles plus an
+#        a4..a8 random component of relative amplitude eps = 0, 1e-6, 1e-4, 1e-2; extra sigma level 3e-9.
+#     4. new candidate coordinate "linear noise gain" (gate3_mfe.yaml) and the prediction to test on the pure-a3
+#        ray: sigma^2 g(s50) = const (block noise_gain_prediction below).
+#   - pre-study section 8: both design changes accepted (deterministic edge location, dense first-crossing scan).
+#     Fix the first-crossing bug and redo the E_c distribution; report the fraction of rays whose deterministic
+#     fate is non-monotone along the ray.
+#
+# Choices made here that the user did not specify (flagged in the summary for confirmation):
+#   (c1) 10000 generic rays; 20 labelled states per ray at relative offsets u = (s - s_c)/s_c.
+#   (c2) trajectory states (spec sampling (ii)) are dropped: with deterministic labels every state on a
+#        trajectory has the fate of its start, so they add no label information.
+#   (c3) no noisy cross-check on generic rays (user item 1: MC only for the item-3 family). The pre-study showed
+#        |s50 - s_c| <= 0.021 layer widths on 5 generic rays at both sigma.
+#   (c4) family: 8 angles every 22.5 deg, 2 random a4..a8 draws per (angle, eps > 0) -> 56 rays x 3 sigma.
+#   (c5) deterministic fate uses the Gate 2 sets themselves (hit B before A, A = {E < r_A}); RK4 dt = 0.25
+#        (Gate 1 rule); undecided after T_det counted and reported.
+#   (c6) "fate non-monotone along the ray" = at least 2 switches of the deterministic fate on the dense grid.
+#        This fraction depends on the grid resolution (1% run: 4% / 16% / 26% / 43% at 50 / 250 / 500 / 1000 points);
+#        it is reported with its trend under refinement (nonmonotone_refine), not as a converged number.
+#   (c7) family: the random a4..a8 direction r is drawn once per (angle, draw) and reused for every eps (nested),
+#        so the eps effect is not confounded with the direction of r.
+#   (c8) s50 / width estimator fixed before the run: isotonic (model-free) interpolation, nonparametric binomial
+#        bootstrap; a lapse probit (upper plateau) is reported alongside. The plain probit fits the pure-a3 profiles
+#        poorly (1% run: deviance 183 on 19 dof) and biases s50 by +0.4..0.8%.
+#   (c9) the three pure-a3 rays (angle 0, eps 0, one per sigma) use M = 400 on the final zoom level.
+# Revised 2026-11-15 after an independent review of the first 1% run (timing benchmark, sensitivity bracket,
+# estimator, resolution dependence; see docs/reports/gate2_plan_zh.md).
+name: gate2_mfe
+seed: 20261120
+device: cuda
+
+system:
+  kind: mfe
+  Re: 400.0
+  Lx_over_pi: 4.0
+  Lz_over_pi: 2.0
+
+sets:
+  # E = sum_i (a_i - a_i^lam)^2 (energy, no factor 1/2). A is a ball of radius sqrt(r_A) = 7.1e-4 in a.
+  A: "E < r_A"
+  B: "E >= E_B"
+  r_A: 5.0e-7      # pre-study: <= min E_c / 10 (min E_c ~ 9.7e-6); r_A / E_ss = 1860 (sigma 3e-8), 18.6 (3e-7)
+  E_B: 0.29        # pre-study: valley (plateau 0.10-0.36) of the 1e4-trajectory E histogram
+
+deterministic:                 # labels of generic states and edge location (user item 1)
+  scheme: rk4
+  dt: 0.25                     # Gate 1 rule
+  T_det: 8000.0                # undecided after T_det: counted, treated as "not A" in the edge search
+  n_rays: 10000                # (c1)
+  split: [0.70, 0.15, 0.15]    # by ray (train / val / test), fixed here so Gate 3 inherits it
+  dense_grid:                  # first-crossing scan, fixes the pre-study bug (48-point grid skipped narrow windows)
+    n_points: 1000             # log-spaced in E from r_A to E_B (exclusive): 0.66% spacing in amplitude s
+    E_min: r_A
+    E_max: E_B
+  n_bisect: 24                 # inside [grid point before the first B point, first B point]: relative 4e-10 in s
+  offsets_u: [-0.3, -0.1, -0.03, -0.01, -0.003, -0.001, -0.0003, -0.0001, -3.0e-5, -1.0e-5,
+              1.0e-5, 3.0e-5, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3]   # states s_c (1 + u), label = fate
+  nonmonotone_refine:          # resolution trend of the non-monotone fraction and of s_c (subset)
+    n_rays: 500
+    grids: [2000, 4000]
+  sensitivity:                 # on a subset of rays: change of s_c (|ln s_c' / s_c|) and of offset-state labels
+    n_rays: 1000
+    local_grid: 200            # first crossing re-located on a local grid over [0.9, 1.1] s_c (dense scan if not bracketed)
+    variants:
+      dt_half: {dt: 0.125}
+      heun_sde_integrator: {scheme: heun, dt: 0.01}
+      E_B_0.8: {E_B_scale: 0.8}
+      E_B_1.2: {E_B_scale: 1.2}
+      r_A_0.8: {r_A_scale: 0.8}
+      r_A_1.2: {r_A_scale: 1.2}
+
+h1_ray_scan:                   # from the dense deterministic scan of the generic rays (no MC, user item 1)
+  E_c: "E of the first deterministic transition along the ray (first grid point whose fate is B, then bisection)"
+  cap: "E_B (states with E >= E_B are in B by definition)"
+  report:
+    E_c_quantiles: [0.0, 0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99, 1.0]
+    E_c_max_over_min: true
+    smallest_E_c_rays: 20      # direction components d_i and energy fractions d_i^2
+    fraction_no_transition_below_cap: true
+    fraction_non_monotone_fate: true      # (c6), with the grid resolution stated
+    fraction_undecided: true
+
+noise_family:                  # user item 3: MC committor where noise matters
+  angles_deg: [0.0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5]   # (c4) direction cos(t) e3 + sin(t) e2
+  eps: [0.0, 1.0e-6, 1.0e-4, 1.0e-2]       # relative amplitude of the a4..a8 component: d = (d_t + eps r)/sqrt(1+eps^2)
+  draws_per_eps: 2                          # independent random unit r in span(e4..e8) for each (angle, eps > 0)
+  sigmas: [3.0e-9, 3.0e-8, 3.0e-7]
+  sde: {scheme: heun, dt: 0.01, boundary_bridge: true, T_max: 6000.0}
+  profile:                                  # same coarse -> zoom machinery as the pre-study
+    coarse_E: [1.0e-6, 0.29, 25]            # 25 log-spaced E from 1e-6 to E_B (s = sqrt(E))
+    M_coarse: 64
+    n_fine: 21
+    M_fine: 200
+    max_zoom: 4
+    M_fine_a3: 400                           # (c9)
+    bracket_q: [0.02, 0.98]
+    min_interior_points: 4                   # profiles with fewer points in (0.02, 0.98) are flagged
+    fit: isotonic                            # (c8) primary; lapse probit and plain probit reported alongside
+  deterministic_s_c: true                    # dense-scan first crossing for each family ray (eps = 0: in-subspace transient)
+  sensitivity:                               # on the eps = 0 rays at sigma = 3e-8 (8 profiles), final fine grid
+    M_double: {M: 400}
+    dt_half: {dt: 0.005}
+    r_A: [0.8, 1.2]
+    E_B: [0.8, 1.2]
+  report_timeout_fraction: true
+
+noise_gain_prediction:         # user item 4, prediction to check on the pure-a3 ray (angle 0, eps 0)
+  statement: "sigma^2 g(s50) = const, g(s) = max_t tr P(t) / sigma^2 with P(0) = 0 along the deterministic transient"
+  user_values_s50: {3.0e-9: 4.86e-3, 3.0e-8: 4.39e-3, 3.0e-7: 3.93e-3}
+  user_claim: "predicting the outer two s50 from the middle one: errors 0.6% and 0.9%"
+  test: >
+    our MC s50 (pure e3 ray, angle 0, eps 0) at the three sigma; solve sigma_i^2 g(s) = sigma_mid^2 g(s50_mid) for s;
+    report the relative errors with standard errors (s50 SE propagated through d ln g / ds), sigma^2 g(s50) at each
+    sigma, the effective exponent p_eff (sigma^p g(s50) = const; p = 2 is the prediction) per decade with a CI, and the
+    null of no sigma dependence. Under both s50 estimators (c8).
+  gain: {T_g: 4000.0, dt: 0.25}  # see gate3_mfe.yaml candidate "log noise gain"
+
+timing:
+  frac: 0.01                   # 1% run: 100 generic rays (+ 10 sensitivity, 5 refinement rays) and 3 family profiles:
+  frac_family_pairs:           # chosen so that every sigma, a family_sens profile and an eps > 0 ray are timed
+    - {sigma: 3.0e-9, angle: 0.0, eps: 0.0, draw: 0}
+    - {sigma: 3.0e-8, angle: 0.0, eps: 0.0, draw: 0}
+    - {sigma: 3.0e-7, angle: 45.0, eps: 1.0e-2, draw: 0}

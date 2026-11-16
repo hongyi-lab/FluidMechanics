@@ -1,0 +1,135 @@
+# Gate 3b: can the MFE edge be described by a few quadratic mechanism quantities? (shape of g not presupposed)
+#
+# History
+#  2026-11-16 (Gate 3 accepted by the user; record: H2 does not hold; a generic critical linear gain does not hold;
+#    the zero-fit of gain (i) holds only within the noise family, 90 deg excepted). User decisions for Gate 3b:
+#   - data: only Gate 2 data (experiments/20261116_gate2_mfe_v1); NO new MC. Same train/val/test split as Gate 3 and the
+#     same primary metric |ln(s_pred / s_c)| on the test rays (median, 90% quantile, bootstrap 95% CI).
+#     Criteria written here BEFORE running. Training loops with tqdm and resumable.
+#   1. description only (no fit): the state at s_c of the 10 000 random rays in the mechanism planes, log-log,
+#      (|a3|, |y|), (|a2|, |y|), (|a3|, |a2|), y = (a4..a8); each plane coloured by 1 - a1 and by a9.
+#      Questions: do the points lie near one curve; which quantity does the scatter follow.
+#   2. complexity ladder M_k: c(x) = g(u_1, ..., u_k), x = a - a_lam, u_i = x^T Q_i x + b_i^T x (Q_i symmetric, not forced
+#      definite), g a small MLP without monotonicity constraint, k = 1, 2, 3, 4.
+#      k = 1 (single quadratic-form threshold, "ellipsoid class") marked separately. Physics k = 2: u1 = a3^2,
+#      u2 = |y|^2, g free; and its additive version u1/alpha3^2 + u2/alphay^2. Per k: test error; eigenvalues of every Q_i
+#      and the modal composition of the principal axes; for k = 2 the boundary states and the learned critical curve in
+#      the (u1, u2) plane. Every fitted model frozen and used to predict the deterministic s_c of the eps > 0 rays of
+#      the noise family, errors grouped by eps.
+#      CRITERION: record the smallest k with test median <= 0.04. If k = 4 still has median >= 0.10: record
+#      "quadratic mechanism quantities are not enough". Anything in between is written down as it is.
+#   3. why gain (i) fails on the random rays: gain (i) error of every random ray against the initial energy fraction of
+#      y; which rays form the left peak (c ~ -6) of Gate 3 fig3 (b1), their modal composition, whether it is a pile-up
+#      at a numerical floor; whether the Gate 3 triple candidate contains quadratic terms.
+#   Report negative results as they are; no criterion is changed after the run. Write the report and stop.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (h1) thresholds 0.04 / 0.10 kept as proposed by the user; the criterion uses the test-ray POINT median
+#        (all 1448 test rays); its bootstrap CI is reported next to it but does not enter the decision.
+#   (h2) training exactly as the Gate 3 classifiers: binary cross-entropy on the deterministic labels of the 20 offset
+#        states and the 50 dense-grid states of every train ray; the states of the val rays for early stopping and for
+#        the choice among restarts (lowest val NLL); c* and side by the Gate 3 c* rule on the train rays.
+#   (h3) g sees z_i = asinh(u_i / tau_i) with a learnable scale tau_i (a strictly monotone bijection of u_i, so the model
+#        class "free function of u_1..u_k" is unchanged; it only lets g resolve the four decades of u at the edges).
+#        x is divided by a fixed per-mode scale (RMS over the training states) before the quadratic forms; this is a
+#        change of units of Q_i and b_i, reported in physical units (Q_i, b_i acting on x itself).
+#   (h4) restarts per k: 4 random initialisations, plus for k >= 2 one nested warm start from the chosen M_{k-1}
+#        (its u_1..u_{k-1} and g copied, the new input's first-layer weights set to 0, so that the start is exactly
+#        M_{k-1}); for k = 1 the warm start takes u_1 from the convex quadratic logistic (below).
+#   (h5) "single quadratic-form threshold" reported in two forms: (a) M_1 with free g (a non-monotone g allows unions of
+#        level shells of u_1); (b) the strict single-quadric threshold (see the review entry above: S1, g affine in z;
+#        the convex quadratic logistic in 9D, c = x^T Q x + b^T x + const by convex BCE, is a diagnostic).
+#   (h6) additive physics version c = u1/alpha3^2 + u2/alphay^2 with threshold 1, alpha's > 0: fitted by a grid over the
+#        angle theta of (1/alpha3^2, 1/alphay^2) in [0, pi/2] with c* by the c* rule (direct minimisation of the train
+#        median, 2 parameters); also its BCE variant (linear logistic on (u1, u2), signs free) for comparison.
+#   (h7) Q_i are identifiable only up to an invertible linear mixing of (u_1..u_k) (g is free). Reported: the raw Q_i,
+#        and a canonical basis: u standardised over the train boundary states, rotated to the eigenvectors of
+#        J = mean over the train boundary states of grad_u c grad_u c^T (ordered by importance).
+#   (h8) the noise-family prediction uses the Gate 3 family grid (4000 points, log in E between r_A and E_B) and the
+#        deterministic s_c of Gate 2 (family_det.npz, bisection). The eps = 0 rays are not used (user item 2). Reference
+#        candidates from Gate 3 (E, |a3|, triple, the ceiling MLP, gain (i) at sigma = 0) are evaluated the same way,
+#        with their Gate 3 c*, for comparison.
+#   (h9) item 1: descriptive numbers only (no model): in each plane, rays in 20 equal-count bins of the abscissa;
+#        within-bin IQR of the log ordinate against its overall IQR; Spearman correlation of the within-bin residual
+#        (log ordinate minus its bin median) with 1 - a1, a9 and the plane's missing mechanism quantity.
+#   (h10) item 3: "initial energy fraction of y" = |y0|^2 / |x0|^2 of the ray direction (scale-free along a ray);
+#        errors shown for the zero-fit c*_0 (all 10 000 rays) and for the refitted c* (test rays). Left peak = rays with
+#        c(s_c) < -4.5 at sigma = 3e-8 (cut placed at the right flank of the peak in the Gate 3 histogram; -5 and -4
+#        reported as sensitivity).
+#  2026-11-16, after the 1% pipeline run and BEFORE the full run (no test data used): at 1% the random restarts of M2 had
+#    val NLL 0.36-0.46, worse than M1 (0.33) and than the physics k = 2 model (0.25), although phys2 is a special case of
+#    M2: an optimisation failure of the random starts. Added (h4b): one more warm start for k = 1 (u1 = a3^2, g random)
+#    and for k = 2 (an exact copy of the chosen phys2 model); phys2 is therefore trained before the ladder. k >= 3 keep
+#    the nested warm start from the chosen M_{k-1}. Selection rule (lowest val NLL), criterion and thresholds unchanged.
+#    A second 1% test showed that the exact phys2 copy left its solution after one Adam step (scaled entries ~1e-3 vs a
+#    step of lr = 3e-3): forms written by a warm start are now normalised to unit norm with tau rescaled (same function),
+#    and the starting state of every training run is itself a candidate for the best (val NLL) state.
+#  2026-11-16, independent code review (3 lenses + verifiers), BEFORE the full run (no test data used):
+#   - (h5b) replaced as the strict class: the convex quadratic logistic is limited by its ridge penalty and by feature
+#     standardisation over the whole grid (an a3-dominated quadric needs |w_std|^2 ~ 1e6), so it can score worse than
+#     members of its own class. The strict single-quadric threshold is now S1 = k = 1 with g AFFINE in z (monotone, so
+#     {c >= c*} = {u1 >= const}), trained like M_k (4 random restarts + warm starts from the convex quadratic logistic and
+#     from u1 = a3^2). The convex quadratic logistic is kept as a diagnostic only.
+#   - nesting check recorded next to the criterion: if a chosen M_k has a higher val NLL than a model it contains
+#     (S1 for M1; M1 and phys2 for M2; M_{k-1} for k >= 3), the verdict line says so (optimisation, not the class).
+#   - structure outputs also report the linear term b_i (modal composition, its share of u at the boundary), since b.x
+#     carries most of the learned u at the boundary in the 1% test; canonical forms oriented by the sign of their
+#     Spearman correlation with c (the median-slope rule was a coin flip for a V-shaped g); a parametrisation-free
+#     importance is added: increase of the val NLL when one canonical coordinate is held at its median.
+#   - (h8) the noise-family evaluation is descriptive (point median, q90, max per eps; 16 rays per eps; no CI), as in Gate 3.
+#   - linear lr warm-up over the first 200 epochs for every training run (the verifier saw a normalised warm start drift
+#     away within ~20 full-size Adam steps of lr 3e-3); the starting state stays a best-state candidate.
+name: gate3b_mfe
+seed: 20261119
+device: cuda
+
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate3_run: experiments/20261116_gate3_mfe_v2
+  gate3_seed: 20261118          # Gate 3 seed: same ray subset in --frac runs and the same bootstrap resamples
+  dense_states_per_ray: 50
+
+criterion:
+  metric: "test-ray median |ln(s_pred / s_c)|, point estimate"
+  pass_median: 0.04             # smallest k with median <= 0.04 is recorded
+  fail_median_at_k4: 0.10       # k = 4 median >= 0.10: "quadratic mechanism quantities are not enough"
+  ladder_models: [M1, M2, M3, M4]   # only the free ladder enters the criterion; physics k = 2 and (h5b) are reported beside it
+
+threshold_prediction:
+  c_star_rule: "as Gate 3: minimise the train median |ln(s_pred/s_c)|; 1000 quantiles of c at the train edges + 1000-point refinement; side chosen on train rays"
+  bootstrap: 2000
+  logistic_l2_grid: [0.0, 1.0e-6, 1.0e-4, 1.0e-2]
+
+ladder:
+  k: [1, 2, 3, 4]
+  g_hidden: [32, 32]            # SiLU, as the Gate 3 MLP
+  tau_init_rel: 1.0e-3          # tau_i initialised at 1e-3 x RMS of u_i over the training states (h3)
+  init_scale_Q: 1.0             # entries of Q~ (scaled units) ~ N(0, (init_scale_Q / 9)^2), b~ ~ N(0, (init_scale_Q / 3)^2)
+  lr: 3.0e-3
+  lr_warmup_epochs: 200         # linear warm-up (review: the first Adam steps pushed warm starts off their solution)
+  max_epochs: 10000
+  patience: 500
+  n_random_restarts: 4
+  nested_warm_start: true
+  physics_warm_start: true      # (h4b) k = 1: u1 = a3^2; k = 2: exact copy of the chosen phys2 model
+  checkpoint_every: 250         # epochs; resume from the last checkpoint after an interruption
+physics_k2:
+  u: ["a3^2", "|y|^2 (y = a4..a8)"]
+  n_random_restarts: 4
+  additive_theta_grid: 2001     # theta in [0, pi/2]
+
+family:
+  eps_used: [1.0e-6, 1.0e-4, 1.0e-2]
+  grid_points: 4000
+  references: ["E", "|a3|", "triple (1-a1, a2, a3)", "MLP (9D, polar input)", "gain (i)@0"]
+
+descriptive:
+  n_bins: 20
+gain_failure:
+  sigma: 3.0e-8
+  left_peak_cut: -4.5
+  left_peak_cut_sensitivity: [-5.0, -4.0]
+
+timing:
+  frac: 0.01
+  benchmark_epochs: 50          # per model on the FULL training set, for the time estimate

@@ -1,0 +1,9 @@
+# Gate 2 pre-study, addendum (2026-11-15): spontaneous laminar -> B fraction measured AT the two proposed sigma
+# (the main pre-study simulated sigma >= 1e-6 only and inferred these by monotonicity; flagged by the review).
+name: gate2_prestudy_spont
+seed: 20261119
+device: cuda
+prestudy_run: experiments/20261115_gate2_prestudy_v2
+n_paths: 10000
+record_every_time: 50.0
+burn_in: 500.0

@@ -10,7 +10,7 @@ This is the MFE nine-mode model at Re = 400, Lx = 4π, Lz = 2π.
   - (i) c = ln max_t tr P;
   - (ii) c = ln tr P at the first maximum of a2².
 
-These results await the user's confirmation of Gate 3.
+Gate 3 was accepted by the user on 2026-11-16. The user's record: H2 does not hold; a generic critical linear gain does not hold; the zero-fit of gain (i) holds only within the noise family, with 90° as the exception. Gate 3b is in ../gate3b_mfe.
 
 ## `fig1_threshold_error.png`: threshold-prediction error on the 1448 test rays
 - (a) Median |ln(s_pred / s_c)| with 95% bootstrap CIs.

@@ -1,0 +1,76 @@
+# Gate 1: MFE nine-mode model, implementation checks (a)-(e).
+# Every number below is fixed before the first lifetime run (2026-11-15).
+#
+# Sources
+#   NJP   Moehlis, Faisst, Eckhardt, New J. Phys. 6, 56 (2004): equations (21)-(31), modes (7)-(16),
+#         force (5), lifetime protocol (section 5), figures 10-11.
+#         Local file literature/papers/Moehlis_Faisst_Eckhardt_2004_NJP_6_56.pdf is the IOP proof
+#         version (DOI placeholder ".../6/1/000"); the final typeset version could not be downloaded.
+#   SIADS Moehlis, Faisst, Eckhardt, SIAM J. Appl. Dyn. Syst. 4, 352 (2005): symmetries (3.24)-(3.25).
+#         The NJP paper itself lists no symmetries; SIADS is its companion paper (NJP ref. [24]).
+name: gate1_mfe
+seed: 20261116
+device: cuda
+
+system:
+  kind: mfe
+  Re: 400.0
+  Lx_over_pi: 4.0
+  Lz_over_pi: 2.0
+  sigma: 0.0            # deterministic in Gate 1
+
+checks:
+  a_laminar:
+    rhs_norm_max: 1.0e-12             # ||f(1,0,...,0)||_2
+  b_energy:                           # sum_j a_j N_j(a), N = quadratic part of f
+    n_random: 1000
+    scale: 1.0                        # a_i ~ N(0, 1): |a| ~ 3, wider than the turbulent range (|a| < 1)
+    abs_max: 1.0e-10
+  c_jacobian:                         # eigenvalues of df/da at the laminar state
+    Re_min: 100
+    Re_max: 2000
+    Re_step: 1
+    criterion: "max real part < 0 at every Re of the grid"
+  e_symmetry:                         # f(g a) = g f(a) for g in {T_Lx/2, T_Lz/2, T_Lx/2 T_Lz/2, R}
+    n_random: 1000
+    scale: 1.0
+    abs_max: 1.0e-12
+    negative_control: flip_a4_only    # not a symmetry; must break equivariance (residual > 1e-3)
+    negative_control_min: 1.0e-3
+  transcription_crosscheck:           # diagnostic, not a Gate criterion
+    galerkin_tol: 1.0e-10             # |coefficients from eqs (21)-(28) - Galerkin projection of modes (7)-(16)|
+
+dt_selection:                         # RK4 step, chosen by this rule before any lifetime run
+  candidates: [0.5, 0.25, 0.1, 0.05, 0.025, 0.01]
+  reference_dt: 0.0025
+  n_states: 64                        # states taken from trajectories after spin-up
+  spinup_time: 500.0                  # integrated with dt = 0.01 from the lifetime IC distribution
+  horizon: 10.0
+  tolerance: 1.0e-6                   # max |a_i(horizon; dt) - a_i(horizon; reference)| over states and modes
+  rule: "largest candidate dt meeting the tolerance"
+
+lifetimes:
+  n_ic: 10000
+  ic_energy_shell: 0.3                # a uniform on the sphere sum_{i=1..9} a_i^2 = 0.3 (NJP section 5, literal reading)
+  t_max: 10000.0                      # NJP section 5
+  thresholds: [0.1, 0.01, 0.001]      # on the perturbation energy E = sum_i (a_i - a_i^lam)^2
+  primary_threshold: 0.001            # lifetime = first time E < 0.001; censored at t_max
+  return_level: 0.3                   # "re-excitation": E > 0.3 after the first passage below a threshold
+  segment_time: 1000.0                # checkpoint (chunk) every 1000 time units; restart resumes
+  n_record: 20                        # full time series of the first 20 trajectories, every record_every
+  record_every: 1.0
+  energy_hist: {log10_min: -8.0, log10_max: 1.0, bins: 90, every: 1.0}
+  timing_frac: 0.01                   # 1% run (100 ICs) for timing first
+  dt_half_check: {n_ic: 2000}         # first 2000 ICs again with dt/2: compare survival functions
+  fit:                                # P(t) = P(t0) exp(-(t - t0)/tau) for t >= t0, censored MLE
+    t0: 1000.0
+    t0_alt: 2000.0
+    roughly_straight_max_abs_dev: 0.02   # (d) "roughly a straight line": sup_{t0<=t<=t_max} |P_emp - P_fit|
+    gof_bootstrap: 1000                  # strict exponential GOF (parametric bootstrap of the sup statistic), reported only
+  paper:                              # digitised from NJP figure 10, Re = 400 red fit line (1000 ICs in the paper)
+    tau: 9936.0
+    t_onset: 1275.0                   # where the fitted line meets P = 1
+    P_at_t_max: 0.416
+    median_from_fit: 8162.0           # NJP figure 11 (x, Re = 400) reads ~7000-8000
+    tau_ratio_range: [0.8, 1.25]      # "consistent with the paper"
+    P_at_t_max_abs_tol: 0.05

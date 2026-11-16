@@ -1,0 +1,25 @@
+# Gate 1 diagnostic: why does our lifetime distribution start decaying earlier than NJP figure 10?
+# Description only (no pass/fail); requested by the user on 2026-11-15 after Gate 1 was accepted.
+#
+# Predictions (user, written down before this run):
+#  P1  each decade stricter laminarisation threshold shifts all lifetimes later by ~190 time units,
+#      because near the laminar state E decays at the slowest-mode energy rate 2 beta^2/Re = pi^2/(2 Re):
+#      ln(10) / (pi^2 / 800) = 186.6 at Re = 400.
+#  P2  about two decades stricter (E < 1e-5) the early part of the survival curve should match the paper.
+# Both are reported as found, including if they fail.
+name: gate1_onset_diag
+seed: 20261116            # same as gate1_mfe.yaml: reading A reproduces the Gate 1 initial conditions exactly
+device: cuda
+system: {kind: mfe, Re: 400.0, Lx_over_pi: 4.0, Lz_over_pi: 2.0, sigma: 0.0}
+dt: 0.25                  # Gate 1 RK4 step (pre-registered rule)
+t_max: 10000.0
+n_ic: 10000
+thresholds: [0.001, 0.0001, 0.00001, 0.000001]
+return_level: 0.3
+segment_time: 1000.0
+ic_readings:
+  A_total_shell: "a uniform on sum_{i=1..9} a_i^2 = 0.3 (Gate 1 reading)"
+  B_perturbation_shell: "a = a_lam + p, p uniform on sum_i p_i^2 = 0.3"
+energy_shell: 0.3
+predicted_shift_per_decade: 186.6
+compare_times: [1000, 1500, 2000, 2500, 3000, 4000, 6000, 8000, 9999]

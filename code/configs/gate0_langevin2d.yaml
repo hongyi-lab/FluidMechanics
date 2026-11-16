@@ -1,0 +1,95 @@
+# Gate 0: positive control with a known committor.
+# Everything below (including pass criteria) is fixed before the first full run.
+#
+# Amendment v2 (2026-11-15, before any full-scale run; reasons from the pre-run code review):
+#  - y criterion: with rays from the A-side reference (-1, 0), |y| grows with x along each ray, so y
+#    gets skill ~0.05 from the sampling geometry even with exact labels. The spec-literal criterion
+#    |skill(y)| <= 0.03 is kept and reported, and two criteria that test the actual claim
+#    ("q depends on x only") are added: MC-label skills inside the exact-label null distribution, and
+#    no skill gain from adding y to x.
+#  - boundary_bridge: checking A/B only at grid times biases q by O(sqrt(dt)) (~4e-4 at dt=1e-3),
+#    which the pooled q-bin test can detect at this sample size; the Brownian-bridge crossing test
+#    removes that term. The uncorrected labels are produced as a diagnostic.
+#  - scale raised to the Gate 2 target (~2e4 states, >= 5e3 in the transition layer).
+#  - shuffled-label control as a permutation distribution; histogram null std corrected.
+name: gate0_langevin2d
+seed: 20261115
+device: cuda
+
+system:
+  kind: langevin2d
+  eps: 0.25          # noise strength; dX = -grad(V+U) dt + sqrt(2 eps) dW
+  k_y: 1.0           # U(y) = k_y y^2 / 2
+  a: -1.0            # A = {x <= a}   (left well bottom)
+  b: 1.0             # B = {x >= b}   (right well bottom)
+
+sim:
+  scheme: heun       # stochastic Heun, additive noise
+  dt: 1.0e-3
+  t_max: 50.0        # paths unresolved after t_max are counted as timeouts
+  compact_every: 100
+  boundary_bridge: true
+
+sampling:
+  n_rays: 3600       # random directions from the A-side reference state (-1, 0)
+  s_max: 3.0         # ray amplitude cap
+  M_bisect: 64       # paths per bisection evaluation
+  n_bisect: 10       # bisection iterations per crossing (q = 0.5, q_lo, q_hi)
+  q_lo: 0.05
+  q_hi: 0.95
+  n_dense: 10        # states per ray inside the located transition interval
+  margin: 0.25       # interval widened by margin * width on each side
+  min_width_frac: 0.05
+  traj_record_every: 50   # steps between recorded states on (ii) trajectories
+  traj_states_per_ray: 5
+
+labeling:
+  M: 200
+  chunk_states: 2500
+
+ranking:
+  split: [0.70, 0.15, 0.15]   # by ray group; trajectory states inherit their ray's group
+  iso_pseudo: 0.5             # Jeffreys pseudo-count inside each isotonic block
+  bootstrap: 2000
+  hist_window: [0.4, 0.6]
+  hist_bins: 20
+  logistic_l2_grid: [0.0, 1.0e-6, 1.0e-4, 1.0e-2]
+  mlp:
+    hidden: [64, 64]
+    lr: 3.0e-3
+    weight_decay: 0.0
+    max_epochs: 5000
+    patience: 300
+    n_seeds: 3
+  candidates:
+    - {name: E, type: feature, feature: E}
+    - {name: x, type: feature, feature: x}
+    - {name: y, type: feature, feature: y}
+    - {name: "|y|", type: feature, feature: absy}
+    - {name: "logistic quad(x, y)", type: logistic, features: [x, y], degree: 2}
+    - {name: "linear logistic (all coords)", type: logistic, features: all, degree: 1}
+    - {name: "MLP (all coords)", type: mlp, features: all}
+  controls:
+    shuffled: [x, "MLP (all coords)"]
+    shuffle_permutations_feature: 100
+    shuffle_permutations_learned: 5
+    n_random_projections: 100
+
+diagnostics:
+  exact_label_null_replicates: 200     # labels ~ Binomial(M, q_exact) on the same states and split
+  exact_label_null_features: [x, y, absy, E]
+  relabel_without_bridge: true         # same states, same dt, bridge off: shows the O(sqrt(dt)) term
+
+pass_criteria:
+  labels:                         # P1: MC q vs exact q "within binomial error"
+    n_parametric_bootstrap: 2000
+    deviance_pb_p_min: 0.01       # deviance vs its Binomial(M, q_exact) null distribution
+    pooled_bias_abs_z_max: 3.0    # sum(n - M q) / sqrt(sum M q (1-q))
+    n_qbins: 10
+    min_states_per_bin: 30
+    qbin_abs_z_max: 3.29          # ~0.01 two-sided Bonferroni over 10 bins
+  ranking:
+    skill_x_min: 0.95             # P2: "x skill close to 1"
+    skill_y_abs_max: 0.03         # P3-literal (spec wording, reported; expected to fail by geometry)
+    null_quantile_level: 0.99     # P2b/P3b: MC-label skill of x and y inside the central 99% of the exact-label null
+    conditional_gain_max: 0.01    # P3c: max(skill(MLP), skill(logistic quad(x,y))) - skill(x) <= this

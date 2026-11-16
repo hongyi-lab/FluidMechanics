@@ -1,0 +1,74 @@
+name: gate3b_mfe
+seed: 20261119
+device: cuda
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate3_run: experiments/20261116_gate3_mfe_v2
+  gate3_seed: 20261118
+  dense_states_per_ray: 50
+criterion:
+  metric: test-ray median |ln(s_pred / s_c)|, point estimate
+  pass_median: 0.04
+  fail_median_at_k4: 0.1
+  ladder_models:
+  - M1
+  - M2
+  - M3
+  - M4
+threshold_prediction:
+  c_star_rule: 'as Gate 3: minimise the train median |ln(s_pred/s_c)|; 1000 quantiles
+    of c at the train edges + 1000-point refinement; side chosen on train rays'
+  bootstrap: 2000
+  logistic_l2_grid:
+  - 0.0
+  - 1.0e-06
+  - 0.0001
+  - 0.01
+ladder:
+  k:
+  - 1
+  - 2
+  - 3
+  - 4
+  g_hidden:
+  - 32
+  - 32
+  tau_init_rel: 0.001
+  init_scale_Q: 1.0
+  lr: 0.003
+  lr_warmup_epochs: 200
+  max_epochs: 10000
+  patience: 500
+  n_random_restarts: 4
+  nested_warm_start: true
+  physics_warm_start: true
+  checkpoint_every: 250
+physics_k2:
+  u:
+  - a3^2
+  - '|y|^2 (y = a4..a8)'
+  n_random_restarts: 4
+  additive_theta_grid: 2001
+family:
+  eps_used:
+  - 1.0e-06
+  - 0.0001
+  - 0.01
+  grid_points: 4000
+  references:
+  - E
+  - '|a3|'
+  - triple (1-a1, a2, a3)
+  - MLP (9D, polar input)
+  - gain (i)@0
+descriptive:
+  n_bins: 20
+gain_failure:
+  sigma: 3.0e-08
+  left_peak_cut: -4.5
+  left_peak_cut_sensitivity:
+  - -5.0
+  - -4.0
+timing:
+  frac: 0.01
+  benchmark_epochs: 50

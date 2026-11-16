@@ -1,0 +1,98 @@
+# Gate 3: coordinate ranking for the MFE model.
+#
+# History
+#  2026-11-15 (after Gate 0): |a_i| candidates added; conclusions only from gap to ceiling, histogram test and
+#    incremental skill; marginal skill descriptive only; H1 judged on the ray threshold-energy scan.
+#  2026-11-15 (after the Gate 2 pre-study): PRIMARY METRIC = threshold prediction error on held-out rays; E is the
+#    baseline, an MLP classifier the upper bound; also classification accuracy against the relative distance to the edge;
+#    new candidate: log linear noise gain.
+#  2026-11-16 (Gate 2 accepted), user decisions for Gate 3:
+#   - data: the existing 10 000 rays and 200 000 offset states of experiments/20261116_gate2_mfe_v1; NO new MC.
+#   1. primary metric unchanged: distribution of ln(s_pred / s_c), E baseline, MLP ceiling; accuracy vs |u|.
+#      The decay windows above the edge (0.1-0.5% of the offset states with u > 0) count as irreducible error.
+#   2. linear-gain coordinate in two versions, both with P(0) = y0 y0^T and the sigma^2 I term:
+#      (i)  c = ln max_t tr P;  (ii) c = ln tr P at the time of the peak of the streak energy a2^2.
+#      Report p_eff of both versions on the pure-a3 ray.
+#   3. "zero-fit" test of the gain coordinates: critical value calibrated ONLY on the pure-a3 ray (three sigma), then
+#      frozen; (a) predict s50 of the 159 resolved noise-family profiles, (b) predict s_c of the 10 000 random rays;
+#      report both error distributions, plus the results with a refitted critical value as a control.
+#   4. other candidates as configured (single modes, |a_i|, combinations of (1-a1, a2, a3), 9D linear logistic).
+#   Report negative results as they are; push figures and README; stop for confirmation.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (g1) sigma of the gain coordinate on the 10 000 random rays (deterministic labels): primary 3e-8 (middle level of
+#        Gate 2); 0, 3e-9 and 3e-7 also computed and reported. On the family profiles: the profile's sigma.
+#   (g2) zero-fit critical value c*_0 = mean over the three sigma of c(s50(sigma); sigma) on the pure-a3 ray
+#        (isotonic s50 of Gate 2); the spread of the three values is reported.
+#   (g3) t* of version (ii) = first time of the maximum of a2(t)^2 on [0, T_g] along the u-transient (y = 0).
+#   (g4) histogram test dropped (needs MC q on generic states; none, by decision of 2026-11-16: no new MC).
+#   (g5) "triple + log noise gain" is fitted for both gain versions.
+#   (g6) a second MLP on (unit direction, ln amplitude) is added. The ceiling is the MLP with the lower TRAINING median |ln|;
+#        both are reported. (Correction after the code review: the reason first given here, poor training of the raw-input
+#        MLP because its inputs span three decades of amplitude, is not supported. In the 1% run both MLPs simply overfit
+#        71 training rays; a 10% replay by the reviewer had the raw-input MLP as the better ceiling.)
+#  2026-11-16 (code review of Gate 3, 3 lenses + verifiers): fixes to the analysis only (inf-safe quantiles and paired
+#    differences, below-grid flags and extrapolated descriptive values, family refinement, t* = 0 accounting for version (ii),
+#    dt sensitivity of the pure-a3 gain, |w.(x - lam)| random-projection control). Run v1 stopped after the gain grid;
+#    run v2 reuses its gain-grid chunks (gain code unchanged) and recomputes everything else.
+name: gate3_mfe
+seed: 20261118
+device: cuda
+
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  generic: "rays.npz (dirs, split 70/15/15), scan.npz (s_c, grid_out, s_grid), offsets.npz (X, label, u)"
+  family: "family_det.npz (directions), results.json family_mc.profiles (s50, resolved)"
+  dense_states_per_ray: 50       # log-spaced dense-grid states per ray added to the classifier training set
+
+threshold_prediction:
+  c_star_rule: "minimise the training median |ln(s_pred/s_c)|; thresholds = 1000 quantiles of c at the training edges + 1000-point local refinement; side chosen on training rays"
+  no_crossing: "|ln| = +inf, counted in the quantiles; the fraction is reported"
+  irreducible: "offset states with u > 0 whose deterministic fate is A (decay windows) are counted as irreducible error"
+  bootstrap: 2000
+  logistic_l2_grid: [0.0, 1.0e-6, 1.0e-4, 1.0e-2]
+  mlp: {hidden: [64, 64], lr: 3.0e-3, weight_decay: 0.0, max_epochs: 5000, patience: 300, n_seeds: 3}
+  incremental:
+    - "each pair of (1-a1, a2, a3) vs the better of its two members"
+    - "triple vs the best pair"
+    - "MLP (9D) vs triple"
+    - "MLP (9D) vs linear logistic (9D)"
+    - "triple + log gain (i) vs triple"
+    - "triple + log gain (ii) vs triple"
+  family: "same metric with s50 (MC, Gate 2) in place of s_c on the 159 resolved profiles, per sigma; c* leave-one-angle-out; descriptive"
+
+gain:
+  T_g: 4000.0
+  dt: 0.25
+  sigmas: [0.0, 3.0e-9, 3.0e-8, 3.0e-7]
+  sigma_generic_primary: 3.0e-8   # (g1)
+  family_grid_points: 4000         # log grid in E from r_A to E_B along each family ray
+  a3_grid: [2.5e-3, 7.0e-3, 451]   # pure-a3 ray, for p_eff (same grid as Gate 2 gain_a3)
+
+zero_fit:
+  calibration: "pure-a3 ray (angle 0, eps 0), isotonic s50 of Gate 2 at sigma = 3e-9, 3e-8, 3e-7"
+  c_star: mean                     # (g2)
+  refit_control:
+    family: "c* refitted on the family itself (leave-one-angle-out, and in-sample as a lower bound)"
+    generic: "c* refitted on the training rays, evaluated on the test rays"
+
+candidates:
+  - {name: E, type: feature, feature: E}
+  - {name: "a_i (i=1..9)", type: feature_each, features: [a1, a2, a3, a4, a5, a6, a7, a8, a9]}
+  - {name: "|a_i| (i=1..9)", type: feature_each, features: [abs_a1, abs_a2, abs_a3, abs_a4, abs_a5, abs_a6, abs_a7, abs_a8, abs_a9]}
+  - {name: "pairs of (1-a1, a2, a3)", type: logistic, degree: 2, subsets_of: [one_minus_a1, a2, a3], size: 2}
+  - {name: "triple (1-a1, a2, a3)", type: logistic, degree: 2, subsets_of: [one_minus_a1, a2, a3], size: 3}
+  - {name: "linear logistic (9D)", type: logistic, features: all, degree: 1}
+  - {name: "MLP (9D)", type: mlp, features: all}
+  - {name: "MLP (9D, polar input)", type: mlp, features: "(d = (x - lam)/s, ln s), a bijection of the 9D state"}   # (g6) ceiling = the MLP with the lower training objective
+  - {name: "gain (i)", type: gain, version: i}
+  - {name: "gain (ii)", type: gain, version: ii}
+  - {name: "triple + log gain (i)", type: logistic, degree: 2, features: [one_minus_a1, a2, a3], extra_linear: [gain_i]}
+  - {name: "triple + log gain (ii)", type: logistic, degree: 2, features: [one_minus_a1, a2, a3], extra_linear: [gain_ii]}
+
+controls:
+  shuffled_labels: 20             # c* fitted on permuted training s_c (no retraining), test metric distribution
+  n_random_projections: 100       # random unit w: c = w . (x - lam)
+
+timing:
+  frac: 0.01
