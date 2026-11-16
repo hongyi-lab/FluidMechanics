@@ -4,7 +4,7 @@ The model is the MFE nine-mode model at Re = 400, Lx = 4π, Lz = 2π, with da = 
 - A = {E < 5e-7}, B = {E ≥ 0.29}, where E = Σ(aᵢ − aᵢ^lam)².
 - SDE: stochastic Heun, dt = 0.01, Brownian bridge, T_max = 6000.
 
-These results await the user's confirmation of Gate 2; Gate 3 has not started.
+Gate 2 was accepted by the user on 2026-11-16; Gate 3 is in ../gate3_mfe.
 
 ## `fig1_det_edge.png`: deterministic edge on 10 000 random rays from the laminar state
 - (a) First-transition energy E_c ranges from 1.0e-5 to 7.8e-2 (max/min = 7664; median 1.6e-4).
