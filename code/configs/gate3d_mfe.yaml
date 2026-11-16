@@ -1,0 +1,108 @@
+# Gate 3d: is the edge "two conditions at once" (a lift-up streak-amplitude condition AND the seed x gain condition)?
+#
+# History
+#  2026-11-16 user decisions (Gate 3c accepted; Gate 3d specified):
+#   - Gate 3c accepted: item 1 holds; item 2 does not hold by its criterion; the post-hoc family check (state threshold
+#     drifts with eps) recorded as descriptive. The user's own exploratory check of seed x gain with the time-resolved
+#     lowest-order feedback (400 independent rays) still gives a threshold gap of about 8 between the two families.
+#   - Gate 3d: criteria written here before any run; report negative results as they are. The attachment
+#     gate3c_replication.tar.gz (user's independent replication, for comparison only) did not reach the server.
+#   0. check the derivation: d2 = -J[a2,a2], J23 = J[a2,a3], L(tau) = J23 (e^{-d3 tau} - e^{-d2 tau})/(d2 - d3),
+#      t* = ln(d2/d3)/(d2 - d3) (about 103.5); F2 = y-y quadratic form of da2/dt;
+#      V_roll = int_0^t* L(t* - s) e^{A_y^T s} F e^{A_y s} ds;  V_dir = int_0^t* e^{-d2 (t* - s)} e^{A_y^T s} F2 e^{A_y s} ds;
+#      S = e^{-d2 t*} a2 + L(t*) a3 + y^T (V_roll + V_dir) y  (predicted streak peak).
+#   1. state quantity with no fitted time: |S| = S*, S* fitted on the random TRAIN rays only. Test-ray primary metric,
+#      compared with Gate 3c item 1 (c). t* scan reported (descriptive).
+#      CRITERION: test median <= 0.05 AND at most 0.01 worse than (c) -> "T explained by lift-up".
+#   2. composite: s_pred = max(s_i, s_ii); (i) |S| >= S* (item 1, frozen); (ii) the Gate 3c merged gain >= c*_0 = 7.151.
+#      No new fitted parameter. Gate 3c gain grids reused. Report random test rays, the noise family per eps, the
+#      fraction of rays on which each condition binds, and (i) alone and (ii) alone.
+#      CRITERION: random test median <= 0.05, noise-family median <= 0.05 and eps trend <= 0.05 -> "holds".
+#   3. new transition family (deterministic s_c only, no MC): directions as the noise family, eps = 0.03, 0.1, 0.3, 1, 3,
+#      7 angles (90 deg removed) x 2 draws; predicted directly with the frozen item-2 composite.
+#      CRITERION: median <= 0.05, reported per eps. The 90 deg rays reported separately (known exception).
+#
+# Choices made here that the user did not specify (flagged in the report, all fixed before the first run):
+#   (d1) theory objects at the laminar state, as Gate 3c (c1): A_y, F, d3 from committor.feedback.blocks; d2, J23 from the
+#        Jacobian at the laminar state; F2 = symmetrised y-y block of Q[a2]. V_roll and V_dir in closed form:
+#        int_0^t e^{-d (t-s)} e^{A^T s} G e^{A s} ds = e^{-d t} (X - e^{B^T t} X e^{B t}), B = A_y + d/2, B^T X + X B = -G;
+#        V_roll = J23/(d2 - d3) [K_{d3}(F) - K_{d2}(F)], V_dir = K_{d2}(F2); checked against direct quadrature of the
+#        user's integrals and against the full nonlinear ODE at small amplitude.
+#   (d2) not in S (the user's definition is used unchanged): the m-m term of da2/dt, J23 a3 (a1 - 1 + a9), is of the same
+#        order s^2 as the y-y terms on rays with a1 or a9 components. Its lowest-order contribution x_m^T M x_m,
+#        M = int_0^t* e^{-d2 (t*-s)} e^{J_mm^T s} Q2mm e^{J_mm s} ds, is reported (item 0, and as a descriptive variant
+#        S_hat = S + x_m^T M x_m in item 1 with its own S* fitted the same way); never used in a criterion.
+#   (d3) threshold rule for |S|: the Gate 3 grid rule (fit_cstar on the 1000-point ray grid, both sides allowed as in
+#        Gate 3 / 3c (c2)); the side found is reported (laminar has S = 0, so side +1 is expected).
+#   (d4) item-1 criterion: test median(S) <= 0.05 AND [test median(S) - test median(3c (c))] <= 0.01, point estimates on
+#        the same 1448 test rays; the paired bootstrap CI of the difference is reported alongside. If not met:
+#        "not explained by lift-up" (the user gave a pass condition only), with the failing part named.
+#   (d5) t* scan (descriptive): t in {0} U geomspace(1, 1e4, 241) U {t*}; S_t built with t in place of t*; S* per t by
+#        the analytic c* rule on the train rays (Gate 3c analytic_cstar); train and test medians from the analytic first
+#        crossing. Not used in any criterion.
+#   (d6) item 2 sigma and grids as Gate 3c (c7): random rays sigma = 3e-8 on the 1000-point Gate 2 grid (Gate 3c
+#        gain_grid_*.npz); noise family sigma = 0 on the 4000-point family grid (Gate 3c gain_family.npz). Each condition
+#        gives its first crossing by the Gate 3 grid rule (below the grid -> s_lo; no crossing -> +inf); s_pred is the
+#        larger of the two (so +inf if either never crosses). Binding: (i) where s_i > s_ii, (ii) where s_ii > s_i, ties
+#        (equal, including both +inf or both below the grid) counted separately.
+#   (d7) item-2 criterion: "noise family" = the 48 rays with eps in {1e-6, 1e-4, 1e-2}, 90 deg included, as Gate 3c
+#        (c10, c11); family median = median |ln| over the 48; eps trend = median over the 16 (angle, draw) pairs of
+#        e(1e-6) - e(1e-2) (signed), as Gate 3c (c10); "trend <= 0.05" read as |trend| <= 0.05. Holds iff random test
+#        median <= 0.05 AND family median <= 0.05 AND |trend| <= 0.05; otherwise "does not hold", failing parts named.
+#        The family without the 90 deg rays is reported as well (descriptive).
+#   (d8) item-3 rays: d = (cos t e_a3 + sin t e_a2 + eps r)/sqrt(1 + eps^2) with r the SAME unit a4..a8 vector per
+#        (angle, draw) as the Gate 2 noise family (regenerated from Gate 2's RNG stream and checked against
+#        family_det.npz); eps = 0.03, 0.1, 0.3, 1, 3; 7 angles x 2 draws = 70 rays, plus 90 deg x 5 eps x 2 draws = 10
+#        rays reported separately. Deterministic s_c exactly as Gate 2 family_det (1000-point dense scan of the fate +
+#        24 bisections, RK4 dt = 0.25, T_det = 8000, A = {E < 5e-7}, B = {E >= 0.29}); the routine is re-run on the 16
+#        Gate 2 rays with eps = 1e-2 as a check (must reproduce their s_c). Rays without a resolved s_c are excluded
+#        from the metric and counted.
+#   (d9) item-3 metric: merged gain (kappa from Gate 3c (b), frozen) on the 4000-point family grid, sigma = 0 (deterministic
+#        s_c, as (d6)); sigma = 3e-8 computed in the same pass and reported. |S| on the same grid.
+#        CRITERION: median |ln| pooled over the 70 rays (90 deg excluded) <= 0.05 -> "holds"; otherwise "does not hold".
+#        Per-eps medians (14 rays each) reported, with the eps values above 0.05 named.
+#   (d10) checks (not criteria): (ii) alone on the random rays must equal Gate 3c item 2 reverse errors, and (ii) alone on
+#        the noise family the Gate 3c family errors with c*_0; item-3 directions and det routine against Gate 2 (d8).
+name: gate3d_mfe
+seed: 20261121
+device: cuda
+
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate2_config: code/configs/gate2_mfe.yaml
+  gate3_run: experiments/20261116_gate3_mfe_v2
+  gate3b_run: experiments/20261116_gate3b_mfe_v1
+  gate3c_run: experiments/20261116_gate3c_mfe_v1
+  gate3_seed: 20261118                                        # ray subset (--frac) and bootstrap resamples as Gate 3
+
+threshold_prediction:
+  bootstrap: 2000
+  n_levels: 1000
+  n_refine: 1000
+
+item0:
+  ode_check: {eps: [1.0e-5, 1.0e-4, 1.0e-3], n_dirs: 5, dt: 0.05}
+
+item1:
+  t_scan: {min: 1.0, max: 1.0e4, n: 241}
+  criterion: {holds_median: 0.05, max_worse_than_3c_c: 0.01}
+
+item2:
+  c_star_0: 7.150683993300665
+  sigma_random: 3.0e-8
+  sigma_family: 0.0
+  family: {eps_used: [1.0e-6, 1.0e-4, 1.0e-2], grid_points: 4000, trend_pair: [1.0e-6, 1.0e-2]}
+  criterion: {random_median: 0.05, family_median: 0.05, eps_trend_abs: 0.05}
+
+item3:
+  eps: [0.03, 0.1, 0.3, 1.0, 3.0]
+  angles_deg: [0.0, 22.5, 45.0, 67.5, 112.5, 135.0, 157.5]
+  separate_angle_deg: 90.0
+  draws: 2
+  grid_points: 4000
+  gain: {T_g: 4000.0, dt: 0.25, sigmas: [0.0, 3.0e-8], sigma_used: 0.0}
+  check_gate2_eps: 1.0e-2
+  criterion: {holds_median: 0.05}
+
+timing:
+  frac: 0.01

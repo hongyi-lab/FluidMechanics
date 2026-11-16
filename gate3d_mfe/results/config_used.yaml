@@ -1,0 +1,77 @@
+name: gate3d_mfe
+seed: 20261121
+device: cuda
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate2_config: code/configs/gate2_mfe.yaml
+  gate3_run: experiments/20261116_gate3_mfe_v2
+  gate3b_run: experiments/20261116_gate3b_mfe_v1
+  gate3c_run: experiments/20261116_gate3c_mfe_v1
+  gate3_seed: 20261118
+threshold_prediction:
+  bootstrap: 2000
+  n_levels: 1000
+  n_refine: 1000
+item0:
+  ode_check:
+    eps:
+    - 1.0e-05
+    - 0.0001
+    - 0.001
+    n_dirs: 5
+    dt: 0.05
+item1:
+  t_scan:
+    min: 1.0
+    max: 1.0e4
+    n: 241
+  criterion:
+    holds_median: 0.05
+    max_worse_than_3c_c: 0.01
+item2:
+  c_star_0: 7.150683993300665
+  sigma_random: 3.0e-08
+  sigma_family: 0.0
+  family:
+    eps_used:
+    - 1.0e-06
+    - 0.0001
+    - 0.01
+    grid_points: 4000
+    trend_pair:
+    - 1.0e-06
+    - 0.01
+  criterion:
+    random_median: 0.05
+    family_median: 0.05
+    eps_trend_abs: 0.05
+item3:
+  eps:
+  - 0.03
+  - 0.1
+  - 0.3
+  - 1.0
+  - 3.0
+  angles_deg:
+  - 0.0
+  - 22.5
+  - 45.0
+  - 67.5
+  - 112.5
+  - 135.0
+  - 157.5
+  separate_angle_deg: 90.0
+  draws: 2
+  grid_points: 4000
+  gain:
+    T_g: 4000.0
+    dt: 0.25
+    sigmas:
+    - 0.0
+    - 3.0e-08
+    sigma_used: 0.0
+  check_gate2_eps: 0.01
+  criterion:
+    holds_median: 0.05
+timing:
+  frac: 0.01
