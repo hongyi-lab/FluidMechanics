@@ -1,6 +1,8 @@
 # Gate 4: full DNS of the MFE flow – solver checks (2026-11-17, overnight, unattended)
 
 **Outcome: Gate 4a item 5 (dt) failed. Following the user's rule ("any Gate 4 failure: stop and report, do not change criteria or method"), the night stopped at Gate 4a.**
+
+**Update (2026-11-18):** after the user's decision of 2026-11-17 07:40, Gate 4b, Gate 5 and Gate 6 were run. See the Gate 4b section below and `../gate5_dns/report_zh.md`.
 - Not run: the pilot, the resolution ladder, Gate 5 and Gate 6.
 - Every other 4a criterion passes. In the nine-mode subspace the DNS reproduces the MFE right-hand side exactly.
 - Full report (Chinese): `report_zh.md`. Run outputs: `results/`.
@@ -40,4 +42,21 @@ This was confirmed by two independent checker agents. Diagnostic figure: `fig_dt
 
 The first 4a run (`results/results_v1.json`) also failed item 3 for a1 and a9. The cause was round-off of the O(1) product U×ω_U. It was fixed by an algebraically identical split form; the criteria were unchanged.
 
-**Awaiting the user's decision on item 5.**
+**User decision (2026-11-17 07:40):** item 5 is recorded as "does not pass" as written; the cause is the criterion itself (E(0) = 1e-3 lies above the edge). It is replaced by 5a/5b/5c (post-hoc). From then on only the solver-correctness criteria stop the run.
+
+## Gate 4b (2026-11-17, unattended)
+
+Full report (Chinese): `../gate5_dns/report_zh.md`, section 1. Run outputs: `results_4b_v1/` and `results_4b_v2/`. Figure: `fig1_gate4b_pilot_ladder.png`.
+
+- **5a (post-hoc; E(0) = 1e-6, dt vs dt/2):** max relative ΔE is 5.3e-8 at 48×24×24 and 5.6e-8 at 64×32×32. Pass.
+- **5b:** the spectral Courant number is recorded every step. Cases above 2.5 are re-run from t = 0 at dt/2, then at dt/4. No NaN in any run.
+- **Pilot (Re 400):** 8 directions (cut by the 45-min guard). E_B = 0.24 (valley at 0.245), r_A = 5e-7, rebound 0/72. The pilot-rule T_det is 2250.
+- **T_det = 8000 (user decision, post-hoc):** v1 (`results_4b_v1/`, T_det 2250) found s_c set by runs still undecided at T_det, caused by slow streak decay. The ladder was re-run as v2 with T_det 8000.
+- **Resolution ladder (v2):**
+  - 48 vs 64: median |Δln s_c| 1.41 → next rung.
+  - 64 vs 96: median 0.0010 → 64×32×32. Per ray the values are [0, 0, 0, 0.002, 0.103, 0.437], so R#13 and W#1 are not converged.
+- **5c:** dt 0.0625 vs 0.03125 gives median 0.0000. Pass (limited by the bisection tolerance 1e-3).
+- **Undecided runs:** 0 at the chosen resolution.
+- **Choice:** Re 400, 64×32×32, dt 0.0625, r_A 5e-7, E_B 0.24, T_det 8000.
+
+Gate 5 and Gate 6 results: `../gate5_dns/README.md`, `../gate6_dns/README.md`.

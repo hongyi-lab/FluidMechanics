@@ -34,6 +34,68 @@
 #   3 of the 4 directions, which become turbulent (E ~ 0.6-0.8) within t ~ 30-100; chaos then amplifies the dt change to
 #   0.27-0.37 for every candidate. 4a is re-run once (v2) for the record. Per the user's rule (any Gate 4 failure: stop and
 #   report, no change of criteria or method) nothing beyond 4a is run.
+#  2026-11-17 ~07:40 user decision on 4a (after the night report):
+#   - item 5 recorded as "does not pass" as written; cause = the criterion itself (E(0) = 1e-3 above the edge; user's error).
+#     Items 1-4 and 6 pass; solver correctness confirmed; 4a NOT re-run.
+#   - item 5 replaced by (POST-HOC, defined after the 4a run; flagged in the report):
+#     5a accuracy: E(0) = 1e-6, the same 4 directions, t <= 200: halving dt changes E(t) by < 1e-4 (relative).
+#     5b stability: dt starts at 0.0625. Spectral Courant number recorded EVERY step. A case whose Courant number exceeds
+#        2.5, or which produces NaN, before absorption is re-run alone with dt/2; the number of such cases is reported.
+#     5c the one that matters: on the 6 rays of 4b, s_c with dt vs dt/2: median |d ln s_c| <= 0.01.
+#   - fix the reporting flaw found by the review: Python max() drops NaN -> NaN counted explicitly.
+#   - rule change: only solver-correctness criteria (4a items 1-4, 6) stop the run; they passed. Parameter-selection checks
+#     (dt, resolution, A/B/T_det) that fail move down the preset ladder and are recorded; stop only when a ladder is used up.
+#   - then unattended: 4b -> Gate 5 -> Gate 6 with gate5_dns.yaml / gate6_dns.yaml unchanged; report, push, stop.
+#  2026-11-17 ~10:55 user decision (after the first ladder, experiments/20261117_gate4b_dns_v1; POST-HOC, flagged):
+#   finding: at 64x32x32 the s_c of 5 of 6 check rays was set by runs still undecided at T_det = 2250 (the slow decay of the
+#   pure cos(gamma z) streak, energy rate 2 gamma^2/Re = 0.005, needs ~T_det to reach r_A = 5e-7): a T_det contour, not a
+#   transition. 48x24x24 also under-resolved (median |d ln s_c| 48 vs 64 = 0.59).
+#   decision: T_det = 8000 (the Gate 2 MFE value, which had 0% undecided); the pilot's E_B = 0.24 and r_A = 5e-7 are kept
+#   (copied from v1, not re-run); the resolution ladder is re-run from 48x24x24 at T_det = 8000; added check: the s_c searches
+#   at the chosen resolution (dt and dt/2) have 0 undecided runs (reported for every search; a failure stops: no further
+#   T_det rung exists). Implementation (no effect on results): the s_c searches of the ladder rungs may run concurrently as
+#   separate processes (--sc-grid/--sc-dt), each writing sc_<key>.json; the driver reads them.
+#  2026-11-17 ~11:05 user rule (applies to Gate 5/6; applied to the re-run 4b ladder as well, for consistency): undecided is not a
+#   transition. s_c must be bracketed by a run that reaches A and a run that reaches B (dns.find_sc_det undecided_rule='flag':
+#   if the first non-A coarse fate is undecided, or a bisection midpoint is undecided at T_det = 8000, the ray is flagged
+#   'undecided', counted and reported, and gets no s_c). The 4b zero-undecided check at the chosen resolution stays.
+# Choices for the revised items and 4b written here before any 4b run (not specified by the user; flagged):
+#   (e15) dt ladder (from the preset candidates, starting at 0.0625 as the user said): 0.0625 -> 0.03125. 5a and 5c are
+#         checked at the current rung; failure of either moves to the next rung (5a/5c repeated there); after 0.03125 the
+#         ladder is used up -> stop. dt/2 of 0.03125 = 0.015625 is only the comparison partner.
+#   (e16) order: 5a at 48x24x24 -> pilot (A, B, T_det; Re ladder 400 -> 600 -> 800) -> resolution ladder (s_c at the
+#         current dt) -> 5c at the chosen resolution (the s_c at dt are reused from the ladder) -> if the chosen resolution
+#         is finer than 48x24x24, 5a is repeated there. A dt change in 5c does not re-run the resolution ladder (noted).
+#   (e17) 5b re-run rule, applied to every nonlinear run of Gates 4b and 5 (pilot, rebound check, s_c, second-order check):
+#         Courant number at the state at the start of every step, C = dt * sum_c max|U + u'|_c kmax_c; a case is flagged
+#         when C > 2.5 or E is not finite before its absorption (no absorption in the pilot: the whole run). A flagged case
+#         is stopped at once and re-run alone from t = 0 with dt/2; if the re-run is flagged again, once more with dt/4
+#         (my addition, reported); at dt/4 a flag no longer stops the run, and a NaN there counts as B (reported). Counts
+#         per level are reported for every stage. The linear theory runs (Gate 5 delta, q; Gate 6 y) record C but do not
+#         re-run (their velocity is U + O(s)).
+#   (e18) pilot size and the user's 45 min cap: n_dirs from the e4 formula with the measured time per direction (no
+#         early-stop saving assumed); the pilot runs in chunks of 4 directions (32 trajectories); before each chunk, if
+#         elapsed + mean chunk time > 45 min, the remaining chunks are dropped (n_dirs reduced, reported). Exact speed-up:
+#         a trajectory with E < E_dead = 1e-12 is stopped and its remaining samples are counted in the laminar histogram
+#         bin (E < 0.01) - exact for the histogram, the fates and T_det, because from E < 1e-12 even a transient energy
+#         growth of 1e4 stays below 1e-8 (no rebound possible). The rebound runs use the same E_dead.
+#   (e19) 5a reuses the 4a.5 directions (derive_seed(seed, "dt")) at E(0) = 1e-6; outputs every 1.0; relative change
+#         max over 0 <= t <= 200 per direction; NaN counted explicitly (a NaN fails).
+#   (e20) 5c: median over the 6 rays of |ln s_c(dt/2) - ln s_c(dt)|; a ray unresolved at either dt counts as +inf.
+#         Resolution ladder: same, coarse vs fine at the same dt.
+#         (amended ~08:15, before the real 4b run started at 08:16, after the smoke test: a ray unresolved at BOTH settings with the same
+#         status (both no crossing, or both below the grid) counts as agreement, |d| = 0; unresolved at one only: +inf.)
+#   (e22) (written 08:40, during the pilot, before the resolution ladder ran; after an independent code review) the 60-min
+#         ladder cap (convergence.time_cap_min) is reported (estimate before each rung, actual minutes); it does not stop the
+#         ladder (user rule of 07:40: parameter checks walk the preset ladder until it is used up). The e4 stage-wide rule
+#         "Courant > 2.0 -> halve dt for later stages" is superseded by the user's 5b (per-case re-run at 2.5) and not applied.
+#         Rung loop (review fix): at each dt rung 5c (chosen resolution) and 5a (48x24x24 and the chosen resolution, at the
+#         chosen Re) are checked; failure of either -> next rung. The pilot and the resolution ladder run once, at the first dt
+#         rung that passes 5a (base_dt_index), also on a restart. "1% timing" for the s_c searches = a 40-step benchmark of the
+#         per-case-step time extrapolated to an upper bound (every run to T_det); for the pilot, the same benchmark x 8 x
+#         T_pilot/dt per direction.
+#   (e21) valley search as the Gate 2 pre-study code: valley = argmin of the smoothed density on [laminar mode, turbulent
+#         mode] (endpoints included); smoothing np.convolve(mode='same').
 # Choices made here that the user did not specify (flagged in the report; fixed before the first run):
 #   (e1) formulation: perturbation u' = u - U is evolved, du'/dt = P[(U+u') x (w_U+w')] + nu lap u' (uses nu lap U + F = 0
 #        and P[U x w_U] = 0 exactly); rotational form, products on the grid from 2/3-truncated fields (|m| < N/3 per axis),
@@ -117,3 +179,13 @@ pilot:
 s_c: {n_coarse: 12, rel_tol: 1.0e-3}
 convergence: {tol: 0.02, time_cap_min: 60}
 timing: {frac: 0.01}
+
+# ---- revised item 5 and 4b settings (2026-11-17, post-hoc for item 5; see history) ----
+revised_5:
+  dt_ladder: [0.0625, 0.03125]
+  5a: {E0: 1.0e-6, t_max: 200.0, n_dirs: 4, tol: 1.0e-4}
+  5b: {courant_limit: 2.5, max_rerun_levels: 2}
+  5c: {tol: 0.01}
+pilot_runtime: {chunk_dirs: 4, E_dead: 1.0e-12, cap_min: 45}
+T_det_override: 8000.0          # user decision 2026-11-17 ~10:55 (post-hoc); null = pilot rule e10
+zero_undecided_check: true      # added with the override: s_c searches at the chosen resolution, 0 undecided runs

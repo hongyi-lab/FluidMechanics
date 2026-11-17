@@ -1,0 +1,15 @@
+name: gate6_dns
+seed: 20261119
+device: cuda
+gain:
+  T_end: 1500.0
+  output_every: 1.0
+  n_amp: 13
+  ln_half_width: 0.9
+criteria:
+  composite:
+    holds_median: 0.1
+    fails_median: 0.25
+  slope_ratio:
+  - 0.7
+  - 1.3

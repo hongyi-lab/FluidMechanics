@@ -1,0 +1,49 @@
+name: gate5_dns
+seed: 20261118
+device: cuda
+rays:
+  F:
+    eps:
+    - 1.0e-06
+    - 0.0001
+    - 0.01
+    - 0.03
+    - 0.1
+    - 0.3
+    - 1.0
+    - 3.0
+    draws: 2
+    angle_deg: 0.0
+  R:
+    n: 24
+    n_cal: 12
+  W:
+    n: 12
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate2_config: code/configs/gate2_mfe.yaml
+  gate3d_run: experiments/20261116_gate3d_mfe_v1
+  gate3c_run: experiments/20261116_gate3c_mfe_v1
+theory:
+  T_end: 1500.0
+  T_S: 800.0
+  output_every: 1.0
+  s_grid_points: 1000
+second_order_check:
+  s:
+  - 1.0e-05
+  - 0.0001
+  - 0.001
+  T: 200.0
+  every: 50.0
+criteria:
+  shape:
+    collinear_tol: 0.05
+    slope_ratio_max: 0.5
+  first_gate:
+    holds_median: 0.1
+    fails_median: 0.25
+    energy_ratio_max: 0.5
+mfe_constants:
+  S_star: 0.12333267939033767
+  c_star_0: 7.150683993300665

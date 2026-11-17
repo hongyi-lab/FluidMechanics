@@ -1,0 +1,410 @@
+{
+  "log": [
+    "08:16:06 --- 5a_48x24x24_dt0.0625",
+    "08:16:46 5a_48x24x24_dt0.0625: max rel dE 5.3163214053242314e-08 (tol 0.0001), NaN 0, pass True",
+    "08:17:22 item-1 measures on stable runs (descriptive): {\"E0=1e-06\": {\"sym_residual_max\": 2.7755575615628914e-17, \"sym_residual_n_nan\": 0, \"div_max\": 8.201734317481469e-16, \"div_n_nan\": 0, \"courant_max_every_step\": 0.6801197787853959, \"courant_n_nan\": 0, \"E_final\": [0.00016210768750525223, 0.000911015419645243, 1.0393343703180086e-07, 0.0001902523873162775]}, \"E0=0.001\": {\"sym_residual_max\": 3.9343528435153985e-15, \"sym_residual_n_nan\": 0, \"div_max\": 1.3061578032199488e-14, \"div_n_nan\": 0, \"courant_max_every_step\": 2.5471602793097214, \"courant_n_nan\": 0, \"E_final\": [0.585175920462017, 0.5859091274118424, 9.314492812694078e-05, 0.8791837488112414]}}",
+    "08:17:22 --- pilot_Re400_dt0.0625",
+    "08:17:22   pilot Re400: 1% timing 0.512 ms/case-step; 197 s per direction; n_dirs 16; estimate 52.4 min (no early-stop saving)",
+    "08:27:56     pilot Re400 chunk 0: re-running 9 flagged cases with dt = 0.03125",
+    "08:38:28   pilot Re400 chunk 0: 1266 s; re-runs dt/2 9, dt/4 0; NaN at level 0 0",
+    "08:46:57     pilot Re400 chunk 1: re-running 12 flagged cases with dt = 0.03125",
+    "08:57:12   pilot Re400 chunk 1: 1124 s; re-runs dt/2 12, dt/4 0; NaN at level 0 0",
+    "08:57:12   pilot Re400: cap guard: elapsed 39.8 min + chunk 19.9 min > 45 min; chunks 2.. dropped",
+    "09:25:27   pilot Re400: rebound check r_A = 5e-07: 0 of 72 reach B",
+    "09:25:27 pilot_Re400_dt0.0625: decision ok; valley 0.245 (turb/valley 609.54, above 0.813), E_B 0.24, r_A 5e-07, T_det 2250.0; 39.8 min, dirs 8",
+    "09:25:27 --- s_c on the 6 check rays at 48x24x24, dt 0.0625 (ladder)",
+    "09:25:27     1% timing: 0.533 ms/case-step (batch 12); upper bound 46 min (every run to T_det)",
+    "09:25:42 --- s_c on the 6 check rays at 48x24x24, dt 0.0625 (ladder)",
+    "09:25:43     1% timing: 0.541 ms/case-step (batch 12); upper bound 47 min (every run to T_det)",
+    "09:29:30     s_c coarse: re-running 1 flagged cases with dt = 0.03125",
+    "09:29:35     s_c: coarse 6x12 in 232 s; undecided 0; no crossing 0; below grid 0; re-runs dt/2 1",
+    "09:31:20     s_c: bisection round 1: 6 rays, max rel width 4.06e-01, 337 s",
+    "09:33:55     s_c: bisection round 2: 6 rays, max rel width 1.69e-01, 492 s",
+    "09:36:17     s_c: bisection round 3: 6 rays, max rel width 8.44e-02, 634 s",
+    "09:38:54     s_c: bisection round 4: 6 rays, max rel width 4.22e-02, 791 s",
+    "09:41:08     s_c: bisection round 5: 6 rays, max rel width 2.07e-02, 926 s",
+    "09:43:05     s_c: bisection round 6: 6 rays, max rel width 1.02e-02, 1042 s",
+    "09:45:43     s_c: bisection round 7: 6 rays, max rel width 5.09e-03, 1201 s",
+    "09:47:59     s_c: bisection round 8: 6 rays, max rel width 2.54e-03, 1337 s",
+    "09:50:15     s_c: bisection round 9: 6 rays, max rel width 1.27e-03, 1473 s",
+    "09:51:15     s_c: bisection round 10: 5 rays, max rel width 6.33e-04, 1532 s",
+    "09:51:15     s_c 48x24x24 dt 0.0625: [0.001246, 0.000887, 0.001017, 0.017319, 0.010191, 0.011335] (25.5 min)",
+    "09:51:15 --- s_c on the 6 check rays at 64x32x32, dt 0.0625 (ladder)",
+    "09:51:16     1% timing: 1.164 ms/case-step (batch 12); upper bound 101 min (every run to T_det)",
+    "10:07:58     s_c coarse: re-running 6 flagged cases with dt = 0.03125",
+    "10:08:05     s_c: coarse 6x12 in 1010 s; undecided 7; no crossing 0; below grid 0; re-runs dt/2 6",
+    "10:11:11     s_c bisect: re-running 1 flagged cases with dt = 0.03125",
+    "10:11:17     s_c: bisection round 1: 6 rays, max rel width 4.06e-01, 1202 s",
+    "10:14:35     s_c: bisection round 2: 6 rays, max rel width 2.03e-01, 1400 s",
+    "10:18:39     s_c: bisection round 3: 6 rays, max rel width 9.22e-02, 1644 s",
+    "10:22:19     s_c bisect: re-running 1 flagged cases with dt = 0.03125",
+    "10:22:39     s_c: bisection round 4: 6 rays, max rel width 4.61e-02, 1884 s",
+    "10:26:47     s_c: bisection round 5: 6 rays, max rel width 2.30e-02, 2132 s",
+    "10:30:50     s_c: bisection round 6: 6 rays, max rel width 1.14e-02, 2374 s",
+    "10:34:28     s_c: bisection round 7: 6 rays, max rel width 5.66e-03, 2593 s",
+    "10:38:09     s_c: bisection round 8: 6 rays, max rel width 2.83e-03, 2813 s",
+    "10:41:48     s_c bisect: re-running 1 flagged cases with dt = 0.03125",
+    "10:41:57     s_c: bisection round 9: 6 rays, max rel width 1.42e-03, 3042 s",
+    "10:44:52     s_c: bisection round 10: 5 rays, max rel width 7.07e-04, 3216 s",
+    "10:44:52     s_c 64x32x32 dt 0.0625: [0.001438, 0.001438, 0.002033, 0.09245, 0.022786, 0.015761] (53.6 min)",
+    "10:44:52 ladder_48x24x24_vs_64x32x32_dt0.0625: median |d ln s_c| 0.5876 (tol 0.02) -> next rung",
+    "10:44:52     ladder time so far 79 min > cap 60 min: reported, the ladder continues (e22)",
+    "10:44:52 --- s_c on the 6 check rays at 96x48x48, dt 0.0625 (ladder)",
+    "10:44:54     1% timing: 4.368 ms/case-step (batch 12); upper bound 377 min (every run to T_det)"
+  ],
+  "5a_48x24x24_dt0.0625": {
+    "dt": 0.0625,
+    "dt_half": 0.03125,
+    "E0": 1e-06,
+    "directions": [
+      [
+        -0.542630087420482,
+        0.6253518082280308,
+        0.220968307894449,
+        0.2925458623072893,
+        0.32906880478980116,
+        -0.03054526662675223,
+        -0.1124865036278451,
+        0.02359523052196091,
+        0.24010079034487006
+      ],
+      [
+        0.2534656994600102,
+        0.20153398305592465,
+        0.5136324038705122,
+        0.7024912963112555,
+        0.24370277062385468,
+        0.2291276726830523,
+        -0.0358382349594773,
+        -0.1326433740338348,
+        0.08401041966927127
+      ],
+      [
+        0.08847780522453415,
+        0.05492965890975583,
+        0.006244102867036534,
+        0.5205371805263199,
+        0.14749704321001775,
+        0.7573518415588939,
+        -0.24717804915652183,
+        -0.050269637818235145,
+        -0.24330074246548514
+      ],
+      [
+        0.07393690493246327,
+        -0.12543839100930454,
+        0.23132772064349535,
+        -0.37775605862337486,
+        -0.10745002959871948,
+        -0.3313606984135108,
+        0.17627550505438722,
+        -0.35996124239964344,
+        -0.7075279633762143
+      ]
+    ],
+    "courant_max_dt0.0625": 0.6801197787853959,
+    "n_nan_dt0.0625": 0,
+    "courant_max_dt0.03125": 0.3400602224268929,
+    "n_nan_dt0.03125": 0,
+    "max_rel_dE_per_direction": [
+      9.897687114346354e-10,
+      2.615578864606505e-10,
+      5.3163214053242314e-08,
+      1.4518870550261909e-09
+    ],
+    "n_nan_samples": 0,
+    "max_rel_dE": 5.3163214053242314e-08,
+    "pass": true,
+    "E_range": [
+      2.3341238455517286e-08,
+      0.0009110541505834302
+    ]
+  },
+  "dt_index": 0,
+  "item1_stable_dt": {
+    "dt": 0.0625,
+    "E0=1e-06": {
+      "sym_residual_max": 2.7755575615628914e-17,
+      "sym_residual_n_nan": 0,
+      "div_max": 8.201734317481469e-16,
+      "div_n_nan": 0,
+      "courant_max_every_step": 0.6801197787853959,
+      "courant_n_nan": 0,
+      "E_final": [
+        0.00016210768750525223,
+        0.000911015419645243,
+        1.0393343703180086e-07,
+        0.0001902523873162775
+      ]
+    },
+    "E0=0.001": {
+      "sym_residual_max": 3.9343528435153985e-15,
+      "sym_residual_n_nan": 0,
+      "div_max": 1.3061578032199488e-14,
+      "div_n_nan": 0,
+      "courant_max_every_step": 2.5471602793097214,
+      "courant_n_nan": 0,
+      "E_final": [
+        0.585175920462017,
+        0.5859091274118424,
+        9.314492812694078e-05,
+        0.8791837488112414
+      ]
+    }
+  },
+  "pilot_Re400_dt0.0625": {
+    "Re": 400.0,
+    "grid": [
+      48,
+      24,
+      24
+    ],
+    "dt": 0.0625,
+    "n_dirs_rule": 16,
+    "n_dirs_used": 8,
+    "dropped_chunks": [
+      2,
+      3
+    ],
+    "pilot_minutes": 39.8334458510081,
+    "timing": {
+      "per_case_step_s": 0.0005118893459439278,
+      "time_per_direction_s_no_early_stop": 196.56550884246826,
+      "estimate_min_no_early_stop": 52.4174690246582
+    },
+    "E0": [
+      1e-06,
+      6.059627021136012e-06,
+      3.67190796352817e-05,
+      0.0002225039271491978,
+      0.0013482908092621578,
+      0.008170139420154312,
+      0.049507997596815526,
+      0.3
+    ],
+    "rerun_counts": {
+      "n_cases": 64,
+      "n_rerun_dt_half": 21,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.815039958857672
+    },
+    "histogram": {
+      "laminar_mode_E": 0.025,
+      "turbulent_mode_E": 0.6950000000000001,
+      "valley_E": 0.245,
+      "turbulent_over_valley": 609.5384615384615,
+      "frac_samples_above_valley": 0.8130829926304003,
+      "clear_valley": true,
+      "E_B": 0.24,
+      "n_samples": 192005.0,
+      "n_dead_samples_in_laminar_bin": 0,
+      "n_nan_samples_excluded": 0,
+      "n_samples_out_of_range": 59
+    },
+    "E_c_per_direction": {
+      "0": 6.059627021136012e-06,
+      "1": 3.67190796352817e-05,
+      "2": 6.059627021136012e-06,
+      "3": 3.67190796352817e-05,
+      "4": 6.059627021136012e-06,
+      "5": 3.67190796352817e-05,
+      "6": 6.059627021136012e-06,
+      "7": 6.059627021136012e-06
+    },
+    "n_dirs_never_B": 0,
+    "min_E_c": 6.059627021136012e-06,
+    "rebound_checks": [
+      {
+        "r_A": 5e-07,
+        "n_runs": 72,
+        "n_reach_B": 0,
+        "n_undecided_at_T_not_dead": 68,
+        "rerun_counts": {
+          "n_cases": 72,
+          "flagged_per_level": [
+            0
+          ],
+          "nan_per_level": [
+            0
+          ],
+          "courant_max_level0": 0.6823261353831763,
+          "n_rerun_dt_half": 0,
+          "n_rerun_dt_quarter": 0,
+          "n_nan_final_counted_B": 0,
+          "n_flag_at_last_level": 0
+        }
+      }
+    ],
+    "r_A": 5e-07,
+    "undecided_fraction_by_T": {
+      "250": 0.1875,
+      "500": 0.171875,
+      "750": 0.171875,
+      "1000": 0.171875,
+      "1250": 0.171875,
+      "1500": 0.140625,
+      "1750": 0.078125,
+      "2000": 0.015625,
+      "2250": 0.0,
+      "2500": 0.0,
+      "2750": 0.0,
+      "3000": 0.0
+    },
+    "T_det": 2250.0,
+    "T_det_undecided_fraction": 0.0,
+    "decision": "ok"
+  },
+  "sets": {
+    "Re": 400.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "T_det": 2250.0
+  },
+  "base_dt_index": 0,
+  "sc_48x24x24_dt0.0625": {
+    "s_c": [
+      0.0012461741759782707,
+      0.0008874503479416322,
+      0.0010170284625256251,
+      0.017318526520766674,
+      0.010191345838725172,
+      0.011335104597490186
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 131,
+    "n_undecided_runs": 5,
+    "minutes": 25.539979342619578,
+    "rerun_counts": {
+      "n_cases": 131,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.5049774275009136,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        1,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 0.5414361755053202
+  },
+  "sc_64x32x32_dt0.0625": {
+    "s_c": [
+      0.0014375645677730487,
+      0.0014375645677730487,
+      0.002033302879926129,
+      0.09245041005240254,
+      0.02278586585299238,
+      0.015761129960734477
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 131,
+    "n_undecided_runs": 31,
+    "minutes": 53.605713287989296,
+    "rerun_counts": {
+      "n_cases": 131,
+      "n_rerun_dt_half": 9,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.777676272380898,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        9,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 1.1636003851890564
+  },
+  "ladder_48x24x24_vs_64x32x32_dt0.0625": {
+    "median_abs_dln_sc": 0.587564758229508,
+    "per_ray": [
+      0.1428722106919631,
+      0.4823531145711897,
+      0.6927764018878264,
+      1.6748955675631896,
+      0.8046015120315384,
+      0.32964226812550734
+    ],
+    "tol": 0.02,
+    "pass": false
+  }
+}

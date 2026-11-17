@@ -1,0 +1,80 @@
+# Gate 5 (DNS): ground truth s_c on three ray sets, the lift-up streak quantity S(s), and the first gate S(s) >= S*.
+# Written 2026-11-17 before any Gate 4/5 run (user task of 00:10; criteria lines 0.10 / 0.25 are the user's).
+# Starts only if every Gate 4a criterion passed and Gate 4b fixed A, B, T_det and the resolution.
+#
+# User spec:
+#   rays (unit vectors in the nine-mode subspace):
+#     F (vortex + seed): the theta = 0 rays of Gate 2 / 3d, eps = 1e-6, 1e-4, 1e-2, 0.03, 0.1, 0.3, 1, 3, two draws (16).
+#     R (random): the first 24 rays of the Gate 2 test set; first 12 calibrate, last 12 test.
+#     W (pure wave): 12 new random directions in span(a4..a8).
+#   priority: F truth -> R, W truth -> theory quantities.
+#   theory (second order, linearised about the laminar state; P0 = x average; streak = kx = 0, kz != 0 streamwise velocity):
+#     delta(t): linearised NS, delta(0) = sum d_i u_i (unit amplitude); q(t): dq/dt = L0 q - P0[(delta.grad) delta], q(0) = 0.
+#     predicted mean-flow perturbation at amplitude s: s P0 delta + s^2 q; check: (DNS kx = 0 perturbation - prediction)/s^2
+#     -> 0 linearly in s for s = 1e-5, 1e-4, 1e-3.
+#     A(t; s) = ||streak part of (s P0 delta + s^2 q)|| / ||U||; S(s) = max_{0 <= t <= 800} A(t; s).
+#     first gate: S(s) >= S*, S* fitted on R first 12 only, rule as Gate 3.
+#   CRITERIA (fixed now):
+#     5.1 shape (F, truth only, yes/no each): (a) A3_c = s_c d_3 decreases monotonically for eps = 1e-6 -> 1e-2;
+#         (b) the three points are collinear in ln A3_c vs ln eps: midpoint off the chord by <= 0.05;
+#         (c) |slope| for eps 0.1 -> 1 < half of |slope| for eps 1e-6 -> 1e-2.
+#     5.2 first gate on the test rays (R last 12 + W 12): median |ln(s_pred/s_c)| <= 0.10 AND < half of the energy-only
+#         control -> holds; >= 0.25 -> does not hold; otherwise partly holds. R and W reported separately (W is the key).
+#         Controls (calibrated on R first 12): energy only; |a3| only; first order only (q dropped).
+#         Descriptive: MFE formula and constants (S* = 0.1233, c*_0 = 7.151) applied to the DNS s_c.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (f1) F directions rebuilt from Gate 2's RNG stream exactly as Gate 3d (d8), angle 0: d = (e_a3 + eps r_k)/sqrt(1+eps^2).
+#        R = the first 24 indices (in index order) with split == 2 in experiments/20261116_gate2_mfe_v1/rays.npz.
+#        W: r ~ N(0, I_5) in a4..a8, normalised, from derive_seed(seed, "W", i).
+#   (f2) MFE s_c for the table: Gate 2 scan (R), Gate 2 family_det / Gate 3d item3_det (F), computed here with the Gate 2
+#        routine (W).
+#   (f3) 5.1 evaluated per draw; an item is "yes" only if it holds for both draws (each draw and the draw-mean of ln A3_c
+#        reported). (b): |ln A3_c(1e-4) - (ln A3_c(1e-6) + ln A3_c(1e-2))/2| <= 0.05 (equal spacing in ln eps).
+#        (c): |ln A3_c(1) - ln A3_c(0.1)| / ln 10 < 0.5 |ln A3_c(1e-2) - ln A3_c(1e-6)| / ln 1e4.
+#        A ray without a resolved s_c makes the items it enters "no (unresolved)".
+#   (f4) theory runs at the Gate 4 resolution and dt; delta, q to t = 1500 (Gate 6 needs it); outputs every 1.0 time unit
+#        (A(t; s) max over the output times 0 .. 800). A(t; s)^2 = s^2 <a,a> + 2 s^3 <a,b> + s^4 <b,b>, a = streak(P0 delta),
+#        b = streak(q), norms as Gate 4 (e2) with ||U|| = 1.
+#   (f5) threshold rule: S(s) tabulated on the Gate 2-style grid s = sqrt(geomspace(r_A, E_B, 1000)); fit_cstar on the 12
+#        calibration rays (both sides allowed as Gate 3); test errors by the same grid rule. Controls: E = s^2 (energy only),
+#        s |d_3| (|a3| only; no crossing on W rays = +inf), S1(s) = s max_t sqrt(<a,a>) (first order only).
+#        "Energy-only control" in 5.2 = its median on the same 24 test rays.
+#   (f6) second-order check: 3 rays (F eps=1e-2 d0, R #13, W #1), s = 1e-5, 1e-4, 1e-3, full DNS to t = 200, kx = 0
+#        perturbation vs prediction at t = 0, 50, 100, 150, 200: max norm of the difference / s^2; "linear in s" reported
+#        as the ratio between successive s (expected about 10).
+#   (f7) MFE-constant prediction (descriptive): |S_MFE| = 0.1233 with the Gate 3d formula (t* = 103.5) along each ray;
+#        merged gain >= 7.151 (Gate 3c definition, MFE); composite max; errors against the DNS s_c.
+#   2026-11-17 ~07:50 (user: continue 4b -> 5 -> 6 unattended; criteria of this file unchanged). Implementation notes written
+#   before the first Gate 5 run (not criteria):
+#   (f8) Re, resolution, dt, r_A, E_B, T_det are read from the Gate 4b choice.json; every nonlinear run follows the Gate 4 5b
+#        re-run rule (gate4_dns.yaml e17) [the second-order check (s <= 1e-3) records its max Courant number; laminar-like];
+#        the linear theory runs do not re-run; delta, q are advected by U (C = laminar value), Gate 6 records C of M.
+#   (f9) rays whose DNS s_c is unresolved (no crossing below E_B on the coarse grid, or first coarse point already not A) are
+#        excluded from the calibration / test medians and listed with their prediction (not scored); 5.1 as (f3).
+#   (f10) the per-ray table carries the DNS s_c, the MFE s_c, their ratio, S at the edge and the signed ln error of each
+#        coordinate; the MFE-constant block (f7) uses sigma = 0 and the Gate 3d item-3 gain settings (T_g 4000, dt 0.25).
+#   08:40 review fixes (no criterion change): f6 expected ratio is s_{i+1}/s_i = 10 (was written inverted in the code);
+#        f7 reads the Gate 3d S side from item1.S.side; the per-ray table also lists ln s_pred for every ray (f9).
+#  2026-11-17 ~11:05 user rule (user: 'Gate 5/6 也照此执行'): undecided is not a
+#   transition. s_c must be bracketed by a run that reaches A and a run that reaches B (dns.find_sc_det undecided_rule='flag':
+#   if the first non-A coarse fate is undecided, or a bisection midpoint is undecided at T_det = 8000, the ray is flagged
+#   'undecided', counted and reported, and gets no s_c). The 4b zero-undecided check at the chosen resolution stays.
+name: gate5_dns
+seed: 20261118
+device: cuda
+rays:
+  F: {eps: [1.0e-6, 1.0e-4, 1.0e-2, 0.03, 0.1, 0.3, 1.0, 3.0], draws: 2, angle_deg: 0.0}
+  R: {n: 24, n_cal: 12}
+  W: {n: 12}
+data:
+  gate2_run: experiments/20261116_gate2_mfe_v1
+  gate2_config: code/configs/gate2_mfe.yaml
+  gate3d_run: experiments/20261116_gate3d_mfe_v1
+  gate3c_run: experiments/20261116_gate3c_mfe_v1
+theory: {T_end: 1500.0, T_S: 800.0, output_every: 1.0, s_grid_points: 1000}
+second_order_check: {s: [1.0e-5, 1.0e-4, 1.0e-3], T: 200.0, every: 50.0}
+criteria:
+  shape: {collinear_tol: 0.05, slope_ratio_max: 0.5}
+  first_gate: {holds_median: 0.10, fails_median: 0.25, energy_ratio_max: 0.5}
+mfe_constants: {S_star: 0.12333267939033767, c_star_0: 7.150683993300665}

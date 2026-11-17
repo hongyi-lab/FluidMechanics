@@ -28,6 +28,20 @@ def log(*a):
     print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 
+class NanMax:
+    """running max that counts NaN explicitly instead of dropping it (fix of 2026-11-17: Python max() drops NaN)."""
+
+    def __init__(self):
+        self.v, self.n_nan = 0.0, 0
+
+    def add(self, x):
+        x = np.atleast_1d(np.asarray(x, dtype=np.float64))
+        self.n_nan += int(np.sum(np.isnan(x)))
+        if np.isfinite(x).any() or np.isinf(x).any():
+            self.v = max(self.v, float(np.max(x[~np.isnan(x)])))
+        return self
+
+
 def make_grid(cfg, N, Re=None):
     S = cfg["system"]
     g = Grid(*N, Re=Re or S["Re"], Lx=S["Lx_over_pi"] * math.pi, Lz=S["Lz_over_pi"] * math.pi, Ly=S["Ly_ext"], device=cfg["device"])
@@ -143,19 +157,19 @@ def stage_4a(cfg, run, res, save):
         n = int(round(T5 / dt_))
         per = int(round(1.0 / dt_))
         Es = [g.energy(u).cpu().numpy()]
-        smax, dmax, cmax = 0.0, 0.0, 0.0
+        smax, dmax, cmax = NanMax(), NanMax(), NanMax()
         E1, E2 = g.lap_factor(dt_), g.lap_factor(0.5 * dt_)
         for k in range(1, n + 1):
             (un,) = lawson_rk4(g, (u,), lambda s_: (g.nl_full(s_[0]),), dt_, E1, E2)
             un = un * g.mask
             if sym_res and k % per == 0:
-                smax = max(smax, float(g.sym_residual(un).max()))
+                smax.add(g.sym_residual(un).cpu().numpy())
             u = g.symmetrize(un)
             if k % per == 0:
                 Es.append(g.energy(u).cpu().numpy())
                 if k % (10 * per) == 0:
-                    dmax = max(dmax, float(g.max_div(u).max()))
-                    cmax = max(cmax, float(g.courant(u, dt_).max()))
+                    dmax.add(g.max_div(u).cpu().numpy())
+                    cmax.add(g.courant(u, dt_).cpu().numpy())
         return np.array(Es), smax, dmax, cmax, u
     cand = [float(x) for x in D5["candidates"]]
     dt_rows = []
@@ -168,13 +182,18 @@ def stage_4a(cfg, run, res, save):
             Eref[c_ / 2] = run_E(c_ / 2)
         Ea, Eb = Eref[c_][0], Eref[c_ / 2][0]
         relE = float(np.max(np.abs(Ea / Eb - 1)))
-        dt_rows.append({"dt": c_, "max_rel_dE_vs_half": relE, "courant_max": Eref[c_][3]})
-        log(f"    dt {c_}: max rel dE {relE:.2e}, Courant {Eref[c_][3]:.3f}")
-        if relE < float(D5["tol"]):
+        with np.errstate(invalid="ignore", divide="ignore"):
+            n_nan_rel = int(np.sum(~np.isfinite(np.abs(Ea / Eb - 1))))
+        dt_rows.append({"dt": c_, "max_rel_dE_vs_half": relE, "n_nonfinite_rel_dE": n_nan_rel, "courant_max": Eref[c_][3].v,
+                        "courant_n_nan": Eref[c_][3].n_nan})
+        log(f"    dt {c_}: max rel dE {relE:.2e} (non-finite {n_nan_rel}), Courant {Eref[c_][3].v:.3f} (NaN {Eref[c_][3].n_nan})")
+        if n_nan_rel == 0 and relE < float(D5["tol"]):
             chosen = c_
             break
-    out["5_dt"] = {"rows": dt_rows, "chosen": chosen, "sym_residual_max": Eref[cand[0]][1], "div_max": max(v[2] for v in Eref.values()),
-                   "E_range_t<=200": [float(Eref[cand[0]][0].min()), float(Eref[cand[0]][0].max())]}
+    out["5_dt"] = {"rows": dt_rows, "chosen": chosen, "sym_residual_max": Eref[cand[0]][1].v, "sym_residual_n_nan": Eref[cand[0]][1].n_nan,
+                   "div_max": max(v[2].v for v in Eref.values()), "div_n_nan": int(sum(v[2].n_nan for v in Eref.values())),
+                   "E_range_t<=200": [float(np.nanmin(Eref[cand[0]][0])), float(np.nanmax(Eref[cand[0]][0]))],
+                   "E_n_nan": int(np.sum(np.isnan(Eref[cand[0]][0])))}
     # 6. alone vs in a batch
     Bc = C["batch"]
     dtc = chosen if chosen is not None else cand[-1]
@@ -198,8 +217,8 @@ def stage_4a(cfg, run, res, save):
     # criteria
     crit = {
         "1 laminar max|du/dt| < 1e-12": max(out["1_laminar"]["max_abs_du_dt_perturbation_form"], out["1_laminar"]["max_abs_du_dt_full_form"]) < float(C["laminar_rhs_max"]),
-        "1 max|div u| < 1e-10": max(out["5_dt"]["div_max"], out["4_work"]["max_div_random_fields"]) < float(C["div_max"]),
-        "1 symmetry residual < 1e-12": out["5_dt"]["sym_residual_max"] < float(C["sym_residual_max"]),
+        "1 max|div u| < 1e-10": out["5_dt"]["div_n_nan"] == 0 and max(out["5_dt"]["div_max"], out["4_work"]["max_div_random_fields"]) < float(C["div_max"]),
+        "1 symmetry residual < 1e-12": out["5_dt"]["sym_residual_n_nan"] == 0 and out["5_dt"]["sym_residual_max"] < float(C["sym_residual_max"]),
         "2 Galerkin max diff < 1e-10": out["2_galerkin"]["max_abs_diff"] < float(C["galerkin"]["tol"]),
         "3 decay rates rel err < 1e-8": max(out["3_linear"]["rel_err_decay"].values()) < float(L["tol_decay"]),
         "3 lift-up streak rel err < 1e-6": max(out["3_linear"]["streak_rel_err"].values()) < float(L["tol_streak"]),

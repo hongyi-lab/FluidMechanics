@@ -26,6 +26,16 @@
 #        eps in {1e-6, 1e-4, 1e-2}; predicted slope = -2 / mean of those six values; measured slope = mean over the two
 #        draws of (ln s_c(1e-2) - ln s_c(1e-6)) / ln(1e4). Ratio = predicted / measured. Each draw also reported.
 #   (g4) "fraction where each condition binds" as Gate 3d (d6): s_i > s_ii -> (i), s_ii > s_i -> (ii), ties separate.
+#   2026-11-17 ~07:50 implementation notes written before the first Gate 6 run (not criteria):
+#   (g5) s_i = the Gate 5 first gate (S* fitted on R first 12, analysis.npz pred_S); rays with unresolved DNS s_c are skipped
+#        (no amplitude grid; counted). Resolution and dt as Gate 5 (gate4b choice). 6.1 excludes the two eps = 1e-6 rays
+#        that define c*. 6.3 runs only after 6.1/6.2 (F first).
+#   08:40 review fixes: c* not finite (an eps = 1e-6 edge unresolved) -> 6.1/6.3 'not evaluable' (no silent clamping);
+#        stage order gain_F -> analysis_F (6.1, 6.2) -> gain_RW -> analysis (6.1-6.3); C of M recorded.
+#  2026-11-17 ~11:05 user rule (user: 'Gate 5/6 也照此执行'): undecided is not a
+#   transition. s_c must be bracketed by a run that reaches A and a run that reaches B (dns.find_sc_det undecided_rule='flag':
+#   if the first non-A coarse fate is undecided, or a bisection midpoint is undecided at T_det = 8000, the ray is flagged
+#   'undecided', counted and reported, and gets no s_c). The 4b zero-undecided check at the chosen resolution stays.
 name: gate6_dns
 seed: 20261119
 device: cuda

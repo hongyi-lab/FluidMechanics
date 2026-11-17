@@ -45,6 +45,21 @@
 #        as the ratio between successive s (expected about 10).
 #   (f7) MFE-constant prediction (descriptive): |S_MFE| = 0.1233 with the Gate 3d formula (t* = 103.5) along each ray;
 #        merged gain >= 7.151 (Gate 3c definition, MFE); composite max; errors against the DNS s_c.
+#   2026-11-17 ~07:50 (user: continue 4b -> 5 -> 6 unattended; criteria of this file unchanged). Implementation notes written
+#   before the first Gate 5 run (not criteria):
+#   (f8) Re, resolution, dt, r_A, E_B, T_det are read from the Gate 4b choice.json; every nonlinear run follows the Gate 4 5b
+#        re-run rule (gate4_dns.yaml e17) [the second-order check (s <= 1e-3) records its max Courant number; laminar-like];
+#        the linear theory runs do not re-run; delta, q are advected by U (C = laminar value), Gate 6 records C of M.
+#   (f9) rays whose DNS s_c is unresolved (no crossing below E_B on the coarse grid, or first coarse point already not A) are
+#        excluded from the calibration / test medians and listed with their prediction (not scored); 5.1 as (f3).
+#   (f10) the per-ray table carries the DNS s_c, the MFE s_c, their ratio, S at the edge and the signed ln error of each
+#        coordinate; the MFE-constant block (f7) uses sigma = 0 and the Gate 3d item-3 gain settings (T_g 4000, dt 0.25).
+#   08:40 review fixes (no criterion change): f6 expected ratio is s_{i+1}/s_i = 10 (was written inverted in the code);
+#        f7 reads the Gate 3d S side from item1.S.side; the per-ray table also lists ln s_pred for every ray (f9).
+#  2026-11-17 ~11:05 user rule (user: 'Gate 5/6 也照此执行'): undecided is not a
+#   transition. s_c must be bracketed by a run that reaches A and a run that reaches B (dns.find_sc_det undecided_rule='flag':
+#   if the first non-A coarse fate is undecided, or a bisection midpoint is undecided at T_det = 8000, the ray is flagged
+#   'undecided', counted and reported, and gets no s_c). The 4b zero-undecided check at the chosen resolution stays.
 name: gate5_dns
 seed: 20261118
 device: cuda

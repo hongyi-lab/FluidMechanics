@@ -1,0 +1,2 @@
+10:59:12 --- s_c on the 6 check rays at 64x32x32, dt 0.0625 (concurrent)
+10:59:13     1% timing: 2.466 ms/case-step (batch 12); upper bound 757 min (every run to T_det)

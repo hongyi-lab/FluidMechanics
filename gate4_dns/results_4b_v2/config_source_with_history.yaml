@@ -1,0 +1,191 @@
+# Gate 4: full DNS of the MFE flow (sinusoidal shear flow, free-slip walls) - solver checks (4a) and pre-study (4b).
+#
+# History
+#  2026-11-17 00:10 user task (unattended night; stop computing by 08:00 Sydney, report, push):
+#   - flow as in NJP 2004: free-slip y = +-1 (v = 0, du/dy = dw/dy = 0), periodic x, z, Lx = 4 pi, Lz = 2 pi, Re = 400,
+#     body force (sqrt2 pi^2/(4 Re)) sin(pi y/2) e_x, laminar U = sqrt2 sin(pi y/2) e_x.
+#   - y extended to period 4 by the mirror about y = 1: (u, v, w)(x, 2-y, z) = (u, -v, w)(x, y, z); Fourier in x, y, z;
+#     pseudo-spectral, 2/3 dealiasing, divergence-free by projection in Fourier space, RK4 with a viscous integrating
+#     factor; hundreds of cases in a batch dimension.
+#   - discrete symmetries shared by the nine modes: checked numerically and enforced every step (incl. the y mirror).
+#     User's derivation (to be checked): shift-reflect (u,v,w)(x,y,z) -> (u,v,-w)(x+Lx/2, y, -z) and shift-rotate
+#     (u,v,w)(x,y,z) -> (-u,-v,w)(-x,-y,z+Lz/2).
+#   - E = ||u - U||^2 / ||U||^2 (volume integral); in the nine-mode subspace E = sum (a_i - a_i^lam)^2.
+#   - initial states u(0) = U + s sum d_i u_i with the NJP modes.
+#   - criteria 4a (all must pass before anything else; any failure: stop and report, no change of criteria or method):
+#     1. laminar fixed point max|du/dt| < 1e-12; max|div u| < 1e-10 throughout; symmetry residual < 1e-12.
+#     2. Galerkin identity: 100 random nine-mode states (amplitude up to 0.3): DNS du/dt projected on the nine modes vs
+#        the MFE right-hand side, max difference < 1e-10.
+#     3. linear analytic solutions (amplitude 1e-8): a1 - 1, a3, a9 decay at beta^2/Re, (beta^2+gamma^2)/Re, 9 beta^2/Re,
+#        relative error < 1e-8 for t <= 100; the pure-u3 lift-up streak has exactly the components cos(gamma z) and
+#        cos(pi y) cos(gamma z) with decay rates gamma^2/Re and (pi^2+gamma^2)/Re (to be checked), each within 1e-6 of
+#        the closed form.
+#     4. the nonlinear term does no work: |<u, N(u)>| / (||u|| ||N||) < 1e-10 on random divergence-free fields.
+#     5. dt: random nine-mode states with E(0) = 1e-3, t <= 200: halving dt changes E(t) by < 1e-4 (relative); use the
+#        largest dt that passes.
+#     6. one case alone and inside a batch agree to 1e-12.
+#   - 4b: pilot (<= 45 min), A/B/T_det rules as the Gate 2 pre-study, Re fallback 600 -> 800, resolution ladder
+#     48x24x24 -> 64x32x32 -> 96x48x48 (x, period-4 y, z) on 6 rays, median |d ln s_c| <= 0.02 (<= 60 min).
+#
+#  2026-11-17 00:23 first 4a run (experiments/20261117_gate4_dns_v1): items 3 (a1 - 1 and a9 decay, rel. err 2e-5 and 8e-4)
+#   and 5 (dt) failed. Item 3: round-off of the O(1) product U x w_U (removed by the projection only to 1e-16 absolute,
+#   large against a 1e-8 perturbation) - an implementation issue; the nonlinear term is now evaluated in the algebraically
+#   identical split form P[trunc(U x w' + u' x (w_U + w'))]. Criteria unchanged. Item 5: E(0) = 1e-3 lies above the edge for
+#   3 of the 4 directions, which become turbulent (E ~ 0.6-0.8) within t ~ 30-100; chaos then amplifies the dt change to
+#   0.27-0.37 for every candidate. 4a is re-run once (v2) for the record. Per the user's rule (any Gate 4 failure: stop and
+#   report, no change of criteria or method) nothing beyond 4a is run.
+#  2026-11-17 ~07:40 user decision on 4a (after the night report):
+#   - item 5 recorded as "does not pass" as written; cause = the criterion itself (E(0) = 1e-3 above the edge; user's error).
+#     Items 1-4 and 6 pass; solver correctness confirmed; 4a NOT re-run.
+#   - item 5 replaced by (POST-HOC, defined after the 4a run; flagged in the report):
+#     5a accuracy: E(0) = 1e-6, the same 4 directions, t <= 200: halving dt changes E(t) by < 1e-4 (relative).
+#     5b stability: dt starts at 0.0625. Spectral Courant number recorded EVERY step. A case whose Courant number exceeds
+#        2.5, or which produces NaN, before absorption is re-run alone with dt/2; the number of such cases is reported.
+#     5c the one that matters: on the 6 rays of 4b, s_c with dt vs dt/2: median |d ln s_c| <= 0.01.
+#   - fix the reporting flaw found by the review: Python max() drops NaN -> NaN counted explicitly.
+#   - rule change: only solver-correctness criteria (4a items 1-4, 6) stop the run; they passed. Parameter-selection checks
+#     (dt, resolution, A/B/T_det) that fail move down the preset ladder and are recorded; stop only when a ladder is used up.
+#   - then unattended: 4b -> Gate 5 -> Gate 6 with gate5_dns.yaml / gate6_dns.yaml unchanged; report, push, stop.
+#  2026-11-17 ~10:55 user decision (after the first ladder, experiments/20261117_gate4b_dns_v1; POST-HOC, flagged):
+#   finding: at 64x32x32 the s_c of 5 of 6 check rays was set by runs still undecided at T_det = 2250 (the slow decay of the
+#   pure cos(gamma z) streak, energy rate 2 gamma^2/Re = 0.005, needs ~T_det to reach r_A = 5e-7): a T_det contour, not a
+#   transition. 48x24x24 also under-resolved (median |d ln s_c| 48 vs 64 = 0.59).
+#   decision: T_det = 8000 (the Gate 2 MFE value, which had 0% undecided); the pilot's E_B = 0.24 and r_A = 5e-7 are kept
+#   (copied from v1, not re-run); the resolution ladder is re-run from 48x24x24 at T_det = 8000; added check: the s_c searches
+#   at the chosen resolution (dt and dt/2) have 0 undecided runs (reported for every search; a failure stops: no further
+#   T_det rung exists). Implementation (no effect on results): the s_c searches of the ladder rungs may run concurrently as
+#   separate processes (--sc-grid/--sc-dt), each writing sc_<key>.json; the driver reads them.
+#  2026-11-17 ~11:05 user rule (applies to Gate 5/6; applied to the re-run 4b ladder as well, for consistency): undecided is not a
+#   transition. s_c must be bracketed by a run that reaches A and a run that reaches B (dns.find_sc_det undecided_rule='flag':
+#   if the first non-A coarse fate is undecided, or a bisection midpoint is undecided at T_det = 8000, the ray is flagged
+#   'undecided', counted and reported, and gets no s_c). The 4b zero-undecided check at the chosen resolution stays.
+# Choices for the revised items and 4b written here before any 4b run (not specified by the user; flagged):
+#   (e15) dt ladder (from the preset candidates, starting at 0.0625 as the user said): 0.0625 -> 0.03125. 5a and 5c are
+#         checked at the current rung; failure of either moves to the next rung (5a/5c repeated there); after 0.03125 the
+#         ladder is used up -> stop. dt/2 of 0.03125 = 0.015625 is only the comparison partner.
+#   (e16) order: 5a at 48x24x24 -> pilot (A, B, T_det; Re ladder 400 -> 600 -> 800) -> resolution ladder (s_c at the
+#         current dt) -> 5c at the chosen resolution (the s_c at dt are reused from the ladder) -> if the chosen resolution
+#         is finer than 48x24x24, 5a is repeated there. A dt change in 5c does not re-run the resolution ladder (noted).
+#   (e17) 5b re-run rule, applied to every nonlinear run of Gates 4b and 5 (pilot, rebound check, s_c, second-order check):
+#         Courant number at the state at the start of every step, C = dt * sum_c max|U + u'|_c kmax_c; a case is flagged
+#         when C > 2.5 or E is not finite before its absorption (no absorption in the pilot: the whole run). A flagged case
+#         is stopped at once and re-run alone from t = 0 with dt/2; if the re-run is flagged again, once more with dt/4
+#         (my addition, reported); at dt/4 a flag no longer stops the run, and a NaN there counts as B (reported). Counts
+#         per level are reported for every stage. The linear theory runs (Gate 5 delta, q; Gate 6 y) record C but do not
+#         re-run (their velocity is U + O(s)).
+#   (e18) pilot size and the user's 45 min cap: n_dirs from the e4 formula with the measured time per direction (no
+#         early-stop saving assumed); the pilot runs in chunks of 4 directions (32 trajectories); before each chunk, if
+#         elapsed + mean chunk time > 45 min, the remaining chunks are dropped (n_dirs reduced, reported). Exact speed-up:
+#         a trajectory with E < E_dead = 1e-12 is stopped and its remaining samples are counted in the laminar histogram
+#         bin (E < 0.01) - exact for the histogram, the fates and T_det, because from E < 1e-12 even a transient energy
+#         growth of 1e4 stays below 1e-8 (no rebound possible). The rebound runs use the same E_dead.
+#   (e19) 5a reuses the 4a.5 directions (derive_seed(seed, "dt")) at E(0) = 1e-6; outputs every 1.0; relative change
+#         max over 0 <= t <= 200 per direction; NaN counted explicitly (a NaN fails).
+#   (e20) 5c: median over the 6 rays of |ln s_c(dt/2) - ln s_c(dt)|; a ray unresolved at either dt counts as +inf.
+#         Resolution ladder: same, coarse vs fine at the same dt.
+#         (amended ~08:15, before the real 4b run started at 08:16, after the smoke test: a ray unresolved at BOTH settings with the same
+#         status (both no crossing, or both below the grid) counts as agreement, |d| = 0; unresolved at one only: +inf.)
+#   (e22) (written 08:40, during the pilot, before the resolution ladder ran; after an independent code review) the 60-min
+#         ladder cap (convergence.time_cap_min) is reported (estimate before each rung, actual minutes); it does not stop the
+#         ladder (user rule of 07:40: parameter checks walk the preset ladder until it is used up). The e4 stage-wide rule
+#         "Courant > 2.0 -> halve dt for later stages" is superseded by the user's 5b (per-case re-run at 2.5) and not applied.
+#         Rung loop (review fix): at each dt rung 5c (chosen resolution) and 5a (48x24x24 and the chosen resolution, at the
+#         chosen Re) are checked; failure of either -> next rung. The pilot and the resolution ladder run once, at the first dt
+#         rung that passes 5a (base_dt_index), also on a restart. "1% timing" for the s_c searches = a 40-step benchmark of the
+#         per-case-step time extrapolated to an upper bound (every run to T_det); for the pilot, the same benchmark x 8 x
+#         T_pilot/dt per direction.
+#   (e21) valley search as the Gate 2 pre-study code: valley = argmin of the smoothed density on [laminar mode, turbulent
+#         mode] (endpoints included); smoothing np.convolve(mode='same').
+# Choices made here that the user did not specify (flagged in the report; fixed before the first run):
+#   (e1) formulation: perturbation u' = u - U is evolved, du'/dt = P[(U+u') x (w_U+w')] + nu lap u' (uses nu lap U + F = 0
+#        and P[U x w_U] = 0 exactly); rotational form, products on the grid from 2/3-truncated fields (|m| < N/3 per axis),
+#        result truncated again; Leray projection P = I - k k^T/|k|^2 (k = 0 component held at 0).
+#   (e2) grid: x_j = j Lx/Nx, y_j = -1 + 4 j/Ny, z_j = j Lz/Nz; real FFT along x; Fourier coefficients normalised so that
+#        f = sum f_k e^{i k (x - x0)}; norms ||f||^2 = (1/V) int |f|^2 = sum_k |f_k|^2 over the extended (mirror) domain,
+#        which equals the physical-domain value.
+#   (e3) time stepping: Lawson RK4 (integrating factor exp(-nu k^2 h)), fixed dt for a whole batch; symmetry projection
+#        (average over the group generated by the shared symmetries and the y mirror) and dealiasing after every step.
+#   (e4) stability guard (not a user criterion): the spectral Courant number dt * max(|u| kx_max + |v| ky_max + |w| kz_max)
+#        is monitored; dt candidates are {0.25, 0.125, 0.0625, 0.03125}; the 4a.5 accuracy rule picks the largest passing
+#        one; if any trajectory of a stage exceeds Courant 2.0 the dt is halved for all later stages (reported).
+#        4a is run at the coarsest rung (48x24x24); if 4b selects a finer rung, 4a.5 is repeated there and its dt is used.
+#        Pilot size: n_dirs = max(16, min(64, floor(30 min / measured time per direction))) from the 1% timing run.
+#   (e5) symmetry residual (4a.1): max over steps of max|g u' - u'| (physical space, before re-symmetrisation) over the
+#        group elements g, on the 4a.5 runs; divergence: max |k . u_hat| in physical units after every output.
+#   (e6) 4a.2: states a = a_lam + s d, d uniform on the unit sphere of R^9, s uniform in (0, 0.3]; full-field DNS du/dt
+#        (incl. the force) projected on u_i by the inner product; compared with rhs_paper (the transcription checked in
+#        Gate 1). 4a.3: one run per perturbation (a1 - 1, a3, a9 each 1e-8), outputs every 1.0 up to t = 100; streak
+#        components = projections of the kx = 0 u-velocity on the normalised shapes cos(gamma z) and cos(pi y) cos(gamma z);
+#        closed form a3(0) c_j (e^{-d3 t} - e^{-lam_j t})/(lam_j - d3) with the forcing coefficient c_j from -v U'.
+#        Relative errors: max over 1 <= t <= 100 (t = 0 excluded for the streak, which starts at 0).
+#   (e7) 4a.4: 8 random fields with Fourier coefficients of random phase and amplitude ~ |k|^-2 inside the dealiased band,
+#        projected to divergence-free; N(u) = P[trunc(u x w)].
+#   (e8) 4a.5: 4 random nine-mode directions; 4a.6: one of them alone vs at position 37 of a batch of 64 (others random),
+#        max |E_alone - E_batch| over t <= 200 and max |u'_alone - u'_batch| at t = 200.
+#   (e9) pilot (4b): resolution 48x24x24 (the coarsest rung; the ladder check comes after the pilot); random nine-mode
+#        directions (uniform on the sphere, seed below), 8 energies log-spaced 1e-6 .. 0.3; trajectories run WITHOUT
+#        absorption to T_pilot, E recorded every 1.0. Histogram as the Gate 2 pre-study: linear E on [0, 2], 200 bins,
+#        5-bin moving average, over all recorded samples of all trajectories. Laminar mode = the largest density for
+#        E < 0.05; turbulent mode = the largest density for E > valley search start 0.05 that lies above the laminar mode;
+#        valley = minimum of the smoothed density between the two modes. "Clear valley" (my definition): turbulent-mode
+#        density >= 3 x valley density AND the turbulent mode holds >= 2% of all samples with E above the valley.
+#        E_B = valley E rounded to 2 significant digits. If not clear: Re = 600, then 800 (same pilot), else stop.
+#   (e10) r_A: largest value in {1,2,5} x 10^k with r_A <= min E_c(pilot)/10, where E_c(pilot) per direction = E of the
+#        smallest pilot amplitude whose trajectory reaches B within T_pilot; "zero rebound": no trajectory started at
+#        E = r_A (the 16+ pilot directions and 64 new random directions) reaches B within T_pilot; else the next lower
+#        candidate. T_det = smallest multiple of 250 with the fraction of pilot trajectories still undecided (neither
+#        E < r_A nor E >= E_B reached) < 1%; if none within T_pilot: T_det = T_pilot and the fraction is reported.
+#   (e11) s_c (Gate 2 rule): 12-point coarse grid s = sqrt(geomspace(r_A (1+1e-9), E_B (1-1e-9), 12)); first grid point whose
+#        fate is not A (B or undecided by T_det); bisection inside [previous point, that point] until (hi - lo)/lo <= 1e-3;
+#        s_c = midpoint. No crossing on the grid: s_c = NaN (reported). First point already not A: below grid (reported).
+#   (e12) resolution check rays (6): Gate 5 rays F(eps=1e-6, draw 0), F(eps=1e-2, draw 0), F(eps=1, draw 0), R #1, R #13
+#        (first test ray), W #1. Compare 48x24x24 vs 64x32x32: median |ln s_c(fine)/s_c(coarse)| <= 0.02 -> use 48x24x24;
+#        else compare 64x32x32 vs 96x48x48 -> <= 0.02 -> use 64x32x32; else stop.
+#   (e13) descriptive: DNS/MFE s_c ratio on the same rays; energy fraction outside the nine-mode subspace at the last
+#        state below the edge (lower bisection bracket) at t = 0, 100, 200, ... (max over time).
+#   (e14) optional Dedalus cross-check: skipped if installation takes > 20 min ("not done").
+name: gate4_dns
+seed: 20261117
+device: cuda
+
+system: {Re: 400.0, Lx_over_pi: 4.0, Lz_over_pi: 2.0, Ly_ext: 4.0}
+re_fallback: [600.0, 800.0]
+grids: [[48, 24, 24], [64, 32, 32], [96, 48, 48]]          # (Nx, Ny over the period-4 y, Nz)
+
+checks_4a:
+  laminar_rhs_max: 1.0e-12
+  div_max: 1.0e-10
+  sym_residual_max: 1.0e-12
+  galerkin: {n_states: 100, s_max: 0.3, tol: 1.0e-10}
+  linear: {amplitude: 1.0e-8, t_max: 100.0, tol_decay: 1.0e-8, tol_streak: 1.0e-6}
+  work: {n_fields: 8, tol: 1.0e-10}
+  dt: {candidates: [0.25, 0.125, 0.0625, 0.03125], E0: 1.0e-3, t_max: 200.0, n_dirs: 4, tol: 1.0e-4}
+  batch: {batch_size: 64, position: 37, tol: 1.0e-12}
+  courant_max: 2.0
+
+pilot:
+  n_dirs_min: 16
+  n_amp: 8
+  E_range: [1.0e-6, 0.3]
+  T_pilot: 3000.0
+  record_every: 1.0
+  time_cap_min: 45
+  histogram: {E_range: [0.0, 2.0], bins: 200, smooth_bins: 5, laminar_mode_E_max: 0.05, clear_ratio: 3.0, turbulent_mass_min: 0.02}
+  r_A_candidates_mantissa: [1, 2, 5]
+  n_rebound_random: 64
+  undecided_max: 0.01
+  T_det_step: 250.0
+
+s_c: {n_coarse: 12, rel_tol: 1.0e-3}
+convergence: {tol: 0.02, time_cap_min: 60}
+timing: {frac: 0.01}
+
+# ---- revised item 5 and 4b settings (2026-11-17, post-hoc for item 5; see history) ----
+revised_5:
+  dt_ladder: [0.0625, 0.03125]
+  5a: {E0: 1.0e-6, t_max: 200.0, n_dirs: 4, tol: 1.0e-4}
+  5b: {courant_limit: 2.5, max_rerun_levels: 2}
+  5c: {tol: 0.01}
+pilot_runtime: {chunk_dirs: 4, E_dead: 1.0e-12, cap_min: 45}
+T_det_override: 8000.0          # user decision 2026-11-17 ~10:55 (post-hoc); null = pilot rule e10
+zero_undecided_check: true      # added with the override: s_c searches at the chosen resolution, 0 undecided runs

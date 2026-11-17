@@ -1,0 +1,11 @@
+17:09:26     sc_48x24x24_dt0.0625 read from sc_48x24x24_dt0.0625.json (concurrent process): [0.001269, 0.000887, 0.001017, 0.017319, 0.010191, 0.011335]
+17:09:26     sc_64x32x32_dt0.0625 read from sc_64x32x32_dt0.0625.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.095976, 0.112755, 0.015761]
+17:09:26 ladder_48x24x24_vs_64x32x32_dt0.0625: median |d ln s_c| 1.4098 (tol 0.02) -> next rung
+17:09:26     ladder time so far 226 min > cap 60 min: reported, the ladder continues (e22)
+17:09:26     sc_96x48x48_dt0.0625 read from sc_96x48x48_dt0.0625.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.096172, 0.125029, 0.024387]
+17:09:26 ladder_64x32x32_vs_96x48x48_dt0.0625: median |d ln s_c| 0.0010 (tol 0.02) -> use 64x32x32
+17:09:26     sc_64x32x32_dt0.03125 read from sc_64x32x32_dt0.03125.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.095976, 0.112755, 0.015761]
+17:09:26 5c_64x32x32_dt0.0625: median |d ln s_c| 0.0000 (tol 0.01) -> pass
+17:10:12 5a_64x32x32_dt0.0625: max rel dE 5.632942867705992e-08, pass True
+17:10:12 zero-undecided check at the chosen resolution: {'sc_64x32x32_dt0.0625': 0, 'sc_64x32x32_dt0.03125': 0} -> pass
+17:10:12 4b DONE: {'Re': 400.0, 'grid': [64, 32, 32], 'dt': 0.0625, 'r_A': 5e-07, 'E_B': 0.24, 'T_det': 8000.0}

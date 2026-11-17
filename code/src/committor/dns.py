@@ -13,6 +13,7 @@ Perturbation form: u = U + u', du'/dt = P[(U + u') x (w_U + w')] + nu lap u' (nu
 Rotational form, 2/3 dealiasing (|m| <= ceil(N/3) - 1 per axis), Leray projection P = I - k k^T / |k|^2, Lawson RK4 with the
 viscous integrating factor. Symmetries: g u = D u(R x + d) applied in Fourier space; enforced by averaging over the group.
 """
+import json
 import math
 
 import numpy as np
@@ -392,3 +393,279 @@ def find_sc(grid, dirs, r_A, E_B, T_det, dt, n_coarse=12, rel_tol=1e-3, max_batc
     return {"s_c": s_c, "lo": lo, "hi": hi, "out_hi": out_hi, "no_crossing": no_cross, "below_grid": ~no_cross & (first == 0),
             "n_switches": switches, "coarse_fate": fg, "coarse_t_hit": tg, "s_grid": sg, "n_rounds": n_round,
             "n_undecided_runs": undec, "n_runs": n_runs, "t_hit_lo": t_lo_hit, "t_hit_hi": t_hi_hit, "seconds": _time.time() - t0}
+
+
+# ==================================================================================================== Gate 4b / 5 runners
+# (2026-11-17) per-step Courant number, the 5b re-run rule (gate4_dns.yaml e17), explicit NaN accounting, E_dead early stop
+# (e18) and a resumable s_c search. The functions above are kept unchanged for the record of the 4a runs.
+
+def _kmax_t(grid):
+    return torch.tensor(grid.kmax, device=grid.dev, dtype=torch.float64)
+
+
+def nl_full_c(grid, uph):
+    """grid.nl_full(uph) and the per-case max |U + u'| per component at this state (B, 3)."""
+    up = grid.inv(uph)
+    wp = grid.inv(grid.curl(uph))
+    mx = (up + grid.U_phys).abs().amax(dim=(-3, -2, -1))
+    return grid.proj(grid.fwd(grid.cross(grid.U_phys, wp) + grid.cross(up, grid.wU_phys + wp)) * grid.mask), mx
+
+
+def step_nl_c(grid, uph, h, E1, E2, kmax):
+    """One Lawson RK4 step of the full equations; returns (new state, Courant number of the state at the step start (B,))."""
+    box = {}
+
+    def rhs(s):
+        if "mx" not in box:
+            n, box["mx"] = nl_full_c(grid, s[0])
+            return (n,)
+        return (grid.nl_full(s[0]),)
+    (u,) = lawson_rk4(grid, (uph,), rhs, h, E1, E2)
+    c = h * (box["mx"] * kmax).sum(dim=1)
+    return grid.clean(u), c
+
+
+def _run_level(grid, uph0, dt, T, r_A, E_B, record_every, absorb, E_dead, max_batch, courant_limit, stop_on_flag, progress, desc,
+               keep_final=False):
+    """One integration level. fate: 0 = A, 1 = B, -1 = undecided at T, -2 = flagged (stopped; to be re-run), 2 = dead
+    (E < E_dead, no absorption mode), -3 = NaN at a level that does not stop (counted as B by the caller)."""
+    from tqdm.auto import tqdm
+    B = uph0.shape[0]
+    n_rec = int(round(T / record_every)) + 1
+    spr = int(round(record_every / dt))
+    assert abs(spr * dt - record_every) < 1e-12, (dt, record_every)
+    E_hist = np.full((B, n_rec), np.nan)
+    fate = np.full(B, -1, dtype=np.int8)
+    t_hit = np.full(B, np.nan)
+    cmax = np.zeros(B)
+    t_flag = np.full(B, np.nan)
+    nan_seen = np.zeros(B, dtype=bool)
+    finals = [None] * B if keep_final else None
+    E1, E2 = grid.lap_factor(dt), grid.lap_factor(0.5 * dt)
+    kmax = _kmax_t(grid)
+    for b0 in range(0, B, max_batch):
+        idx = np.arange(b0, min(B, b0 + max_batch))
+        u = uph0[idx].clone()
+        e = grid.energy(u).cpu().numpy()
+        E_hist[idx, 0] = e
+        dec = np.zeros(len(idx), dtype=bool)
+        if absorb:
+            if r_A is not None:
+                fate[idx[e < r_A]], t_hit[idx[e < r_A]] = 0, 0.0
+                dec |= e < r_A
+            if E_B is not None:
+                m_ = (e >= E_B) & ~dec
+                fate[idx[m_]], t_hit[idx[m_]] = 1, 0.0
+                dec |= m_
+        keep = np.where(~dec)[0]
+        u = u[torch.as_tensor(keep, device=grid.dev)]
+        ids = idx[keep]
+        it = tqdm(range(1, n_rec), desc=desc, disable=not progress, leave=False, mininterval=30)
+        for r in it:
+            if len(ids) == 0:
+                break
+            cm = torch.zeros(len(ids), device=grid.dev, dtype=torch.float64)
+            for _ in range(spr):
+                u, c = step_nl_c(grid, u, dt, E1, E2, kmax)
+                cm = torch.maximum(cm, torch.nan_to_num(c, nan=float("inf")))
+            t = r * record_every
+            e = grid.energy(u).cpu().numpy()
+            cmn = cm.cpu().numpy()
+            cmax[ids] = np.maximum(cmax[ids], cmn)
+            bad = ~np.isfinite(e)
+            nan_seen[ids[bad]] = True
+            E_hist[ids, r] = e
+            flag = (cmn > courant_limit) | bad
+            out = np.zeros(len(ids), dtype=bool)
+            if stop_on_flag and flag.any():
+                fate[ids[flag]] = -2
+                t_flag[ids[flag]] = t
+                out |= flag
+            elif bad.any():                                  # final level: NaN counted as B
+                fate[ids[bad]] = -3
+                t_hit[ids[bad]] = t
+                out |= bad
+            ok = ~out
+            if absorb:
+                newA = ok & ((e < r_A) if r_A is not None else False)
+                newB = ok & ~newA & ((e >= E_B) if E_B is not None else False)
+                fate[ids[newA]] = 0
+                fate[ids[newB]] = 1
+                t_hit[ids[newA | newB]] = t
+                out |= newA | newB
+            if E_dead is not None:
+                dead = ok & ~out & (e < E_dead)
+                fate[ids[dead]] = 2
+                t_hit[ids[dead]] = t
+                out |= dead
+            if out.any():
+                if keep_final:
+                    for j in np.where(out)[0]:
+                        finals[ids[j]] = u[j:j + 1].clone()
+                kk = np.where(~out)[0]
+                u = u[torch.as_tensor(kk, device=grid.dev)]
+                ids = ids[kk]
+        if keep_final:
+            for j, i in enumerate(ids):
+                finals[i] = u[j:j + 1].clone()
+    out = {"fate": fate, "t_hit": t_hit, "E": E_hist, "courant_max": cmax, "t_flag": t_flag, "nan_seen": nan_seen}
+    if keep_final:
+        out["final"] = finals
+    return out
+
+
+def run_det(grid, uph0, dt, T, r_A=None, E_B=None, record_every=1.0, absorb=True, E_dead=None, max_batch=256,
+            courant_limit=2.5, max_levels=2, progress=False, desc="dns", log=None):
+    """Integrate B perturbation fields with the 5b re-run rule (gate4_dns.yaml e17). Returns numpy arrays per case: fate
+    (0 A, 1 B, -1 undecided at T, 2 dead below E_dead), t_hit, E (record_every grid, NaN after a decision), courant_max (of
+    the level that produced the result), dt_used, level, nan_final (NaN at the last level, counted as B), plus counts."""
+    B = uph0.shape[0]
+    res = _run_level(grid, uph0, dt, T, r_A, E_B, record_every, absorb, E_dead, max_batch, courant_limit, max_levels > 0, progress, desc)
+    level = np.zeros(B, dtype=np.int8)
+    counts = {"n_cases": int(B), "flagged_per_level": [], "nan_per_level": [], "courant_max_level0": float(np.nanmax(res["courant_max"])) if B else 0.0}
+    cur = res
+    todo = np.where(res["fate"] == -2)[0]
+    counts["flagged_per_level"].append(int(len(todo)))
+    counts["nan_per_level"].append(int(res["nan_seen"].sum()))
+    for lv in range(1, max_levels + 1):
+        if len(todo) == 0:
+            break
+        h = dt / 2 ** lv
+        last = lv == max_levels
+        if log:
+            log(f"    {desc}: re-running {len(todo)} flagged cases with dt = {h:g}")
+        sub = _run_level(grid, uph0[torch.as_tensor(todo, device=grid.dev)], h, T, r_A, E_B, record_every, absorb, E_dead, max_batch,
+                         courant_limit, not last, False, desc + f" dt/{2 ** lv}")
+        for k in ("fate", "t_hit", "E", "courant_max", "t_flag", "nan_seen"):
+            cur[k][todo] = sub[k]
+        level[todo] = lv
+        counts["nan_per_level"].append(int(sub["nan_seen"].sum()))
+        nxt = todo[sub["fate"] == -2]
+        counts["flagged_per_level"].append(int(len(nxt)) if not last else int(np.sum((sub["courant_max"] > courant_limit) | sub["nan_seen"])))
+        todo = nxt
+    nan_final = cur["fate"] == -3
+    fate = cur["fate"].copy()
+    fate[nan_final] = 1
+    counts["n_rerun_dt_half"] = int(np.sum(level >= 1))
+    counts["n_rerun_dt_quarter"] = int(np.sum(level >= 2))
+    counts["n_nan_final_counted_B"] = int(nan_final.sum())
+    counts["n_flag_at_last_level"] = int(np.sum((level == max_levels) & ((cur["courant_max"] > courant_limit) | cur["nan_seen"])))
+    return {"fate": fate, "t_hit": cur["t_hit"], "E": cur["E"], "courant_max": cur["courant_max"], "dt_used": dt / 2.0 ** level,
+            "level": level, "nan_final": nan_final, "counts": counts}
+
+
+def merge_counts(acc, c):
+    """accumulate run_det counts."""
+    if not acc:
+        acc = {"n_cases": 0, "n_rerun_dt_half": 0, "n_rerun_dt_quarter": 0, "n_nan_final_counted_B": 0, "n_flag_at_last_level": 0,
+               "n_nan_level0": 0, "courant_max_level0": 0.0, "nan_per_level": [0, 0, 0], "flagged_per_level": [0, 0, 0]}
+    acc["n_cases"] += c["n_cases"]
+    acc["n_rerun_dt_half"] += c["n_rerun_dt_half"]
+    acc["n_rerun_dt_quarter"] += c["n_rerun_dt_quarter"]
+    acc["n_nan_final_counted_B"] += c["n_nan_final_counted_B"]
+    acc["n_flag_at_last_level"] += c["n_flag_at_last_level"]
+    acc["n_nan_level0"] += c["nan_per_level"][0] if c["nan_per_level"] else 0
+    acc["courant_max_level0"] = max(acc["courant_max_level0"], c["courant_max_level0"])
+    for k in ("nan_per_level", "flagged_per_level"):
+        acc.setdefault(k, [0, 0, 0])
+        for i, v in enumerate(c.get(k, [])):
+            while len(acc[k]) <= i:
+                acc[k].append(0)
+            acc[k][i] += int(v)
+    return acc
+
+
+def find_sc_det(grid, dirs, r_A, E_B, T_det, dt, n_coarse=12, rel_tol=1e-3, max_batch=256, courant_limit=2.5, max_levels=2,
+                ckpt=None, progress=False, desc="s_c", log=print, undecided_rule="flag"):
+    """Gate 2 rule (gate4_dns.yaml e11) with run_det (5b re-run rule); resumable through the npz checkpoint `ckpt` (written
+    after the coarse grid and after every bisection round). Returns dict (numpy) as find_sc plus the re-run counts.
+    undecided_rule = "flag" (user rule of 2026-11-17 ~11:05, default): undecided is not a transition; s_c must be bracketed
+    by a run that reaches A and a run that reaches B. Along the coarse grid the first fate that is not A must be B (if it is
+    undecided, the ray is flagged 'undecided' and gets no s_c); a bisection midpoint that is undecided flags the ray (no s_c).
+    undecided_rule = "not_A": the original Gate 2 rule (undecided counts as not A)."""
+    assert undecided_rule in ("flag", "not_A")
+    import time as _time
+    from pathlib import Path as _P
+    from .utils import atomic_save_npz
+    dirs = np.asarray(dirs, dtype=np.float64)
+    R = len(dirs)
+    sg = coarse_grid(r_A, E_B, n_coarse)
+    t0 = _time.time()
+    counts = {}
+    st = None
+    if ckpt is not None and _P(ckpt).exists():
+        Z = np.load(ckpt, allow_pickle=False)
+        if Z["dirs"].shape == dirs.shape and np.array_equal(Z["dirs"], dirs) and float(Z["dt"]) == dt and float(Z["T_det"]) == T_det \
+                and float(Z["r_A"]) == r_A and float(Z["E_B"]) == E_B and "rule" in Z.files and str(Z["rule"]) == undecided_rule:
+            st = {k: Z[k] for k in Z.files if k != "counts"}                    # (review fix: counts is stored separately)
+            counts = json.loads(str(Z["counts"]))
+            log(f"    {desc}: resumed from {ckpt} (round {int(st['n_round'])})")
+
+    def save(state):
+        if ckpt is not None:
+            atomic_save_npz(ckpt, **state, counts=np.array(json.dumps(counts)))
+
+    if st is None:
+        A = (sg[None, :, None] * dirs[:, None, :]).reshape(-1, 9)
+        u0 = grid.clean(grid.from_coeffs(A))
+        r = run_det(grid, u0, dt, T_det, r_A, E_B, absorb=True, max_batch=max_batch, courant_limit=courant_limit, max_levels=max_levels,
+                    progress=progress, desc=desc + " coarse", log=log)
+        counts = merge_counts(counts, r["counts"])
+        fg = r["fate"].reshape(R, n_coarse)
+        tg = r["t_hit"].reshape(R, n_coarse)
+        notA = fg != 0
+        first = np.argmax(notA, axis=1)
+        no_cross = ~notA.any(axis=1)
+        hi = np.where(no_cross, sg[-1], sg[first])
+        lo = np.where(first > 0, sg[np.maximum(first - 1, 0)], 0.0)
+        flag_und = (~no_cross) & (fg[np.arange(R), first] == -1) if undecided_rule == "flag" else np.zeros(R, dtype=bool)
+        st = {"dirs": dirs, "dt": np.array(dt), "T_det": np.array(T_det), "r_A": np.array(r_A), "E_B": np.array(E_B),
+              "rule": np.array(undecided_rule), "flag_undecided": flag_und,
+              "coarse_fate": fg, "coarse_t_hit": tg, "first": first, "no_crossing": no_cross, "lo": lo, "hi": hi,
+              "out_hi": fg[np.arange(R), first].copy(), "n_round": np.array(0), "n_undecided": np.array(int(np.sum(fg == -1))),
+              "n_runs": np.array(R * n_coarse), "t_hit_lo": np.where(first > 0, tg[np.arange(R), np.maximum(first - 1, 0)], np.nan),
+              "t_hit_hi": tg[np.arange(R), first].copy()}
+        save(st)
+        log(f"    {desc}: coarse {R}x{n_coarse} in {_time.time() - t0:.0f} s; undecided {int(st['n_undecided'])}; no crossing "
+            f"{int(no_cross.sum())}; below grid {int((~no_cross & (first == 0)).sum())}; re-runs dt/2 {counts['n_rerun_dt_half']}")
+    lo, hi, first, no_cross = st["lo"].copy(), st["hi"].copy(), st["first"], st["no_crossing"]
+    flag_und = st["flag_undecided"].copy()
+    act = ~no_cross & (first > 0)
+    while act.any():
+        w = (hi - lo) / np.where(lo > 0, lo, 1.0)
+        idx = np.where(act & ~flag_und & (w > rel_tol))[0]
+        if len(idx) == 0:
+            break
+        mid = 0.5 * (lo[idx] + hi[idx])
+        u0 = grid.clean(grid.from_coeffs(mid[:, None] * dirs[idx]))
+        rr = run_det(grid, u0, dt, T_det, r_A, E_B, absorb=True, max_batch=max_batch, courant_limit=courant_limit, max_levels=max_levels,
+                     desc=desc + " bisect", log=log)
+        counts = merge_counts(counts, rr["counts"])
+        isA = rr["fate"] == 0
+        st["n_undecided"] = np.array(int(st["n_undecided"]) + int(np.sum(rr["fate"] == -1)))       # counted before any filtering
+        st["n_runs"] = np.array(int(st["n_runs"]) + len(idx))
+        if undecided_rule == "flag":
+            und = rr["fate"] == -1
+            flag_und[idx[und]] = True                                   # undecided midpoint: no s_c for this ray
+            keep_ = ~und
+            idx, mid, rr = idx[keep_], mid[keep_], {k_: (v_[keep_] if isinstance(v_, np.ndarray) and len(v_) == len(keep_) else v_) for k_, v_ in rr.items()}
+            isA = isA[keep_]
+        lo[idx] = np.where(isA, mid, lo[idx])
+        hi[idx] = np.where(isA, hi[idx], mid)
+        st["out_hi"][idx] = np.where(isA, st["out_hi"][idx], rr["fate"])
+        st["t_hit_lo"][idx] = np.where(isA, rr["t_hit"], st["t_hit_lo"][idx])
+        st["t_hit_hi"][idx] = np.where(isA, st["t_hit_hi"][idx], rr["t_hit"])
+        st["n_round"] = np.array(int(st["n_round"]) + 1)
+        st["lo"], st["hi"] = lo.copy(), hi.copy()
+        st["flag_undecided"] = flag_und.copy()
+        save(st)
+        log(f"    {desc}: bisection round {int(st['n_round'])}: {len(idx)} rays, max rel width {np.max((hi[idx] - lo[idx]) / lo[idx]):.2e}, "
+            f"{_time.time() - t0:.0f} s")
+    below = ~no_cross & (first == 0)
+    s_c = np.where(no_cross | below | flag_und, np.nan, 0.5 * (lo + hi))
+    fg = st["coarse_fate"]
+    switches = np.abs(np.diff((fg != 0).astype(np.int8), axis=1)).sum(1)
+    return {"s_c": s_c, "lo": lo, "hi": hi, "out_hi": st["out_hi"], "no_crossing": no_cross, "below_grid": below, "n_switches": switches,
+            "coarse_fate": fg, "coarse_t_hit": st["coarse_t_hit"], "s_grid": sg, "n_rounds": int(st["n_round"]),
+            "n_undecided_runs": int(st["n_undecided"]), "n_runs": int(st["n_runs"]), "t_hit_lo": st["t_hit_lo"], "t_hit_hi": st["t_hit_hi"],
+            "seconds": _time.time() - t0, "counts": counts, "flag_undecided": flag_und, "rule": undecided_rule}

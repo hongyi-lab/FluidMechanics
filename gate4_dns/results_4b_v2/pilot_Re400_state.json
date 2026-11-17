@@ -1,0 +1,14 @@
+{
+  "per_case_step_s": 0.0005118893459439278,
+  "time_per_direction_s_no_early_stop": 196.56550884246826,
+  "n_dirs_rule": 16,
+  "estimate_min_no_early_stop": 52.4174690246582,
+  "chunks_done": [
+    0,
+    1
+  ],
+  "chunk_seconds": [
+    1266.057544708252,
+    1123.949206352234
+  ]
+}

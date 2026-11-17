@@ -1,0 +1,27 @@
+{
+  "invocations": [
+    {
+      "start": "2026-11-17 17:10:34",
+      "argv": [
+        "code/scripts/gate5_dns.py",
+        "--config",
+        "code/configs/gate5_dns.yaml",
+        "--gate4",
+        "code/configs/gate4_dns.yaml",
+        "--choice",
+        "experiments/20261117_gate4b_dns_v2/choice.json",
+        "--run-dir",
+        "experiments/20261117_gate5_dns_v1",
+        "--stage",
+        "all"
+      ],
+      "git": {
+        "commit": "50529b441c67df8be71830fe584e732de01fc704",
+        "dirty": true
+      },
+      "python": "3.11.18",
+      "torch": "2.14.1+cu126",
+      "gpu": "NVIDIA RTX A6000"
+    }
+  ]
+}

@@ -1,0 +1,702 @@
+{
+  "5a_48x24x24_dt0.0625": {
+    "dt": 0.0625,
+    "dt_half": 0.03125,
+    "E0": 1e-06,
+    "directions": [
+      [
+        -0.542630087420482,
+        0.6253518082280308,
+        0.220968307894449,
+        0.2925458623072893,
+        0.32906880478980116,
+        -0.03054526662675223,
+        -0.1124865036278451,
+        0.02359523052196091,
+        0.24010079034487006
+      ],
+      [
+        0.2534656994600102,
+        0.20153398305592465,
+        0.5136324038705122,
+        0.7024912963112555,
+        0.24370277062385468,
+        0.2291276726830523,
+        -0.0358382349594773,
+        -0.1326433740338348,
+        0.08401041966927127
+      ],
+      [
+        0.08847780522453415,
+        0.05492965890975583,
+        0.006244102867036534,
+        0.5205371805263199,
+        0.14749704321001775,
+        0.7573518415588939,
+        -0.24717804915652183,
+        -0.050269637818235145,
+        -0.24330074246548514
+      ],
+      [
+        0.07393690493246327,
+        -0.12543839100930454,
+        0.23132772064349535,
+        -0.37775605862337486,
+        -0.10745002959871948,
+        -0.3313606984135108,
+        0.17627550505438722,
+        -0.35996124239964344,
+        -0.7075279633762143
+      ]
+    ],
+    "courant_max_dt0.0625": 0.6801197787853959,
+    "n_nan_dt0.0625": 0,
+    "courant_max_dt0.03125": 0.3400602224268929,
+    "n_nan_dt0.03125": 0,
+    "max_rel_dE_per_direction": [
+      9.897687114346354e-10,
+      2.615578864606505e-10,
+      5.3163214053242314e-08,
+      1.4518870550261909e-09
+    ],
+    "n_nan_samples": 0,
+    "max_rel_dE": 5.3163214053242314e-08,
+    "pass": true,
+    "E_range": [
+      2.3341238455517286e-08,
+      0.0009110541505834302
+    ]
+  },
+  "dt_index": 0,
+  "item1_stable_dt": {
+    "dt": 0.0625,
+    "E0=1e-06": {
+      "sym_residual_max": 2.7755575615628914e-17,
+      "sym_residual_n_nan": 0,
+      "div_max": 8.201734317481469e-16,
+      "div_n_nan": 0,
+      "courant_max_every_step": 0.6801197787853959,
+      "courant_n_nan": 0,
+      "E_final": [
+        0.00016210768750525223,
+        0.000911015419645243,
+        1.0393343703180086e-07,
+        0.0001902523873162775
+      ]
+    },
+    "E0=0.001": {
+      "sym_residual_max": 3.9343528435153985e-15,
+      "sym_residual_n_nan": 0,
+      "div_max": 1.3061578032199488e-14,
+      "div_n_nan": 0,
+      "courant_max_every_step": 2.5471602793097214,
+      "courant_n_nan": 0,
+      "E_final": [
+        0.585175920462017,
+        0.5859091274118424,
+        9.314492812694078e-05,
+        0.8791837488112414
+      ]
+    }
+  },
+  "pilot_Re400_dt0.0625": {
+    "Re": 400.0,
+    "grid": [
+      48,
+      24,
+      24
+    ],
+    "dt": 0.0625,
+    "n_dirs_rule": 16,
+    "n_dirs_used": 8,
+    "dropped_chunks": [
+      2,
+      3
+    ],
+    "pilot_minutes": 39.8334458510081,
+    "timing": {
+      "per_case_step_s": 0.0005118893459439278,
+      "time_per_direction_s_no_early_stop": 196.56550884246826,
+      "estimate_min_no_early_stop": 52.4174690246582
+    },
+    "E0": [
+      1e-06,
+      6.059627021136012e-06,
+      3.67190796352817e-05,
+      0.0002225039271491978,
+      0.0013482908092621578,
+      0.008170139420154312,
+      0.049507997596815526,
+      0.3
+    ],
+    "rerun_counts": {
+      "n_cases": 64,
+      "n_rerun_dt_half": 21,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.815039958857672
+    },
+    "histogram": {
+      "laminar_mode_E": 0.025,
+      "turbulent_mode_E": 0.6950000000000001,
+      "valley_E": 0.245,
+      "turbulent_over_valley": 609.5384615384615,
+      "frac_samples_above_valley": 0.8130829926304003,
+      "clear_valley": true,
+      "E_B": 0.24,
+      "n_samples": 192005.0,
+      "n_dead_samples_in_laminar_bin": 0,
+      "n_nan_samples_excluded": 0,
+      "n_samples_out_of_range": 59
+    },
+    "E_c_per_direction": {
+      "0": 6.059627021136012e-06,
+      "1": 3.67190796352817e-05,
+      "2": 6.059627021136012e-06,
+      "3": 3.67190796352817e-05,
+      "4": 6.059627021136012e-06,
+      "5": 3.67190796352817e-05,
+      "6": 6.059627021136012e-06,
+      "7": 6.059627021136012e-06
+    },
+    "n_dirs_never_B": 0,
+    "min_E_c": 6.059627021136012e-06,
+    "rebound_checks": [
+      {
+        "r_A": 5e-07,
+        "n_runs": 72,
+        "n_reach_B": 0,
+        "n_undecided_at_T_not_dead": 68,
+        "rerun_counts": {
+          "n_cases": 72,
+          "flagged_per_level": [
+            0
+          ],
+          "nan_per_level": [
+            0
+          ],
+          "courant_max_level0": 0.6823261353831763,
+          "n_rerun_dt_half": 0,
+          "n_rerun_dt_quarter": 0,
+          "n_nan_final_counted_B": 0,
+          "n_flag_at_last_level": 0
+        }
+      }
+    ],
+    "r_A": 5e-07,
+    "undecided_fraction_by_T": {
+      "250": 0.1875,
+      "500": 0.171875,
+      "750": 0.171875,
+      "1000": 0.171875,
+      "1250": 0.171875,
+      "1500": 0.140625,
+      "1750": 0.078125,
+      "2000": 0.015625,
+      "2250": 0.0,
+      "2500": 0.0,
+      "2750": 0.0,
+      "3000": 0.0
+    },
+    "T_det": 2250.0,
+    "T_det_undecided_fraction": 0.0,
+    "decision": "ok"
+  },
+  "base_dt_index": 0,
+  "copied_from_v1": [
+    "5a_48x24x24_dt0.0625",
+    "base_dt_index",
+    "dt_index",
+    "item1_stable_dt",
+    "pilot_Re400_dt0.0625"
+  ],
+  "log": [
+    "copied 5a, item-1 measures and the pilot (E_B 0.24, r_A 5e-7) from 20261117_gate4b_dns_v1; T_det = 8000 by the user's decision (~10:55)",
+    "17:09:26     sc_48x24x24_dt0.0625 read from sc_48x24x24_dt0.0625.json (concurrent process): [0.001269, 0.000887, 0.001017, 0.017319, 0.010191, 0.011335]",
+    "17:09:26     sc_64x32x32_dt0.0625 read from sc_64x32x32_dt0.0625.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.095976, 0.112755, 0.015761]",
+    "17:09:26 ladder_48x24x24_vs_64x32x32_dt0.0625: median |d ln s_c| 1.4098 (tol 0.02) -> next rung",
+    "17:09:26     ladder time so far 226 min > cap 60 min: reported, the ladder continues (e22)",
+    "17:09:26     sc_96x48x48_dt0.0625 read from sc_96x48x48_dt0.0625.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.096172, 0.125029, 0.024387]",
+    "17:09:26 ladder_64x32x32_vs_96x48x48_dt0.0625: median |d ln s_c| 0.0010 (tol 0.02) -> use 64x32x32",
+    "17:09:26     sc_64x32x32_dt0.03125 read from sc_64x32x32_dt0.03125.json (concurrent process): [0.005263, 0.003578, 0.004112, 0.095976, 0.112755, 0.015761]",
+    "17:09:26 5c_64x32x32_dt0.0625: median |d ln s_c| 0.0000 (tol 0.01) -> pass",
+    "17:10:12 5a_64x32x32_dt0.0625: max rel dE 5.632942867705992e-08, pass True",
+    "17:10:12 zero-undecided check at the chosen resolution: {'sc_64x32x32_dt0.0625': 0, 'sc_64x32x32_dt0.03125': 0} -> pass",
+    "17:10:12 4b DONE: {'Re': 400.0, 'grid': [64, 32, 32], 'dt': 0.0625, 'r_A': 5e-07, 'E_B': 0.24, 'T_det': 8000.0}"
+  ],
+  "T_det_pilot_rule": 2250.0,
+  "sets": {
+    "Re": 400.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "T_det": 8000.0
+  },
+  "sc_48x24x24_dt0.0625": {
+    "s_c": [
+      0.0012686119447374035,
+      0.0008874503479416322,
+      0.0010170284625256251,
+      0.017318526520766674,
+      0.010191345838725172,
+      0.011335104597490186
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 131,
+    "n_undecided_runs": 0,
+    "minutes": 56.84082672198613,
+    "rerun_counts": {
+      "n_cases": 131,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.5049774275009136,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        1,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 0.5350500345230103,
+    "T_det": 8000.0,
+    "out_hi_fate": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_rays_edge_set_by_undecided": 0,
+    "rule": "flag",
+    "flag_undecided": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_rays_flagged_undecided": 0
+  },
+  "sc_64x32x32_dt0.0625": {
+    "s_c": [
+      0.005262699593704138,
+      0.0035781617327740444,
+      0.004111551550306149,
+      0.09597589886281548,
+      0.11275461412718814,
+      0.015761129960734477
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 131,
+    "n_undecided_runs": 0,
+    "minutes": 169.0631459434827,
+    "rerun_counts": {
+      "n_cases": 131,
+      "n_rerun_dt_half": 14,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 2.861816173414468,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        14,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 2.4759153525034585,
+    "T_det": 8000.0,
+    "out_hi_fate": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_rays_edge_set_by_undecided": 0,
+    "rule": "flag",
+    "flag_undecided": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_rays_flagged_undecided": 0
+  },
+  "ladder_48x24x24_vs_64x32x32_dt0.0625": {
+    "median_abs_dln_sc": 1.4098180699891518,
+    "per_ray": [
+      1.422720779976129,
+      1.3942518912488513,
+      1.3969153600021746,
+      1.712320280779723,
+      2.403674988096787,
+      0.32964226812550734
+    ],
+    "tol": 0.02,
+    "pass": false
+  },
+  "sc_96x48x48_dt0.0625": {
+    "s_c": [
+      0.005262699593704138,
+      0.0035781617327740444,
+      0.004111551550306149,
+      0.09617175935228287,
+      0.12502853813381093,
+      0.024387132738659285
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 130,
+    "n_undecided_runs": 0,
+    "minutes": 364.653123319149,
+    "rerun_counts": {
+      "n_cases": 130,
+      "n_rerun_dt_half": 18,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 3.562474676453932,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        18,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 13.94461989402771,
+    "T_det": 8000.0,
+    "out_hi_fate": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_rays_edge_set_by_undecided": 0,
+    "rule": "flag",
+    "flag_undecided": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_rays_flagged_undecided": 0
+  },
+  "ladder_64x32x32_vs_96x48x48_dt0.0625": {
+    "median_abs_dln_sc": 0.0010193231555413185,
+    "per_ray": [
+      0.0,
+      0.0,
+      0.0,
+      0.002038646311082637,
+      0.10332811524697583,
+      0.43650886655098287
+    ],
+    "tol": 0.02,
+    "pass": true
+  },
+  "sc_64x32x32_dt0.03125": {
+    "s_c": [
+      0.005262699593704138,
+      0.0035781617327740444,
+      0.004111551550306149,
+      0.09597589886281548,
+      0.11275461412718814,
+      0.015761129960734477
+    ],
+    "names": [
+      "F eps=1e-06 draw 0",
+      "F eps=0.01 draw 0",
+      "F eps=1 draw 0",
+      "R #1",
+      "R #13",
+      "W #1"
+    ],
+    "no_crossing": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "below_grid": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_switches": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_runs": 131,
+    "n_undecided_runs": 0,
+    "minutes": 266.90209174553553,
+    "rerun_counts": {
+      "n_cases": 131,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0,
+      "n_nan_level0": 0,
+      "courant_max_level0": 1.6591343968427525,
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "flagged_per_level": [
+        0,
+        0,
+        0
+      ]
+    },
+    "per_case_step_ms": 4.950195550918579,
+    "T_det": 8000.0,
+    "out_hi_fate": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_rays_edge_set_by_undecided": 0,
+    "rule": "flag",
+    "flag_undecided": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "n_rays_flagged_undecided": 0
+  },
+  "5c_64x32x32_dt0.0625": {
+    "median_abs_dln_sc": 0.0,
+    "per_ray": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "tol": 0.01,
+    "pass": true
+  },
+  "5a_64x32x32_dt0.0625": {
+    "dt": 0.0625,
+    "dt_half": 0.03125,
+    "E0": 1e-06,
+    "directions": [
+      [
+        -0.542630087420482,
+        0.6253518082280308,
+        0.220968307894449,
+        0.2925458623072893,
+        0.32906880478980116,
+        -0.03054526662675223,
+        -0.1124865036278451,
+        0.02359523052196091,
+        0.24010079034487006
+      ],
+      [
+        0.2534656994600102,
+        0.20153398305592465,
+        0.5136324038705122,
+        0.7024912963112555,
+        0.24370277062385468,
+        0.2291276726830523,
+        -0.0358382349594773,
+        -0.1326433740338348,
+        0.08401041966927127
+      ],
+      [
+        0.08847780522453415,
+        0.05492965890975583,
+        0.006244102867036534,
+        0.5205371805263199,
+        0.14749704321001775,
+        0.7573518415588939,
+        -0.24717804915652183,
+        -0.050269637818235145,
+        -0.24330074246548514
+      ],
+      [
+        0.07393690493246327,
+        -0.12543839100930454,
+        0.23132772064349535,
+        -0.37775605862337486,
+        -0.10745002959871948,
+        -0.3313606984135108,
+        0.17627550505438722,
+        -0.35996124239964344,
+        -0.7075279633762143
+      ]
+    ],
+    "courant_max_dt0.0625": 0.9521714565977393,
+    "n_nan_dt0.0625": 0,
+    "courant_max_dt0.03125": 0.47608619413107195,
+    "n_nan_dt0.03125": 0,
+    "max_rel_dE_per_direction": [
+      9.914999932192359e-10,
+      2.6256818941305937e-10,
+      5.632942867705992e-08,
+      1.4518715119038461e-09
+    ],
+    "n_nan_samples": 0,
+    "max_rel_dE": 5.632942867705992e-08,
+    "pass": true,
+    "E_range": [
+      2.2541275899040603e-08,
+      0.0009110601749408298
+    ]
+  },
+  "zero_undecided_check": {
+    "searches": {
+      "sc_64x32x32_dt0.0625": 0,
+      "sc_64x32x32_dt0.03125": 0
+    },
+    "pass": true
+  },
+  "choice": {
+    "Re": 400.0,
+    "grid": [
+      64,
+      32,
+      32
+    ],
+    "dt": 0.0625,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "T_det": 8000.0
+  }
+}

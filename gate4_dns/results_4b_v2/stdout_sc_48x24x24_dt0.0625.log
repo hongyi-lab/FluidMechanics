@@ -1,0 +1,16 @@
+11:03:29 --- s_c on the 6 check rays at 48x24x24, dt 0.0625 (concurrent)
+11:03:30     1% timing: 0.535 ms/case-step (batch 12); upper bound 164 min (every run to T_det)
+11:17:07     s_c coarse: re-running 1 flagged cases with dt = 0.03125
+11:17:12     s_c: coarse 6x12 in 823 s; undecided 0; no crossing 0; below grid 0; re-runs dt/2 1
+11:21:37     s_c: bisection round 1: 6 rays, max rel width 4.06e-01, 1087 s
+11:26:43     s_c: bisection round 2: 6 rays, max rel width 1.69e-01, 1394 s
+11:30:26     s_c: bisection round 3: 6 rays, max rel width 8.44e-02, 1616 s
+11:35:04     s_c: bisection round 4: 6 rays, max rel width 4.22e-02, 1895 s
+11:41:40     s_c: bisection round 5: 6 rays, max rel width 2.07e-02, 2290 s
+11:45:19     s_c: bisection round 6: 6 rays, max rel width 1.02e-02, 2510 s
+11:49:49     s_c: bisection round 7: 6 rays, max rel width 5.09e-03, 2780 s
+11:54:40     s_c: bisection round 8: 6 rays, max rel width 2.54e-03, 3071 s
+11:58:02     s_c: bisection round 9: 6 rays, max rel width 1.27e-03, 3273 s
+12:00:20     s_c: bisection round 10: 5 rays, max rel width 6.33e-04, 3410 s
+12:00:20     s_c 48x24x24 dt 0.0625: [0.001269, 0.000887, 0.001017, 0.017319, 0.010191, 0.011335] (56.8 min)
+12:00:20 sc-only 48x24x24 dt 0.0625: done

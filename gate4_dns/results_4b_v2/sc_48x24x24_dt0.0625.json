@@ -1,0 +1,85 @@
+{
+  "s_c": [
+    0.0012686119447374035,
+    0.0008874503479416322,
+    0.0010170284625256251,
+    0.017318526520766674,
+    0.010191345838725172,
+    0.011335104597490186
+  ],
+  "names": [
+    "F eps=1e-06 draw 0",
+    "F eps=0.01 draw 0",
+    "F eps=1 draw 0",
+    "R #1",
+    "R #13",
+    "W #1"
+  ],
+  "no_crossing": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "below_grid": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "n_switches": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "n_runs": 131,
+  "n_undecided_runs": 0,
+  "minutes": 56.84082672198613,
+  "rerun_counts": {
+    "n_cases": 131,
+    "n_rerun_dt_half": 1,
+    "n_rerun_dt_quarter": 0,
+    "n_nan_final_counted_B": 0,
+    "n_flag_at_last_level": 0,
+    "n_nan_level0": 0,
+    "courant_max_level0": 2.5049774275009136,
+    "nan_per_level": [
+      0,
+      0,
+      0
+    ],
+    "flagged_per_level": [
+      1,
+      0,
+      0
+    ]
+  },
+  "per_case_step_ms": 0.5350500345230103,
+  "T_det": 8000.0,
+  "out_hi_fate": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "n_rays_edge_set_by_undecided": 0,
+  "rule": "flag",
+  "flag_undecided": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "n_rays_flagged_undecided": 0
+}
