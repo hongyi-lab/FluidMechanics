@@ -17,6 +17,7 @@ import numpy as np  # noqa: E402
 STYLE = {"figure.facecolor": "white", "axes.facecolor": "white", "savefig.facecolor": "white", "font.size": 9,
          "axes.spines.top": False, "axes.spines.right": False}
 CC = {"G": "#4C72B0", "O": "#C44E52", "V": "#55A868", "M": "#8172B2"}
+TAG = ""  # set by --tag (e.g. a partial snapshot)
 BASE = {"rule": ("this round's rule", "k"), "gate8a": ("Gate 8a rule", "#C44E52"), "two_cond": ("two conditions", "#4C72B0"),
         "energy": ("energy only", "#999999")}
 
@@ -75,7 +76,7 @@ def fig_scatter(R, P, out):
             a.plot([], [], "o", color="k", label="predicted fast (filled)")
             a.plot([], [], "s", color="k", mfc="white", label="predicted slow (open)")
             a.legend(fontsize=7, loc="upper left")
-        fig.suptitle("Gate 9: frozen predictions against the truth at 96 (28 rays outside the nine patterns)", fontsize=10)
+        fig.suptitle("Gate 9: frozen predictions against the truth at 96 (28 rays outside the nine patterns)" + TAG, fontsize=10)
         fig.tight_layout()
         _save(fig, out / "fig13_gate9_pred_vs_truth")
         plt.close(fig)
@@ -113,7 +114,7 @@ def fig_errdist(R, out):
         a.set_xticklabels(cls)
         a.set_ylabel("ln(s_pred / s_c(96))  (bar: u)")
         a.set_title("(c) signed error by class (filled: in range; open triangle: out of range)", fontsize=9)
-        fig.suptitle("Gate 9: error distributions of this round's rule and the three baselines", fontsize=10)
+        fig.suptitle("Gate 9: error distributions of this round's rule and the three baselines" + TAG, fontsize=10)
         fig.tight_layout()
         _save(fig, out / "fig14_gate9_errors")
         plt.close(fig)
@@ -184,7 +185,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--g9", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
+    global TAG
+    TAG = a.tag
     g9, out = Path(a.g9), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     R = json.loads((g9 / "results.json").read_text())

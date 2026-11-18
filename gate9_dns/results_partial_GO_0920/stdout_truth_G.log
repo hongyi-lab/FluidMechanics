@@ -1,0 +1,17 @@
+04:29:09 --- truth 96 G: ['G#1', 'G#2', 'G#3', 'G#4', 'G#5', 'G#6', 'G#7', 'G#8', 'G#9', 'G#10']; centres [0.021637, 0.015245, 0.009079, 0.01432, 0.010157, 0.01849, 0.013105, 0.013282, 0.013269, 0.00957]
+06:04:47     s_c 96 G grid: re-running 30 flagged cases with dt = 0.03125
+06:06:41     s_c 96 G grid: re-running 1 flagged cases with dt = 0.015625
+06:06:47     s_c 96 G: local grid 10x8 in 5857 s; fates G#1 AAAABBBB; G#2 AAAAABBB; G#3 AAAABBBB; G#4 AAAABBBB; G#5 AAABBBBB; G#6 AAAABBBB; G#7 AAAABBBB; G#8 AAAAAABB; G#9 AAABBBBB; G#10 AAAAAABB
+06:24:22     s_c 96 G bisect: re-running 3 flagged cases with dt = 0.03125
+06:24:43     s_c 96 G: bisection round 1: 10 rays, max rel width 2.14e-01, 6933 s
+06:38:02     s_c 96 G bisect: re-running 4 flagged cases with dt = 0.03125
+06:38:41     s_c 96 G: bisection round 2: 10 rays, max rel width 1.07e-01, 7772 s
+06:57:00     s_c 96 G bisect: re-running 3 flagged cases with dt = 0.03125
+06:57:38     s_c 96 G: bisection round 3: 10 rays, max rel width 5.36e-02, 8909 s
+07:11:32     s_c 96 G bisect: re-running 3 flagged cases with dt = 0.03125
+07:12:03     s_c 96 G: bisection round 4: 10 rays, max rel width 2.61e-02, 9773 s
+07:29:19     s_c 96 G bisect: re-running 4 flagged cases with dt = 0.03125
+07:30:10     s_c 96 G: bisection round 5: 10 rays, max rel width 1.29e-02, 10861 s
+07:36:33     s_c 96 G bisect: re-running 2 flagged cases with dt = 0.03125
+07:37:15     s_c 96 G: bisection round 6: 5 rays, max rel width 6.40e-03, 11286 s
+07:37:15 --- truth_G: 188.1 min
