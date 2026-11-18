@@ -1,0 +1,25 @@
+{
+  "invocations": [
+    {
+      "start": "2026-11-18 15:20:09",
+      "argv": [
+        "code/scripts/gate7_dns.py",
+        "--config",
+        "code/configs/gate7_dns.yaml",
+        "--run-dir",
+        "experiments/20261118_gate7_dns_v1",
+        "--stage",
+        "scan",
+        "--level",
+        "96"
+      ],
+      "git": {
+        "commit": "50529b441c67df8be71830fe584e732de01fc704",
+        "dirty": true
+      },
+      "python": "3.11.18",
+      "torch": "2.14.1+cu126",
+      "gpu": "NVIDIA RTX A6000"
+    }
+  ]
+}

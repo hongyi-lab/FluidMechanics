@@ -1,0 +1,18 @@
+10:01:29     64 batch 1: 1.6 ms/step (1.59 ms/case-step), peak 0.07 GiB
+10:01:30     64 batch 6: 7.2 ms/step (1.20 ms/case-step), peak 0.16 GiB
+10:01:30     64 batch 12: 13.6 ms/step (1.14 ms/case-step), peak 0.28 GiB
+10:01:31     64 batch 36: 39.0 ms/step (1.08 ms/case-step), peak 0.74 GiB
+10:01:31     96 batch 1: 4.5 ms/step (4.48 ms/case-step), peak 0.20 GiB
+10:01:31     96 batch 6: 26.1 ms/step (4.35 ms/case-step), peak 0.53 GiB
+10:01:33     96 batch 12: 50.8 ms/step (4.23 ms/case-step), peak 0.91 GiB
+10:01:36     96 batch 36: 149.1 ms/step (4.14 ms/case-step), peak 2.47 GiB
+10:01:37     128 batch 1: 10.0 ms/step (9.98 ms/case-step), peak 0.46 GiB
+10:01:38     128 batch 6: 57.8 ms/step (9.63 ms/case-step), peak 1.23 GiB
+10:01:41     128 batch 12: 114.2 ms/step (9.51 ms/case-step), peak 2.15 GiB
+10:01:49     128 batch 36: 340.7 ms/step (9.46 ms/case-step), peak 5.83 GiB
+10:01:49     estimate 96 (6 rays): 6.1 h (upper bound 10.9 h)
+10:01:49     estimate 128 W#1: 4.7 h (upper bound 8.4 h)
+10:01:49     estimate 128 (5 rays): 27.3 h (upper bound 48.9 h)
+10:01:49     estimate 128 (2 rays: R#22, W#11): 6.9 h (upper bound nan h)
+10:01:49     sum of work: full 38.1 h, reduced 17.7 h; budget 12.0 h -> reduced 128 set (W#1, R#22, W#11)
+10:01:49 --- timing  : 0.3 min

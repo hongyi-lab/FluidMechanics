@@ -1,0 +1,106 @@
+# Gate 7 (DNS): is the fast channel (t_hit_hi < 600 at 64x32x32) a numerical artefact or a real route?
+# Written 2026-11-18 ~10:00 before any Gate 7 run (user task of 2026-11-18 ~09:40; criteria and constants are the user's,
+# not changed: S* = 0.1655 (Gate 5), c* = -2.82 (Gate 6)).
+#
+# User spec (translated from the user's message):
+#   rays: decision (5): W#1, W#3, W#7, W#9, R#22; descriptive: R#13 (fast, negative error); slow controls (2): R#15, W#11.
+#   7a ground truth at higher resolution: levels 96x48x48 (dt 0.0625) and 128x64x64 (dt 0.03125); Re, r_A, E_B, T_det, the
+#      undecided rule and 5b unchanged. Per ray: local grid s = (s_c of the previous level) x {0.7, 1, 1.4, 2, 2.8, 4}; record
+#      every fate and the time to A/B; bisect between the first "not A" point and the point before it to relative width
+#      <= 0.01. No bracket: extend outwards once; still none: flag and report. t_hit_hi at every level for every ray.
+#      W#1 and R#13 already have s_c at 96 (Gate 4b ladder): only t_hit_hi is added. 128 only for the 5 decision rays + W#11.
+#      1% timing first. Total budget 12 h; if exceeded, 128 is reduced to W#1, R#22, W#11 (reported).
+#   7b first gate at the same resolution: delta, q and S(s) recomputed at every level; err(i) = ln(s_i / s_c). The second gate
+#      is not recomputed (all these rays are (i)-bound at 64). Report the ratio of the S coefficients 96/64 and 128/64.
+#   7c what grows in the fast channel (recorded only, no verdict): all 8 rays, at 64 and at the highest level, the final lo and
+#      hi cases of the bisection run to t = 400, every 1.0: total energy; kx = 0 streak part and roll part; kx = alpha;
+#      kx >= 2 alpha; energy fraction in the highest third of the resolved wavenumbers in x, y and z.
+#      W#1 fine scan: 64 and 96, s in [0.012, 0.030], 24 log-spaced points, fates and times (is the fate monotone?).
+#   PRESET VERDICT (5 decision rays, each at its highest level):
+#      first the controls: R#15 and W#11 |d ln s_c| <= 0.02 between adjacent levels. If not: say so at the top of the report and
+#      do not make the verdict below.
+#      "numerical artefact": at least 4 rays with |err(i)| <= 0.10.
+#      "real route": at least 4 rays with |d ln s_c| <= 0.05 between the two highest levels, t_hit_hi < 600 and |err(i)| >= 0.25.
+#      otherwise "undetermined", reported as is.
+#   unattended; resume and progress bars as before; parameter problems walk the ladder and are recorded; only solver-correctness
+#   problems stop. Then report, figures (white background), push to GitHub, stop and wait.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (h1) rays from committor.dns_rays.build_rays with the Gate 5 config (R#k = R_d[k-1], W#k = W_d[k-1]).
+#   (h2) "s_c of the previous level": 96 <- the Gate 5 truth s_c at 64 (bracket 1e-3); 128 <- the Gate 7 s_c at 96, for W#1 the
+#        Gate 4b ladder s_c at 96 (bracket 1e-3). R#13 at 96 is the Gate 4b ladder value as well.
+#   (h3) a grid point with s^2 >= E_B starts in B (fate B at t = 0, set definition; counted as "not A").
+#   (h4) "extend outwards once": every grid point A -> one block above, s_prev x {5.6, 8, 11.3}; the first grid point already not
+#        A -> one block below, s_prev x {0.5, 0.35, 0.25} (the same x sqrt2 spacing). The rule is then applied to the merged,
+#        sorted grid; still no bracket -> ray flagged "not bracketed", no s_c.
+#   (h5) bisection with the arithmetic midpoint (as dns.find_sc_det) while (hi - lo) / lo > 0.01; s_c = (lo + hi) / 2;
+#        t_hit_hi / t_hit_lo = time to B / A of the final hi / lo case (grid point or midpoint).
+#   (h6) undecided rule (user, 2026-11-17 ~11:05): the first not-A grid fate undecided at T_det -> ray flagged "undecided", no
+#        s_c; an undecided midpoint -> flagged likewise.
+#   (h7) the number of A / not-A switches along the local grid is recorded (monotonicity); the bracket follows the first not-A.
+#   (h8) every nonlinear run uses dns.run_det with the 5b rule (Courant > 2.5 or NaN -> re-run from t = 0 at dt/2, then dt/4;
+#        NaN at dt/4 counted as B), gate4_dns.yaml revised_5.5b.
+#   (h9) 7b: delta, q to T_S = 800 at each level (64 recomputed as well; consistency with the Gate 5 theory.npz reported),
+#        outputs every 1.0; S(s) on the Gate 5 grid (1000 points, sqrt(geomspace(r_A, E_B))); s_i by the Gate 5 rule with the
+#        Gate 5 constant S* = 0.165530 (full precision from the Gate 5 results), side +1, no refit. "S coefficients":
+#        p = max_t sqrt(<a,a>) (first-order coefficient, S ~ p s for small s) and r = max_t sqrt(<b,b>) (second order), and,
+#        for reference, S(s) at s = s_c(64) and s_i; ratios level / 64.
+#   (h10) 7c: E = ||u'||^2; streak = u with kx = 0, kz != 0; roll = (v, w) with kx = 0, kz != 0; kx = 0, kz = 0 (mean-flow
+#        distortion, all components) recorded separately so that the five parts sum to E; kx = alpha (m = 1); kx >= 2 alpha.
+#        High band per direction: |m| > (2/3) cut_x, |n| > (2/3) cut_y (extended-domain index), |l| > (2/3) cut_z, with cut =
+#        ceil(N/3) - 1 the 2/3-dealiasing limit; fraction = band energy / E. Runs to t = 400 without absorption at the level's
+#        dt, with the 5b re-run rule; max Courant number recorded. lo / hi = the final bracket at that level (64: Gate 5 truth;
+#        R#13 at 96: Gate 4b ladder; otherwise Gate 7). Highest level = 128 where run, else 96.
+#   (h11) W#1 fine scan: s = geomspace(0.012, 0.030, 24), run_det to T_det; monotone = exactly one A -> not-A switch.
+#   (h12) verdict quantities: "highest two levels" = (96, 128) for rays run at 128, (64, 96) otherwise; t_hit_hi and err(i) at the
+#        highest level. Controls: R#15 (64-96) and W#11 (64-96 and, if run, 96-128), each |d ln s_c| <= 0.02.
+#        Note (not a change): a 1% bracket gives s_c to +-0.5%, so |d ln s_c| carries up to ~0.01 of bisection width.
+#   (h13) 1% timing: per-case-step cost at 96 and 128 for the batch sizes used; estimate = sum over the s_c jobs of rounds x
+#        a typical round length (longest near-edge decision time at 64, x 1.3), upper bound = every round to T_det. Estimate
+#        > 12 h -> 128 reduced to W#1, R#22, W#11 (user rule).
+#   (h14) independent jobs (s_c at 96, s_c of W#1 at 128, theory, 7c at 64, fine scan) run as separate processes on the one GPU;
+#        128 for the other rays starts when their 96 s_c is done. No effect on results.
+name: gate7_dns
+seed: 20261120
+device: cuda
+rays:
+  decision: ["W#1", "W#3", "W#7", "W#9", "R#22"]
+  descriptive: ["R#13"]
+  controls: ["R#15", "W#11"]
+  at_128: ["W#1", "W#3", "W#7", "W#9", "R#22", "W#11"]
+  at_128_reduced: ["W#1", "R#22", "W#11"]
+levels:
+  "64": {grid: [64, 32, 32], dt: 0.0625}
+  "96": {grid: [96, 48, 48], dt: 0.0625}
+  "128": {grid: [128, 64, 64], dt: 0.03125}
+local_grid:
+  factors: [0.7, 1.0, 1.4, 2.0, 2.8, 4.0]
+  extend_up: [5.6, 8.0, 11.3]
+  extend_down: [0.5, 0.35, 0.25]
+  rel_width: 0.01
+constants: {S_star: 0.16552964560447833, c_star: -2.8204054051032426}
+theory: {T_S: 800.0, output_every: 1.0, s_grid_points: 1000}
+diag: {T: 400.0, every: 1.0, high_band_fraction: 0.6666666666666666}
+fine_scan: {ray: "W#1", levels: ["64", "96"], s_min: 0.012, s_max: 0.030, n: 24}
+budget_hours: 12.0
+criteria:
+  controls_max_abs_dln: 0.02
+  artefact: {min_rays: 4, max_abs_err_i: 0.10}
+  real_route: {min_rays: 4, max_abs_dln_top2: 0.05, t_hit_hi_below: 600.0, min_abs_err_i: 0.25}
+data:
+  gate5_run: experiments/20261117_gate5_dns_v1
+  gate5_config: code/configs/gate5_dns.yaml
+  gate4b_run: experiments/20261117_gate4b_dns_v2
+  gate4_config: code/configs/gate4_dns.yaml
+# History
+#  2026-11-18 10:02 1% timing (timing.json): per-case-step 1.1 / 4.2 / 9.5 ms at 64 / 96 / 128, flat in the batch size (the GPU
+#   is saturated at batch 1, so cost adds per case). Preset estimator (h13): full set 38.1 h, reduced 17.7 h (pessimistic:
+#   every round at full batch for 1.3 x the longest 64 decision time). Per-case estimate (sum of expected decision times,
+#   ~17,000 time units per ray and level): full ~13 h, reduced ~8.5 h. Both exceed 12 h for the full set -> 128 reduced to
+#   W#1, R#22, W#11 (user rule), reported. Highest level of W#3, W#7, W#9 is therefore 96 ((64, 96) are their top two levels).
+#   Theory at 128 for the at_128 rays; 7c at the highest level of each ray.
+#  2026-11-18 ~10:27 code review (7 minor findings, none affecting a number on the normal path; fixes before any downstream stage
+#   started; running processes untouched; listed in NOTES.md): flagged rays skipped per ray instead of an assert; theory / diag
+#   resumable; analysis uses the expected levels per ray (missing or flagged s_c at an expected level -> the decision ray counts
+#   for neither verdict, a control fails); s_i with no crossing -> err(i) = +inf (Gate 5 convention); the first-order ratio p is
+#   not formed for pure-wave rays (p(64) = 0 up to round-off), r and S(s_c(64)) ratios reported instead.

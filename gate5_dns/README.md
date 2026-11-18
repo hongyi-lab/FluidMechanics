@@ -27,3 +27,6 @@ S* = 0.1655 is fitted on the first 12 R rays only.
 ## Figures
 - `fig2_gate5_truth_first_gate.png`: (a) DNS vs MFE; (b) 5.1 shape; (c) 5.2 errors by predictor.
 - `fig3_gate5_S_curves.png`: S(s) per ray set, with the DNS edge marked.
+
+## Post-hoc observation (report section 8, descriptive)
+- The 14 rays with fast transitions (t_hit_hi < 600 at 64) are exactly the 14 large-error rays. The 9-mode model has no fast channel. Data: `results_posthoc_fast/`. This led to Gate 7 (`../gate7_dns/`).

@@ -1,0 +1,7 @@
+09:55:26 fast 14: ['R#6', 'R#12', 'R#13', 'R#14', 'R#22', 'W#1', 'W#2', 'W#3', 'W#5', 'W#6', 'W#7', 'W#8', 'W#9', 'W#10']; t_hit_hi fast max 297, slow min 1218
+09:55:26 |err| fast min 0.2376 (R#14); slow median 0.0098, max 0.2243 (W#4)
+09:55:41 MFE first crossing on all 52 rays: 15 s
+09:55:41 MFE W: s_c max rel diff vs Gate 5 0.00e+00; t_hit just above edge 3619-4282
+09:55:57 MFE criterion on MFE W thresholds [S*=0.12333 (Gate 3d item 1, as gate5_dns.yaml)]: composite median |ln| 0.0750 ((i) 0.0614, (ii) 0.2387)
+09:56:03 MFE criterion on MFE W thresholds [S*=0.1236 (value in the user's message)]: composite median |ln| 0.0750 ((i) 0.0625, (ii) 0.2387)
+09:56:03 done

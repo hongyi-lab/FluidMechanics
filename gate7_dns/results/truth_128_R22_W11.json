@@ -1,0 +1,374 @@
+{
+  "key": {
+    "names": [
+      "R#22",
+      "W#11"
+    ],
+    "s_prev": [
+      0.02081388250445884,
+      0.0405473305649133
+    ],
+    "dt": 0.03125,
+    "T_det": 8000.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "factors": [
+      0.7,
+      1.0,
+      1.4,
+      2.0,
+      2.8,
+      4.0
+    ],
+    "rel_width": 0.01,
+    "dirs": [
+      [
+        0.082039069489877,
+        0.357498700202528,
+        -0.061396385896553,
+        0.042670248089103,
+        -0.498996433588621,
+        -0.218026123353598,
+        -0.38151485002772,
+        0.45892350796551,
+        0.455166789214448
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.281945465551056,
+        -0.589356274068466,
+        -0.684949747196606,
+        0.322264223771581,
+        0.012471991161736,
+        0.0
+      ]
+    ]
+  },
+  "phase": "done",
+  "n_round": 5,
+  "counts": [
+    {
+      "n_cases": 12,
+      "flagged_per_level": [
+        2,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 3.0101905484073574,
+      "n_rerun_dt_half": 2,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0243594197861783,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0380047941824737,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0445487676062377,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0477236264214744,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0516237066703586,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    }
+  ],
+  "rays": [
+    {
+      "name": "R#22",
+      "s_prev": 0.02081388250445884,
+      "points": [
+        {
+          "s": 0.014569717753121188,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2056.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.9780793299848943,
+          "nan_final": false
+        },
+        {
+          "s": 0.02081388250445884,
+          "src": "grid x1",
+          "fate": 1,
+          "t_hit": 109.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.6163899798439059,
+          "nan_final": false
+        },
+        {
+          "s": 0.029139435506242376,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 39.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.5661415507427439,
+          "nan_final": false
+        },
+        {
+          "s": 0.04162776500891768,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 26.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.482010466370503,
+          "nan_final": false
+        },
+        {
+          "s": 0.05827887101248475,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 19.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9231101141480296,
+          "nan_final": false
+        },
+        {
+          "s": 0.08325553001783537,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 14.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9270409280721412,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.017691800128790014,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 2103.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.9955576158760178,
+          "nan_final": false
+        },
+        {
+          "s": 0.019252841316624428,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 2058.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0087683259887388,
+          "nan_final": false
+        },
+        {
+          "s": 0.020033361910541635,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1888.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.019997087801702,
+          "nan_final": false
+        },
+        {
+          "s": 0.020423622207500238,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 809.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0310489656293462,
+          "nan_final": false
+        },
+        {
+          "s": 0.02061875235597954,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 2315.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0516237066703586,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.02061875235597954,
+      "hi": 0.02081388250445884,
+      "t_hit_lo": 2315.0,
+      "t_hit_hi": 109.0,
+      "fate_hi": 1,
+      "s_c": 0.02071631743021919
+    },
+    {
+      "name": "W#11",
+      "s_prev": 0.0405473305649133,
+      "points": [
+        {
+          "s": 0.02838313139543931,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2238.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.9958288564809833,
+          "nan_final": false
+        },
+        {
+          "s": 0.0405473305649133,
+          "src": "grid x1",
+          "fate": 1,
+          "t_hit": 1098.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1961306595340744,
+          "nan_final": false
+        },
+        {
+          "s": 0.05676626279087862,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 242.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.5262019856740277,
+          "nan_final": false
+        },
+        {
+          "s": 0.0810946611298266,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 117.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.4032938513318454,
+          "nan_final": false
+        },
+        {
+          "s": 0.11353252558175723,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 34.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1173286971678054,
+          "nan_final": false
+        },
+        {
+          "s": 0.1621893222596532,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 16.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.2452700233196474,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.03446523098017631,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 1927.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0243594197861783,
+          "nan_final": false
+        },
+        {
+          "s": 0.03750628077254481,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 2509.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0380047941824737,
+          "nan_final": false
+        },
+        {
+          "s": 0.039026805668729056,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1206.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0445487676062377,
+          "nan_final": false
+        },
+        {
+          "s": 0.03978706811682118,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 2750.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0477236264214744,
+          "nan_final": false
+        },
+        {
+          "s": 0.04016719934086724,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 2272.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0493353126682272,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.04016719934086724,
+      "hi": 0.0405473305649133,
+      "t_hit_lo": 2272.0,
+      "t_hit_hi": 1098.0,
+      "fate_hi": 1,
+      "s_c": 0.04035726495289027
+    }
+  ],
+  "seconds": 20227.849875450134
+}
