@@ -1,0 +1,4 @@
+00:55:57     theory 64 done
+04:25:17     gain block 1 done
+04:26:04     9.2 frozen: G#1 0.02164 fast in; G#2 0.01525 fast in; G#3 0.009079 fast in; G#4 0.01432 fast in; G#5 0.01016 slow in; G#6 0.01849 fast in; G#7 0.0131 fast in; G#8 0.01328 fast in; G#9 0.01327 slow in; G#10 0.00957 fast in; O#1 0.01695 fast in; O#2 0.02875 fast in; O#3 0.003726 fast in; O#4 0.00536 fast in; O#5 0.09934 slow out; O#6 0.01026 fast in; V#1 0.01951 slow in; V#2 0.01501 slow in; V#3 0.004795 slow in; V#4 0.0257 slow in; V#5 0.03747 slow out; V#6 0.17 slow out; M#1 0.003345 slow in; M#2 0.003462 slow in; M#3 0.003971 slow in; M#4 0.005149 slow in; M#5 0.008231 slow in; M#6 0.0104 fast in
+04:26:04 --- predict: 225.0 min
