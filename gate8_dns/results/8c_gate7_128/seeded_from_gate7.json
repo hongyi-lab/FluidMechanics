@@ -1,0 +1,16 @@
+{
+  "from": "experiments/20261118_gate7_dns_v1",
+  "files": [
+    "truth_128_R22_W11.json",
+    "truth_128_W1.json",
+    "truth_96_R22_W11.json",
+    "truth_96_W3_W7_W9_R15.json",
+    "theory_128.npz",
+    "theory_64.npz",
+    "theory_96.npz",
+    "scan_64.json",
+    "scan_96.json",
+    "theory_64_vs_gate5.json"
+  ],
+  "at": "2026-11-18 20:34:39"
+}

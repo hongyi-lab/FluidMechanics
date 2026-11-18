@@ -1,0 +1,247 @@
+{
+  "key": {
+    "names": [
+      "W#1"
+    ],
+    "s_prev": [
+      0.024387132738659285
+    ],
+    "dt": 0.03125,
+    "T_det": 8000.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "factors": [
+      0.7,
+      1.0,
+      1.4,
+      2.0,
+      2.8,
+      4.0
+    ],
+    "rel_width": 0.01,
+    "dirs": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        -0.351177509160615,
+        0.486898093016717,
+        0.301330124229664,
+        0.570904617001499,
+        -0.472093929842927,
+        0.0
+      ]
+    ]
+  },
+  "phase": "done",
+  "n_round": 5,
+  "counts": [
+    {
+      "n_cases": 6,
+      "flagged_per_level": [
+        3,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.9810593133509506,
+      "n_rerun_dt_half": 3,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 1,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 0.9984864085282265,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 1,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.004694245440786,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 1,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0077964215075872,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 1,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.0130633407704464,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 1,
+      "flagged_per_level": [
+        1,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 3.178889675276441,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    }
+  ],
+  "rays": [
+    {
+      "name": "W#1",
+      "s_prev": 0.024387132738659285,
+      "points": [
+        {
+          "s": 0.0170709929170615,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 1513.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.9860624348731147,
+          "nan_final": false
+        },
+        {
+          "s": 0.024387132738659285,
+          "src": "grid x1",
+          "fate": 1,
+          "t_hit": 99.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.6164345085666814,
+          "nan_final": false
+        },
+        {
+          "s": 0.034141985834123,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 39.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.575411930457088,
+          "nan_final": false
+        },
+        {
+          "s": 0.04877426547731857,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 27.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.5019805765756833,
+          "nan_final": false
+        },
+        {
+          "s": 0.068283971668246,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9326639539439052,
+          "nan_final": false
+        },
+        {
+          "s": 0.09754853095463714,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 15.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9440411032308629,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.02072906282786039,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 1566.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.9984864085282265,
+          "nan_final": false
+        },
+        {
+          "s": 0.022558097783259838,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 1502.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.004694245440786,
+          "nan_final": false
+        },
+        {
+          "s": 0.023472615260959562,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1366.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0077964215075872,
+          "nan_final": false
+        },
+        {
+          "s": 0.023929873999809424,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 872.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0130633407704464,
+          "nan_final": false
+        },
+        {
+          "s": 0.024158503369234356,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 120.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.622584033327478,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.023929873999809424,
+      "hi": 0.024158503369234356,
+      "t_hit_lo": 872.0,
+      "t_hit_hi": 120.0,
+      "fate_hi": 1,
+      "s_c": 0.02404418868452189
+    }
+  ],
+  "seconds": 10834.251929998398
+}

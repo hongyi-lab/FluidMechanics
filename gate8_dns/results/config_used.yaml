@@ -1,0 +1,109 @@
+name: gate8_dns
+seed: 20261121
+device: cuda
+rays:
+  predict:
+  - W#1
+  - W#2
+  - W#3
+  - W#4
+  - W#5
+  - W#6
+  - W#7
+  - W#8
+  - W#9
+  - W#10
+  - W#11
+  - W#12
+  - R#13
+  - R#14
+  - R#15
+  - R#16
+  - R#17
+  - R#18
+  - R#19
+  - R#20
+  - R#21
+  - R#22
+  - R#23
+  - R#24
+  - X#1
+  blind:
+  - W#2
+  - W#4
+  - W#5
+  - W#6
+  - W#8
+  - W#10
+  - W#12
+  - R#14
+  blind_extra:
+  - X#1
+  not_blind:
+  - W#1
+  - W#3
+  - W#7
+  - W#9
+  - W#11
+  - R#13
+  - R#15
+  - R#22
+  d8:
+  - W#1
+  - W#3
+  - R#22
+  - W#11
+  - X#1
+  c8:
+  - W#3
+  - W#7
+  - W#9
+user_rough:
+  fast:
+    W#2: 0.0143
+    W#5: 0.0206
+    W#10: 0.0147
+    W#8: 0.047
+    X#1: 0.0106
+  slow:
+    W#4: 0.04
+    W#6: 0.054
+    W#12: 0.055
+    R#14: 0.022
+third_condition:
+  T_G: 20.0
+  level: '96'
+  also_level: '64'
+  calib_ray: W#1
+  calib_s_c_128: 0.02404418868452189
+x1_gate56:
+  level: '64'
+  gain:
+    T_end: 1500.0
+    output_every: 1.0
+    n_amp: 13
+    ln_half_width: 0.9
+truth:
+  level: '96'
+  route_fast_below: 600.0
+d8:
+  level: '96'
+  T: 400.0
+  every: 1.0
+  report_times:
+  - 10
+  - 20
+  - 50
+  - 100
+  - 200
+criteria:
+  holds_median: 0.1
+  fails_median: 0.25
+constants:
+  S_star: 0.16552964560447833
+  c_star: -2.8204054051032426
+data:
+  gate7_config: code/configs/gate7_dns.yaml
+  gate7_run: experiments/20261118_gate7_dns_v1
+  gate6_run: experiments/20261117_gate6_dns_v1
+  gate6_config: code/configs/gate6_dns.yaml

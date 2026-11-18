@@ -1,0 +1,1379 @@
+{
+  "key": {
+    "names": [
+      "W#2",
+      "W#4",
+      "W#5",
+      "W#6",
+      "W#8",
+      "W#10",
+      "W#12",
+      "R#14",
+      "X#1"
+    ],
+    "s_prev": [
+      0.00955592430607794,
+      0.050291322382588204,
+      0.014466955354510539,
+      0.08226228439583987,
+      0.03941723039882619,
+      0.01010662296770554,
+      0.06221514032781221,
+      0.01732949410217535,
+      0.010246914867485857
+    ],
+    "dt": 0.0625,
+    "T_det": 8000.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "factors": [
+      0.7,
+      1.0,
+      1.4,
+      2.0,
+      2.8,
+      4.0
+    ],
+    "rel_width": 0.01,
+    "dirs": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        -0.034996848380254,
+        -0.611283824118814,
+        -0.230738812902541,
+        0.116402958860323,
+        0.747206302411199,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.640407231306422,
+        0.670624702437084,
+        -0.228147514332438,
+        -0.288886941902511,
+        -0.068074467120646,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.633491209454939,
+        -0.553503469091963,
+        -0.169708455251755,
+        0.12194757821442,
+        0.49864879988844,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.503637119080354,
+        0.460987767059697,
+        0.234669277259417,
+        0.679124989454369,
+        -0.132512300994668,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.376318895046448,
+        -0.305377719547842,
+        -0.640058429211932,
+        -0.543540408884916,
+        0.2449848336913,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.320770915601242,
+        -0.217109358898029,
+        0.1758561207632,
+        0.61717881220668,
+        0.661917279224903,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        -0.617891523509029,
+        0.6857777266336,
+        -0.365901953470896,
+        0.103839146732395,
+        -0.057027772891923,
+        0.0
+      ],
+      [
+        0.459522886219601,
+        0.22249165067973,
+        -0.13330536615339,
+        -0.229753378689651,
+        0.021337743953978,
+        -0.292150344521121,
+        0.591568162090632,
+        -0.453640130299387,
+        -0.165014743024462
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    ]
+  },
+  "phase": "done",
+  "n_round": 6,
+  "counts": [
+    {
+      "n_cases": 54,
+      "flagged_per_level": [
+        26,
+        3,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "courant_max_level0": 2.9612981516964267,
+      "n_rerun_dt_half": 26,
+      "n_rerun_dt_quarter": 3,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 9,
+      "flagged_per_level": [
+        5,
+        1,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0,
+        0
+      ],
+      "courant_max_level0": 2.9076548858856968,
+      "n_rerun_dt_half": 5,
+      "n_rerun_dt_quarter": 1,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 9,
+      "flagged_per_level": [
+        5,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.7979001301580135,
+      "n_rerun_dt_half": 5,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 9,
+      "flagged_per_level": [
+        1,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.651522387643714,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 9,
+      "flagged_per_level": [
+        1,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.744119609348314,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 9,
+      "flagged_per_level": [
+        3,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.9106990748947874,
+      "n_rerun_dt_half": 3,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 8,
+      "flagged_per_level": [
+        1,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.835172148236304,
+      "n_rerun_dt_half": 1,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    }
+  ],
+  "rays": [
+    {
+      "name": "W#2",
+      "s_prev": 0.00955592430607794,
+      "points": [
+        {
+          "s": 0.006689147014254557,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 601.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4154141879521354,
+          "nan_final": false
+        },
+        {
+          "s": 0.00955592430607794,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 848.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4350221827025103,
+          "nan_final": false
+        },
+        {
+          "s": 0.013378294028509114,
+          "src": "grid x1.4",
+          "fate": 0,
+          "t_hit": 927.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4618487940127605,
+          "nan_final": false
+        },
+        {
+          "s": 0.01911184861215588,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 44.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.25274837813282,
+          "nan_final": false
+        },
+        {
+          "s": 0.026756588057018228,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 28.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.1855743165070383,
+          "nan_final": false
+        },
+        {
+          "s": 0.03822369722431176,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9222246293634726,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.016245071320332496,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 61.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.485468720167321,
+          "nan_final": false
+        },
+        {
+          "s": 0.014811682674420805,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 101.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4362061146627942,
+          "nan_final": false
+        },
+        {
+          "s": 0.01409498835146496,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 869.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4679700965973468,
+          "nan_final": false
+        },
+        {
+          "s": 0.014453335512942884,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 711.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4885151072135294,
+          "nan_final": false
+        },
+        {
+          "s": 0.014632509093681845,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 146.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.392567344972269,
+          "nan_final": false
+        },
+        {
+          "s": 0.014542922303312365,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 617.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4984858678881432,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.014542922303312365,
+      "hi": 0.014632509093681845,
+      "t_hit_lo": 617.0,
+      "t_hit_hi": 146.0,
+      "fate_hi": 1,
+      "s_c": 0.014587715698497105
+    },
+    {
+      "name": "W#4",
+      "s_prev": 0.050291322382588204,
+      "points": [
+        {
+          "s": 0.03520392566781174,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2070.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.49196045176218,
+          "nan_final": false
+        },
+        {
+          "s": 0.050291322382588204,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2892.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.542665273696703,
+          "nan_final": false
+        },
+        {
+          "s": 0.07040785133562348,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 298.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9161530309695491,
+          "nan_final": false
+        },
+        {
+          "s": 0.10058264476517641,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 109.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.860314932461433,
+          "nan_final": false
+        },
+        {
+          "s": 0.14081570267124696,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 31.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.7283919516259214,
+          "nan_final": false
+        },
+        {
+          "s": 0.20116528953035281,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 22.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.034259950323591,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.06034958685910584,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 453.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.7228403525222389,
+          "nan_final": false
+        },
+        {
+          "s": 0.05532045462084702,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 526.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.905716870791141,
+          "nan_final": false
+        },
+        {
+          "s": 0.05280588850171761,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 613.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.87173544200292,
+          "nan_final": false
+        },
+        {
+          "s": 0.05154860544215291,
+          "src": "bisect 4",
+          "fate": 1,
+          "t_hit": 790.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.809724011959913,
+          "nan_final": false
+        },
+        {
+          "s": 0.05091996391237055,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 877.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.857129336492434,
+          "nan_final": false
+        },
+        {
+          "s": 0.05060564314747938,
+          "src": "bisect 6",
+          "fate": 1,
+          "t_hit": 1076.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9310432221605434,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.050291322382588204,
+      "hi": 0.05060564314747938,
+      "t_hit_lo": 2892.0,
+      "t_hit_hi": 1076.0,
+      "fate_hi": 1,
+      "s_c": 0.05044848276503379
+    },
+    {
+      "name": "W#5",
+      "s_prev": 0.014466955354510539,
+      "points": [
+        {
+          "s": 0.010126868748157377,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 1654.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4192238205288832,
+          "nan_final": false
+        },
+        {
+          "s": 0.014466955354510539,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 1946.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4406506175203355,
+          "nan_final": false
+        },
+        {
+          "s": 0.020253737496314754,
+          "src": "grid x1.4",
+          "fate": 0,
+          "t_hit": 2078.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4801497628176163,
+          "nan_final": false
+        },
+        {
+          "s": 0.028933910709021078,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 43.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4267164348230703,
+          "nan_final": false
+        },
+        {
+          "s": 0.04050747499262951,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 28.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.3427314063371707,
+          "nan_final": false
+        },
+        {
+          "s": 0.057867821418042156,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.8485103457251895,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.024593824102667916,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 60.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.3554072490690907,
+          "nan_final": false
+        },
+        {
+          "s": 0.022423780799491335,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 91.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.0986271741221607,
+          "nan_final": false
+        },
+        {
+          "s": 0.021338759147903043,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1588.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5032193620115524,
+          "nan_final": false
+        },
+        {
+          "s": 0.021881269973697187,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 2381.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.538093368386145,
+          "nan_final": false
+        },
+        {
+          "s": 0.022152525386594263,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 106.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.101484661055582,
+          "nan_final": false
+        },
+        {
+          "s": 0.022016897680145725,
+          "src": "bisect 6",
+          "fate": 1,
+          "t_hit": 124.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.039192001601062,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.021881269973697187,
+      "hi": 0.022016897680145725,
+      "t_hit_lo": 2381.0,
+      "t_hit_hi": 124.0,
+      "fate_hi": 1,
+      "s_c": 0.021949083826921456
+    },
+    {
+      "name": "W#6",
+      "s_prev": 0.08226228439583987,
+      "points": [
+        {
+          "s": 0.057583599077087905,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2056.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5640928921346968,
+          "nan_final": false
+        },
+        {
+          "s": 0.08226228439583987,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2236.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.6472672508143085,
+          "nan_final": false
+        },
+        {
+          "s": 0.11516719815417581,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 306.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.5045944194696266,
+          "nan_final": false
+        },
+        {
+          "s": 0.16452456879167973,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 34.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9612844387666426,
+          "nan_final": false
+        },
+        {
+          "s": 0.23033439630835162,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 21.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.19410894891175,
+          "nan_final": false
+        },
+        {
+          "s": 0.32904913758335946,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 13.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.2699467006793455,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.09871474127500784,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 2066.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.702716823267383,
+          "nan_final": false
+        },
+        {
+          "s": 0.10694096971459183,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 2045.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.7311709962811115,
+          "nan_final": false
+        },
+        {
+          "s": 0.11105408393438382,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 476.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9085082847489967,
+          "nan_final": false
+        },
+        {
+          "s": 0.10899752682448782,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 2849.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.738402633493632,
+          "nan_final": false
+        },
+        {
+          "s": 0.11002580537943582,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 692.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.7558672541494542,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.10899752682448782,
+      "hi": 0.11002580537943582,
+      "t_hit_lo": 2849.0,
+      "t_hit_hi": 692.0,
+      "fate_hi": 1,
+      "s_c": 0.10951166610196182
+    },
+    {
+      "name": "W#8",
+      "s_prev": 0.03941723039882619,
+      "points": [
+        {
+          "s": 0.02759206127917833,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 1839.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4549782935026103,
+          "nan_final": false
+        },
+        {
+          "s": 0.03941723039882619,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2085.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4919238712843292,
+          "nan_final": false
+        },
+        {
+          "s": 0.05518412255835666,
+          "src": "grid x1.4",
+          "fate": 0,
+          "t_hit": 1858.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5417444357833219,
+          "nan_final": false
+        },
+        {
+          "s": 0.07883446079765238,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 39.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.0745508089458493,
+          "nan_final": false
+        },
+        {
+          "s": 0.11036824511671332,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 25.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.0287511936353275,
+          "nan_final": false
+        },
+        {
+          "s": 0.15766892159530477,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 18.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.611437970108645,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.06700929167800453,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 63.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.1087748147050824,
+          "nan_final": false
+        },
+        {
+          "s": 0.06109670711818059,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 147.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9165241429706883,
+          "nan_final": false
+        },
+        {
+          "s": 0.05814041483826862,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1492.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5511738873926013,
+          "nan_final": false
+        },
+        {
+          "s": 0.059618560978224606,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 2111.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5559073821576959,
+          "nan_final": false
+        },
+        {
+          "s": 0.0603576340482026,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 2363.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5582784212873626,
+          "nan_final": false
+        },
+        {
+          "s": 0.060727170583191596,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 2501.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5594645576536168,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.060727170583191596,
+      "hi": 0.06109670711818059,
+      "t_hit_lo": 2501.0,
+      "t_hit_hi": 147.0,
+      "fate_hi": 1,
+      "s_c": 0.06091193885068609
+    },
+    {
+      "name": "W#10",
+      "s_prev": 0.01010662296770554,
+      "points": [
+        {
+          "s": 0.007074636077393877,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 1254.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.42380380983441,
+          "nan_final": false
+        },
+        {
+          "s": 0.01010662296770554,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 1558.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4471290110054524,
+          "nan_final": false
+        },
+        {
+          "s": 0.014149272154787755,
+          "src": "grid x1.4",
+          "fate": 0,
+          "t_hit": 1871.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4792506879456697,
+          "nan_final": false
+        },
+        {
+          "s": 0.02021324593541108,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 43.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4823003416429206,
+          "nan_final": false
+        },
+        {
+          "s": 0.02829854430957551,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 28.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.281615094109364,
+          "nan_final": false
+        },
+        {
+          "s": 0.04042649187082216,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.01106433791448,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.017181259045099418,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 60.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.2571647163277127,
+          "nan_final": false
+        },
+        {
+          "s": 0.015665265599943586,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 95.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.368042623749803,
+          "nan_final": false
+        },
+        {
+          "s": 0.014907268877365671,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 1921.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4853943349148513,
+          "nan_final": false
+        },
+        {
+          "s": 0.015286267238654628,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 1939.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4974785316614814,
+          "nan_final": false
+        },
+        {
+          "s": 0.015475766419299108,
+          "src": "bisect 5",
+          "fate": 1,
+          "t_hit": 119.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.280664812294421,
+          "nan_final": false
+        },
+        {
+          "s": 0.015381016828976867,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 1923.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5196201244912306,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.015381016828976867,
+      "hi": 0.015475766419299108,
+      "t_hit_lo": 1923.0,
+      "t_hit_hi": 119.0,
+      "fate_hi": 1,
+      "s_c": 0.015428391624137987
+    },
+    {
+      "name": "W#12",
+      "s_prev": 0.06221514032781221,
+      "points": [
+        {
+          "s": 0.043550598229468544,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2092.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4615439850900922,
+          "nan_final": false
+        },
+        {
+          "s": 0.06221514032781221,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2307.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5090371300519976,
+          "nan_final": false
+        },
+        {
+          "s": 0.08710119645893709,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 240.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9104574410334847,
+          "nan_final": false
+        },
+        {
+          "s": 0.12443028065562442,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 165.0,
+          "dt_used": 0.0625,
+          "courant_max": 2.1201853347908877,
+          "nan_final": false
+        },
+        {
+          "s": 0.17420239291787418,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 15.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9503810624588747,
+          "nan_final": false
+        },
+        {
+          "s": 0.24886056131124884,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 9.0,
+          "dt_used": 0.0625,
+          "courant_max": 2.4285711527087512,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.07465816839337465,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 445.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.8808554699189601,
+          "nan_final": false
+        },
+        {
+          "s": 0.06843665436059343,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 2586.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5263238893245819,
+          "nan_final": false
+        },
+        {
+          "s": 0.07154741137698403,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 573.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.8344264223774154,
+          "nan_final": false
+        },
+        {
+          "s": 0.06999203286878873,
+          "src": "bisect 4",
+          "fate": 1,
+          "t_hit": 1221.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.7151182178526183,
+          "nan_final": false
+        },
+        {
+          "s": 0.06921434361469109,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 2572.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5331671053629476,
+          "nan_final": false
+        },
+        {
+          "s": 0.06960318824173992,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 2788.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5384725755642288,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.06960318824173992,
+      "hi": 0.06999203286878873,
+      "t_hit_lo": 2788.0,
+      "t_hit_hi": 1221.0,
+      "fate_hi": 1,
+      "s_c": 0.06979761055526432
+    },
+    {
+      "name": "R#14",
+      "s_prev": 0.01732949410217535,
+      "points": [
+        {
+          "s": 0.012130645871522744,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 2287.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4850818920508981,
+          "nan_final": false
+        },
+        {
+          "s": 0.01732949410217535,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2156.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.533843637294206,
+          "nan_final": false
+        },
+        {
+          "s": 0.024261291743045487,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 91.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.455217841817753,
+          "nan_final": false
+        },
+        {
+          "s": 0.0346589882043507,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 36.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.127157297080176,
+          "nan_final": false
+        },
+        {
+          "s": 0.048522583486090974,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 25.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.1477422635443197,
+          "nan_final": false
+        },
+        {
+          "s": 0.0693179764087014,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 18.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.9066178955382438,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.020795392922610418,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 2880.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5695255372074746,
+          "nan_final": false
+        },
+        {
+          "s": 0.022528342332827953,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 597.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.733041318563105,
+          "nan_final": false
+        },
+        {
+          "s": 0.021661867627719184,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 681.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.932607141238232,
+          "nan_final": false
+        },
+        {
+          "s": 0.0212286302751648,
+          "src": "bisect 4",
+          "fate": 1,
+          "t_hit": 926.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9371366539514265,
+          "nan_final": false
+        },
+        {
+          "s": 0.02101201159888761,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 3090.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.5719520627040515,
+          "nan_final": false
+        },
+        {
+          "s": 0.021120320937026205,
+          "src": "bisect 6",
+          "fate": 1,
+          "t_hit": 1171.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.9392786389992906,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.02101201159888761,
+      "hi": 0.021120320937026205,
+      "t_hit_lo": 3090.0,
+      "t_hit_hi": 1171.0,
+      "fate_hi": 1,
+      "s_c": 0.021066166267956907
+    },
+    {
+      "name": "X#1",
+      "s_prev": 0.010246914867485857,
+      "points": [
+        {
+          "s": 0.007172840407240099,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 332.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4349264544450722,
+          "nan_final": false
+        },
+        {
+          "s": 0.010246914867485857,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 537.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.470458617349982,
+          "nan_final": false
+        },
+        {
+          "s": 0.014345680814480198,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 41.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.436881112280053,
+          "nan_final": false
+        },
+        {
+          "s": 0.020493829734971714,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 26.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.287303570221018,
+          "nan_final": false
+        },
+        {
+          "s": 0.028691361628960396,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 19.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.8270029619692374,
+          "nan_final": false
+        },
+        {
+          "s": 0.04098765946994343,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 15.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.8072090177598308,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.012296297840983027,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 53.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4660935929637335,
+          "nan_final": false
+        },
+        {
+          "s": 0.011271606354234442,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 69.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4016920075798014,
+          "nan_final": false
+        },
+        {
+          "s": 0.01075926061086015,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 89.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.4042687380194154,
+          "nan_final": false
+        },
+        {
+          "s": 0.010503087739173004,
+          "src": "bisect 4",
+          "fate": 1,
+          "t_hit": 154.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.3794845686387043,
+          "nan_final": false
+        },
+        {
+          "s": 0.01037500130332943,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 573.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4822344172513475,
+          "nan_final": false
+        },
+        {
+          "s": 0.010439044521251217,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 607.0,
+          "dt_used": 0.0625,
+          "courant_max": 1.4917202401372802,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.010439044521251217,
+      "hi": 0.010503087739173004,
+      "t_hit_lo": 607.0,
+      "t_hit_hi": 154.0,
+      "fate_hi": 1,
+      "s_c": 0.01047106613021211
+    }
+  ],
+  "seconds": 6917.79184627533
+}

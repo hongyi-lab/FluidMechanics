@@ -1,0 +1,16 @@
+18:14:09 start 8b_truth
+18:14:09 FAILED 8b_truth
+18:14:40 restart after fixing a syntax error introduced by the review fix (no run had started)
+18:14:40 start 8b_truth
+20:10:00 done 8b_truth
+20:10:00 start 8d
+20:34:38 done 8d
+20:34:38 start 8c_prepare
+20:34:39 done 8c_prepare
+20:34:39 start 8c_truth
+23:04:30 done 8c_truth
+23:04:30 start 8c_analysis
+23:04:31 done 8c_analysis
+23:04:31 start analysis
+23:04:32 done analysis
+23:04:32 all done

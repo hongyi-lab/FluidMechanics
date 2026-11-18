@@ -1,6 +1,8 @@
 # Gate 7 (DNS): fast channel, numerical artefact or real route? (2026-11-18, unattended)
 
-**Outcome (preset criteria): undetermined.** The controls pass. "Real route" holds for 2 of the 5 decision rays (W#1, R#22); 4 are needed. "Numerical artefact" holds for none.
+**Update (Gate 8c, 2026-11-18 23:04):** with W#3, W#7 and W#9 run at 128 (spec unchanged), the same preset verdict gives **real route** (5 of 5 decision rays; controls pass). See `../gate8_dns/` (report section 5).
+
+**Outcome as first reported (preset criteria): undetermined.** The controls pass. "Real route" holds for 2 of the 5 decision rays (W#1, R#22); 4 are needed. "Numerical artefact" holds for none.
 
 - **Full report (Chinese):** `report_zh.md`. Its paths map as follows:
   - `docs/reports/figs/gate7/` → this folder;

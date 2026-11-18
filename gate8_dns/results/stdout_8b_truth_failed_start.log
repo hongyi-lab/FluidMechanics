@@ -1,0 +1,4 @@
+  File "/srv/hgao0864/project_main/code/scripts/gate8_dns.py", line 423
+    res["c8"] = {"source": str((sub / "results.json").resolve().relative_to(REPO))  # review fix 18:2x (relative run dir) if (sub / "results.json").exists() else "not run",
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?

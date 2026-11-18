@@ -1,0 +1,4 @@
+23:04:32     8b: n 8 (flagged 0); median |err| 3-cond 0.17173679331876693, 2-cond 0.2856206049617448, energy 1.5551728939598575 -> partly; routes right 6/8
+23:04:32     X#1: {'ray': 'X#1', 'blind': True, 's_pred': 0.010246914867485857, 'route_pred': 'fast', 's_fast': 0.010246914867485857, 's_slow': 0.01672191410263206, 's_E': 0.0070263413885127204, 's_c_96': 0.01047106613021211, 'lo': 0.010439044521251217, 'hi': 0.010503087739173004, 't_hit_lo': 607.0, 't_hit_hi': 154.0, 'source': 'Gate 8 (truth_96_blind.json)', 'err_3cond': -0.021639175103481182, 'err_2cond': 0.46810423408294055, 'err_energy': -0.3989497048676384, 'err_fast_alone': -0.021639175103481182, 'route_true': 'fast', 'route_right': True}
+23:04:32     8c verdict: {'artefact_rays': [], 'real_route_rays': ['W#1', 'W#3', 'W#7', 'W#9', 'R#22'], 'incomplete_rays': [], 'verdict': 'real route', 'verdict_if_controls_ignored (descriptive)': 'real route'}
+23:04:32 --- analysis: 0.0 min
