@@ -1,0 +1,108 @@
+# Gate 8 (DNS): blind test of the third condition (fast channel = oblique-wave route); 8c completes Gate 7.
+# Written 2026-11-18 ~18:30 before any Gate 8 run (user task of 2026-11-18 ~17:50). Criteria and constants are the user's and
+# are not changed: S* = 0.1655 (Gate 5), c* = -2.82 (Gate 6), P* from the W#1 128 truth (Gate 7).
+#
+# User spec (translated from the user's message):
+#   Third condition (fixed now): G = max_{0<=t<=20} ||Pw delta(t)||^2 / ||U||^2, delta the solution linearised about the laminar
+#     state, unit amplitude, maximum over every step. Computed at 96; the 64 value and the ratio reported as well.
+#     P(s) = s^2 G. Fast condition P(s) >= P*. s_fast = sqrt(P*/G). P* from the W#1 128 truth only: P* = (0.024044)^2 G(W#1).
+#     Three-condition prediction: s_pred = min(s_fast, s_slow), s_slow = max(s_i, s_ii); S*, c* unchanged, s_ii from the Gate 6 c(s).
+#     Route prediction: s_fast < s_slow -> "fast", otherwise "slow".
+#   New ray X#1 = pure a8 (a8 = 1, the others 0), a pair of oblique waves (alpha, +-gamma); its delta, q, S(s), c(s) at 64 as in
+#     Gates 5/6.
+#   8a frozen predictions (before any truth run): G, s_fast, s_slow, s_pred, route for W#1-W#12, R#13-R#24, X#1; written to a file
+#     and committed before 8b starts. The user's rough values (t = 10 approximation, for comparison; both recorded):
+#     fast: W#2 0.0143, W#5 0.0206, W#10 0.0147, W#8 0.047, X#1 0.0106; slow: W#4 0.040, W#6 0.054, W#12 0.055 (the two conditions
+#     almost tied), R#14 0.022. (User: the four "slow" ones are the least certain; their amplitudes are large and the
+#     approximation is poor there.)
+#   8b blind truth at 96x48x48: W#2, W#4, W#5, W#6, W#8, W#10, W#12, R#14, X#1; spec as Gate 7 7a; t_hit_hi recorded.
+#     PRESET VERDICT (the first 8 only): median |ln(s_pred / s_c(96))| <= 0.10 -> "third condition holds"; >= 0.25 -> "does not
+#     hold"; between -> "partly". X#1 reported alone (error and route). Controls on the same 8: median error of the two-condition
+#     composite and of energy only. Route classification (truth fast = t_hit_hi < 600): number right, reported only.
+#     Descriptive: W#1 (calibration), W#3, W#7, W#9, W#11, R#13, R#15, R#22 (converged truth exists) in the same table, "not blind".
+#   8c complete Gate 7: 128x64x64 for W#3, W#7, W#9, spec unchanged; new conclusion by the Gate 7 preset verdict.
+#   8d record only (W#1, W#3, R#22, W#11, X#1 at 96): (1) streak energy split into kz = gamma, 2 gamma, rest, theory and DNS;
+#     report whether the fast rays and X#1 first make kz = 2 gamma vortices and streaks (the oblique-wave signature in the
+#     literature). (2) At s = s_c(96) recompute the second-gate linear wave ||y||^2(t) every 1.0 to t = 400 and compare with the DNS
+#     kx = alpha energy.
+#   Order 8a -> 8b -> 8d -> 8c; unattended; resume and progress bars as before; parameter problems walk the ladder and are
+#   recorded; only solver-correctness problems stop. Then report, figures (white), push, stop and wait.
+#   Also (user, same message): Gate 7 accepted as "undetermined"; the 64 truths of the 14 fast rays of Gates 5/6 (41-55% low) are
+#   no longer used for conclusions; post-hoc observations 1-3 to be checked (descriptive), and a table of a8, G, fast for the 52 rays.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (h1) X#1 direction = e_8: coefficient 1 on NJP mode 8 (index 7 of the 9 modes), the others 0. a8 of any ray = its index-7
+#        coefficient (rays are unit vectors).
+#   (h2) G: delta advanced alone (dns.Grid.lin + viscous factor, Lawson RK4, dealiased and symmetrised after every step as the DNS)
+#        at the level's dt (64: 0.0625, 96: 0.0625); ||Pw delta||^2 (Pw = kx != 0 part; ||U|| = 1 in the grid norm) evaluated at
+#        t = 0 and after every step to t = 20; G = the maximum. delta(0) = sum_i d_i u_i (energy 1).
+#   (h3) P* = s_c(W#1, 128)^2 G_96(W#1) with s_c at full precision 0.02404418868452189 (the user's 0.024044 rounded).
+#   (h4) s_slow at 64, unchanged from Gates 5/6: s_i = exp(pred_S) (Gate 5 analysis.npz), s_ii = s_c(64) exp(ln_err_ii) (Gate 6
+#        results; a clamped s_ii, flag "below" / "never", is the grid end and is reported as a bound: R#13 "below").
+#        X#1 (no Gate 5/6 value): run_delta_q to T_S = 800 at 64 -> S(s) on the Gate 5 grid -> s_i (S*, side +1, Gate 5 rule);
+#        run_gain at 64, T_end 1500, 13 amplitudes with ln s equally spaced within +-0.9 around s_i(X#1) (no s_c exists; on the W
+#        rays s_ii lies within 0.2 of s_i), c = ln max_t ||y||^2, first crossing of c* by linear interpolation; if clamped, one
+#        more block of 13 on that side (same spacing), recorded.
+#   (h5) route "fast" iff s_fast < s_slow (a tie is "slow").
+#   (h6) 8b: Gate 7 find_sc_local at 96 (dt 0.0625; local grid s_prev x {0.7,1,1.4,2,2.8,4}, extension once, bisection to 1%,
+#        5b re-run rule, undecided rule). s_prev = Gate 5 truth s_c(64); X#1: s_prev = its frozen s_pred (8a).
+#   (h7) 8b verdict: median over the blind 8 that have an s_c at 96 (Gate 5 convention, n reported); a flagged ray is reported
+#        with its status. Composite control = s_slow (h4); energy-only control = exp(pred_E) (Gate 5, calibrated on R#1-R#12).
+#   (h8) truth route: fast iff t_hit_hi(96) < 600 (t_hit_hi of the final 96 bracket).
+#   (h9) non-blind rows use s_c(96): W#1 and R#13 from the Gate 4b ladder, the others Gate 7; their 128 values (W#1, R#22,
+#        W#11, and W#3, W#7, W#9 after 8c) are listed beside.
+#   (h10) 8d (1): kz bins |l| = 1 (gamma), |l| = 2 (2 gamma), |l| >= 3; streak = u at kx = 0, kz != 0 (the Gate 5 streak); the
+#        roll (v, w at kx = 0, kz != 0) recorded the same way (extra). Theory: P0 delta and q split by bin, A_bin^2(t; s) =
+#        s^2 aa + 2 s^3 ab + s^4 bb at s = s_c(96), to t = 400 every 1.0. DNS: the final 96 bracket (lo, hi) run without
+#        absorption to t = 400, every 1.0, 5b re-run rule (Gate 7 7c runs plus the bins). Brackets: W#1 Gate 4b ladder; W#3,
+#        R#22, W#11 Gate 7; X#1 8b. Reported: bin energies at t = 10, 20, 50, 100, 200 and the first time the 2 gamma bin exceeds
+#        the gamma bin (descriptive).
+#   (h11) 8d (2): run_gain (Gate 6 equations) at one amplitude s = s_c(96), T = 400, every 1.0, at 96; ||y||^2 and its kx = alpha
+#        part recorded; compared with the DNS kx = alpha energy (and the DNS kx != 0 total) of the 8d (1) lo / hi runs.
+#   (h12) 8c: the Gate 7 script and config unchanged, run in experiments/<gate8 run>/8c_gate7_128/: a new folder seeded with
+#        copies of the Gate 7 truth, theory and scan files, and a timing.json whose decision is the "full 128 set" branch of the
+#        Gate 7 rule (the 128 set then is W#1, W#3, W#7, W#9, R#22, W#11). s_prev at 128 = Gate 7 s_c(96). The Gate 7 analysis stage
+#        gives the new verdict. The Gate 7 run folder itself is not touched.
+#   (h13) one process at a time, in the user's order 8a -> push -> 8b -> 8d -> 8c -> analysis.
+#   (h14) the post-hoc checks and the 52-ray table are descriptive (stage posthoc, same run folder), G at 64 and 96 for all 52 rays
+#        and X#1, plus ||Pw delta(10)||^2 at 64 (the user's t = 10 quantity).
+name: gate8_dns
+seed: 20261121
+device: cuda
+rays:
+  predict: ["W#1", "W#2", "W#3", "W#4", "W#5", "W#6", "W#7", "W#8", "W#9", "W#10", "W#11", "W#12",
+            "R#13", "R#14", "R#15", "R#16", "R#17", "R#18", "R#19", "R#20", "R#21", "R#22", "R#23", "R#24", "X#1"]
+  blind: ["W#2", "W#4", "W#5", "W#6", "W#8", "W#10", "W#12", "R#14"]
+  blind_extra: ["X#1"]
+  not_blind: ["W#1", "W#3", "W#7", "W#9", "W#11", "R#13", "R#15", "R#22"]
+  d8: ["W#1", "W#3", "R#22", "W#11", "X#1"]
+  c8: ["W#3", "W#7", "W#9"]
+user_rough:
+  fast: {"W#2": 0.0143, "W#5": 0.0206, "W#10": 0.0147, "W#8": 0.047, "X#1": 0.0106}
+  slow: {"W#4": 0.040, "W#6": 0.054, "W#12": 0.055, "R#14": 0.022}
+third_condition:
+  T_G: 20.0
+  level: "96"
+  also_level: "64"
+  calib_ray: "W#1"
+  calib_s_c_128: 0.02404418868452189
+x1_gate56:
+  level: "64"
+  gain: {T_end: 1500.0, output_every: 1.0, n_amp: 13, ln_half_width: 0.9}
+truth:
+  level: "96"
+  route_fast_below: 600.0
+d8:
+  level: "96"
+  T: 400.0
+  every: 1.0
+  report_times: [10, 20, 50, 100, 200]
+criteria:
+  holds_median: 0.10
+  fails_median: 0.25
+constants: {S_star: 0.16552964560447833, c_star: -2.8204054051032426}
+data:
+  gate7_config: code/configs/gate7_dns.yaml
+  gate7_run: experiments/20261118_gate7_dns_v1
+  gate6_run: experiments/20261117_gate6_dns_v1
+  gate6_config: code/configs/gate6_dns.yaml
