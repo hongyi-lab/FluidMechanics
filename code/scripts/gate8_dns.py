@@ -420,7 +420,8 @@ def st_analysis(ctx, run, args):
             r["s_c_128"] = q["s_c"]
             r["err_3cond_vs_128"] = math.log(r["s_pred"] / q["s_c"])
     res["not_blind"] = nb
-    res["c8"] = {"source": str((sub / "results.json").resolve().relative_to(REPO))  # review fix 18:2x (relative run dir) if (sub / "results.json").exists() else "not run",
+    # review fix 18:2x: resolve() before relative_to (the run dir is relative)
+    res["c8"] = {"source": str((sub / "results.json").resolve().relative_to(REPO)) if (sub / "results.json").exists() else "not run",
                  "verdict": R7.get("verdict"), "controls": R7.get("controls"),
                  "rays": {n: {lv: {k: R7["rays"][n][lv].get(k) for k in ("s_c", "t_hit_hi", "err_i", "dln_vs_prev")} for lv in ("64", "96", "128")
                               if isinstance(R7["rays"][n].get(lv), dict)} for n in R7["rays"]}}
