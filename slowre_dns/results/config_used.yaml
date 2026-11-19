@@ -1,0 +1,46 @@
+data:
+  gate9_config: code/configs/gate9_dns.yaml
+  gate9_run: experiments/20261119_gate9_dns_v1
+Re: 500.0
+rays:
+- G#5
+- G#9
+- V#1
+- V#2
+- V#3
+- M#1
+- M#2
+- M#3
+- M#4
+- M#5
+fate:
+  r_A: 5.0e-07
+  E_B: 0.24
+  T_det: 10000.0
+truth:
+  factors:
+  - 0.35
+  - 0.5
+  - 0.7
+  - 1.0
+  - 1.4
+  - 2.0
+  - 2.8
+  - 4.0
+  ext_down:
+  - 0.25
+  - 0.177
+  ext_up:
+  - 5.6
+  - 8.0
+  rel_width: 0.01
+control_96:
+- V#1
+pilot:
+  rays:
+  - G#9
+  - V#1
+  - M#4
+  factor_of_sc400: 3.0
+  T: 2000.0
+gain_flag_t: 1400.0

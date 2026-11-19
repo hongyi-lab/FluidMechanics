@@ -1,0 +1,34 @@
+# Slow route at another Reynolds number: quick test (2026-11-19, user's request after Gate 9: "专门看慢路线，换个雷诺数测测试试，
+# 先换一个能快速验证的跑一下"). Descriptive, no verdict.
+#
+# Question: does the slow rule s_slow = max(s_i, s_ii), with S* and c* fixed at their Re = 400 values, follow the threshold s_c when Re
+# changes? The theory (delta, q, S(s); seed gain c(s)) is recomputed at the new Re; only the two constants are carried over.
+#
+# Choices (mine; the user asked for a quick test and left the design to me):
+#   (r1) Re = 500 (x1.25). Higher rather than lower: at Re = 400 the B state is reached through turbulence; at lower Re that is less
+#        certain, at higher Re it is more so. Domain, laminar flow, symmetries and the 64x32x32 grid with dt = 0.0625 unchanged.
+#   (r2) Rays: the 10 Gate 9 rays predicted slow and truly slow at Re = 400 (G#5, G#9, V#1-V#3, M#1-M#5). Their Re = 400 truths
+#        (96) and predictions (64 theory) are in experiments/20261119_gate9_dns_v1. They took no part in fitting S* or c*.
+#   (r3) Rule unchanged: S* = 0.16553, c* = -2.8204; theory T_S = 800; gain T_end = 1500, 13 amplitudes over ln s_i +- 0.9, one
+#        extension if no crossing (all as Gate 9.2). t_at_max of the gain is recorded (flag if >= 1400).
+#   (r4) Fates: r_A = 5e-7 and E_B = 0.24 unchanged. T_det scaled with Re (viscous decay ~ 1/Re): 8000 x 500/400 = 10000.
+#   (r5) Truth at 64 (at Re = 400 the slow rays agree between 64 and 96 within 0.3%), the Gate 9 search (find_sc_grid9: local grid
+#        x0.35-4, extension once, bisection to rel width 0.01, Courant/NaN ladder dt/2, dt/4). Grid centred at s_i (known minutes
+#        after the start) so that the truth runs at the same time as the gain; s_c does not depend on the centre within the grid.
+#   (r6) Resolution control at 96x48x48, Re = 500: V#1 (|k|^2 27; driver, truth_96.json) and V#2 (the largest mean |k|^2 of the 10,
+#        43.4; added 16:18 after the code review found V#1 is not the largest; truth_96_V2.json).
+#   (r7) Pilot (record only): G#9, V#1, M#4 at s = 3 s_c(400), T = 2000, no absorption, at Re = 400 and Re = 500: does E stay
+#        above E_B after the first crossing (E_B kept at 0.24)? Run with run_det (Courant/NaN ladder; review fix: the first
+#        run_nonlinear pilot was stopped at 16:17, pilot_det.npz).
+#   (r8) Report: per ray s_i, s_ii, s_slow, s_c(500), err = ln(s_slow / s_c); the shift ln(s_c(500)/s_c(400)) (= the error of
+#        "no change with Re"); the implied constants S(s_c) and c(s_c) at both Re against S* and c*.
+data:
+  gate9_config: code/configs/gate9_dns.yaml
+  gate9_run: experiments/20261119_gate9_dns_v1
+Re: 500.0
+rays: ["G#5", "G#9", "V#1", "V#2", "V#3", "M#1", "M#2", "M#3", "M#4", "M#5"]
+fate: {r_A: 5.0e-7, E_B: 0.24, T_det: 10000.0}
+truth: {factors: [0.35, 0.5, 0.7, 1.0, 1.4, 2.0, 2.8, 4.0], ext_down: [0.25, 0.177], ext_up: [5.6, 8.0], rel_width: 0.01}
+control_96: ["V#1"]
+pilot: {rays: ["G#9", "V#1", "M#4"], factor_of_sc400: 3.0, T: 2000.0}
+gain_flag_t: 1400.0

@@ -1,0 +1,23 @@
+{
+  "invocations": [
+    {
+      "start": "2026-11-19 16:14:04",
+      "argv": [
+        "code/scripts/slowre_dns.py",
+        "--config",
+        "code/configs/slowre_dns.yaml",
+        "--run-dir",
+        "experiments/20261119_slowre500_dns_v1",
+        "--stage",
+        "gain"
+      ],
+      "git": {
+        "commit": "50529b441c67df8be71830fe584e732de01fc704",
+        "dirty": true
+      },
+      "python": "3.11.18",
+      "torch": "2.14.1+cu126",
+      "gpu": "NVIDIA RTX A6000"
+    }
+  ]
+}

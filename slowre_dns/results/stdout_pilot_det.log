@@ -1,0 +1,6 @@
+pilot Re400:   0%|          | 0/2000 [00:00<?, ?it/s]                                                     16:17:11     pilot Re400: re-running 3 flagged cases with dt = 0.03125
+16:29:40     pilot Re 400.0: counts {'n_cases': 3, 'flagged_per_level': [3, 0], 'nan_per_level': [0, 0], 'courant_max_level0': 2.609799569471187, 'n_rerun_dt_half': 3, 'n_rerun_dt_quarter': 0, 'n_nan_final_counted_B': 0, 'n_flag_at_last_level': 0}
+pilot Re500:   0%|          | 0/2000 [00:00<?, ?it/s]                                                     16:29:45     pilot Re500: re-running 3 flagged cases with dt = 0.03125
+16:41:43     pilot Re 500.0: counts {'n_cases': 3, 'flagged_per_level': [3, 0], 'nan_per_level': [0, 0], 'courant_max_level0': 2.9058813696794186, 'n_rerun_dt_half': 3, 'n_rerun_dt_quarter': 0, 'n_nan_final_counted_B': 0, 'n_flag_at_last_level': 0}
+16:41:43     pilot done
+16:41:43 --- pilot: 24.7 min
