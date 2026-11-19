@@ -87,6 +87,27 @@ def main():
         out.append(f"| {r['ray']} | {'in' if r['in_range'] else 'out'} | {r['route_pred']} / {r.get('route_true') or '—'} | {sp} | {sc} | {th} | "
                    f"{f(r.get('err'))} | {f(r.get('u'), 4)} ({r.get('d_grid_source', '—')}) | {cov} | "
                    f"{'—' if r.get('bound_ok') is None else ('ok' if r['bound_ok'] else 'violated')} | {ebs} | {r['status']} |")
+    # supplementary (descriptive): the same per-ray numbers grouped by predicted route (the intervals are calibrated by route)
+    import sys
+    import numpy as np
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from committor.dns_gate9 import binom_two_sided, boot_median_ci
+    out.append("\n### supplementary: in range, by predicted route (same per-ray numbers; bootstrap 10000, seed 20261119)\n")
+    out.append("| route | n | ln err median | abs median (bootstrap 95%) | 50% k / n (p) | 80% k / n (p) | paired vs two conditions: median (95%), rule closer |")
+    out.append("|---|---|---|---|---|---|---|")
+    for route in ("fast", "slow"):
+        sel = [r for r in R["rows"] if r["in_range"] and r["route_pred"] == route and "err" in r]
+        cen = [r for r in R["rows"] if r["in_range"] and r["route_pred"] == route and "censored" in r and "cover" in r]
+        if not sel and not cen:
+            continue
+        e = np.array([r["err"] for r in sel])
+        cv = sel + cen
+        k5, k8 = sum(r["cover"]["p50"] for r in cv), sum(r["cover"]["p80"] for r in cv)
+        d = [abs(r["err"]) - abs(r["err_base"]["two_cond"]) for r in sel if r["err_base"]["two_cond"] is not None]
+        out.append(f"| {route} | {len(sel)}{f' + {len(cen)} censored' if cen else ''} | {np.median(e):.3f} | {np.median(np.abs(e)):.3f} "
+                   f"{ci(boot_median_ci(np.abs(e), 10000, 20261119))} | {k5} / {len(cv)} ({binom_two_sided(k5, len(cv), 0.5):.3g}) | "
+                   f"{k8} / {len(cv)} ({binom_two_sided(k8, len(cv), 0.8):.3g}) | "
+                   f"{(f'{np.median(d):.3f} ' + ci(boot_median_ci(d, 10000, 20261119)) + f', {sum(x < 0 for x in d)} / {len(d)}') if d else '—'} |")
     out.append("\n### grid 96 -> 128\n")
     for c, d in R["grid_128"].items():
         out.append(f"- {c}: {d['ray']} s_c 96 {d['s_c_96']:.5g}, 128 {d['s_c_128']:.5g}, Δln {d['dln']:+.4f}")

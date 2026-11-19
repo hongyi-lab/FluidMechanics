@@ -1,0 +1,601 @@
+{
+  "key": {
+    "names": [
+      "O#6",
+      "G#1",
+      "V#6"
+    ],
+    "s_prev": [
+      0.02958130736680828,
+      0.029074496249757466,
+      0.13457259686308787
+    ],
+    "dt": 0.03125,
+    "T_det": 8000.0,
+    "r_A": 5e-07,
+    "E_B": 0.24,
+    "factors": [
+      0.7,
+      1.0,
+      1.4,
+      2.0,
+      2.8,
+      4.0
+    ],
+    "rel_width": 0.01,
+    "dirs": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "phase": "done",
+  "n_round": 6,
+  "counts": [
+    {
+      "n_cases": 18,
+      "flagged_per_level": [
+        7,
+        0
+      ],
+      "nan_per_level": [
+        0,
+        0
+      ],
+      "courant_max_level0": 2.846623242870955,
+      "n_rerun_dt_half": 7,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 3,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 2.2626625713014707,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 3,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 2.192093016730064,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 3,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 2.0296638692616016,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 3,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.2145495115316165,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 3,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.1999730781972964,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    },
+    {
+      "n_cases": 2,
+      "flagged_per_level": [
+        0
+      ],
+      "nan_per_level": [
+        0
+      ],
+      "courant_max_level0": 1.1165638811053706,
+      "n_rerun_dt_half": 0,
+      "n_rerun_dt_quarter": 0,
+      "n_nan_final_counted_B": 0,
+      "n_flag_at_last_level": 0
+    }
+  ],
+  "rays": [
+    {
+      "name": "O#6",
+      "s_prev": 0.02958130736680828,
+      "points": [
+        {
+          "s": 0.020706915156765794,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 529.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0512926410380143,
+          "nan_final": false
+        },
+        {
+          "s": 0.02958130736680828,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 735.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1080031680237559,
+          "nan_final": false
+        },
+        {
+          "s": 0.04141383031353159,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.036443698774782,
+          "nan_final": false
+        },
+        {
+          "s": 0.05916261473361656,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 11.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.934493499877405,
+          "nan_final": false
+        },
+        {
+          "s": 0.08282766062706318,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 8.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.423342186996734,
+          "nan_final": false
+        },
+        {
+          "s": 0.11832522946723312,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 5.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.1078405198332235,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.035497568840169934,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 31.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.2626625713014707,
+          "nan_final": false
+        },
+        {
+          "s": 0.03253943810348911,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 43.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.192093016730064,
+          "nan_final": false
+        },
+        {
+          "s": 0.031060372735148695,
+          "src": "bisect 3",
+          "fate": 1,
+          "t_hit": 79.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.0296638692616016,
+          "nan_final": false
+        },
+        {
+          "s": 0.030320840050978487,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 755.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1128821887117946,
+          "nan_final": false
+        },
+        {
+          "s": 0.03069060639306359,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 770.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1153351712813597,
+          "nan_final": false
+        },
+        {
+          "s": 0.030875489564106143,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 785.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1165638811053706,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.030875489564106143,
+      "hi": 0.031060372735148695,
+      "t_hit_lo": 785.0,
+      "t_hit_hi": 79.0,
+      "fate_hi": 1,
+      "s_c": 0.03096793114962742
+    },
+    {
+      "name": "G#1",
+      "s_prev": 0.029074496249757466,
+      "points": [
+        {
+          "s": 0.020352147374830227,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 1774.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0168786986473166,
+          "nan_final": false
+        },
+        {
+          "s": 0.029074496249757466,
+          "src": "grid x1",
+          "fate": 0,
+          "t_hit": 2089.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0607616060030218,
+          "nan_final": false
+        },
+        {
+          "s": 0.040704294749660454,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 33.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.3453004747101809,
+          "nan_final": false
+        },
+        {
+          "s": 0.05814899249951493,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.03125,
+          "courant_max": 2.2972767969969725,
+          "nan_final": false
+        },
+        {
+          "s": 0.08140858949932091,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 13.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.2683818010355568,
+          "nan_final": false
+        },
+        {
+          "s": 0.11629798499902987,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 10.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.3007845691064053,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.03488939549970896,
+          "src": "bisect 1",
+          "fate": 1,
+          "t_hit": 66.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.2568284491500643,
+          "nan_final": false
+        },
+        {
+          "s": 0.031981945874733214,
+          "src": "bisect 2",
+          "fate": 1,
+          "t_hit": 99.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.2174701820409137,
+          "nan_final": false
+        },
+        {
+          "s": 0.030528221062245342,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 2330.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0685658438780525,
+          "nan_final": false
+        },
+        {
+          "s": 0.03125508346848928,
+          "src": "bisect 4",
+          "fate": 1,
+          "t_hit": 580.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.2145495115316165,
+          "nan_final": false
+        },
+        {
+          "s": 0.03089165226536731,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 1496.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0705407243456435,
+          "nan_final": false
+        },
+        {
+          "s": 0.031073367866928294,
+          "src": "bisect 6",
+          "fate": 0,
+          "t_hit": 2606.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.0715312056340032,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.031073367866928294,
+      "hi": 0.03125508346848928,
+      "t_hit_lo": 2606.0,
+      "t_hit_hi": 580.0,
+      "fate_hi": 1,
+      "s_c": 0.031164225667708788
+    },
+    {
+      "name": "V#6",
+      "s_prev": 0.13457259686308787,
+      "points": [
+        {
+          "s": 0.09420081780416151,
+          "src": "grid x0.7",
+          "fate": 0,
+          "t_hit": 700.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.120205649825796,
+          "nan_final": false
+        },
+        {
+          "s": 0.13457259686308787,
+          "src": "grid x1",
+          "fate": 1,
+          "t_hit": 95.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.968535945966445,
+          "nan_final": false
+        },
+        {
+          "s": 0.18840163560832301,
+          "src": "grid x1.4",
+          "fate": 1,
+          "t_hit": 27.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.4166947827257754,
+          "nan_final": false
+        },
+        {
+          "s": 0.26914519372617574,
+          "src": "grid x2",
+          "fate": 1,
+          "t_hit": 20.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.3713793844738373,
+          "nan_final": false
+        },
+        {
+          "s": 0.37680327121664603,
+          "src": "grid x2.8",
+          "fate": 1,
+          "t_hit": 16.0,
+          "dt_used": 0.015625,
+          "courant_max": 1.308858427294037,
+          "nan_final": false
+        },
+        {
+          "s": 0.5382903874523515,
+          "src": "grid x4",
+          "fate": 1,
+          "t_hit": 0.0,
+          "dt_used": 0.03125,
+          "courant_max": 0.0,
+          "nan_final": false
+        }
+      ],
+      "bisect": [
+        {
+          "s": 0.11438670733362469,
+          "src": "bisect 1",
+          "fate": 0,
+          "t_hit": 772.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1613759354368927,
+          "nan_final": false
+        },
+        {
+          "s": 0.12447965209835628,
+          "src": "bisect 2",
+          "fate": 0,
+          "t_hit": 671.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1819610782424412,
+          "nan_final": false
+        },
+        {
+          "s": 0.12952612448072207,
+          "src": "bisect 3",
+          "fate": 0,
+          "t_hit": 679.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1922536496452154,
+          "nan_final": false
+        },
+        {
+          "s": 0.13204936067190498,
+          "src": "bisect 4",
+          "fate": 0,
+          "t_hit": 1006.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1973999353466027,
+          "nan_final": false
+        },
+        {
+          "s": 0.13331097876749642,
+          "src": "bisect 5",
+          "fate": 0,
+          "t_hit": 1201.0,
+          "dt_used": 0.03125,
+          "courant_max": 1.1999730781972964,
+          "nan_final": false
+        }
+      ],
+      "grid_status": "ok",
+      "n_switches": 1,
+      "status": "ok",
+      "lo": 0.13331097876749642,
+      "hi": 0.13457259686308787,
+      "t_hit_lo": 1201.0,
+      "t_hit_hi": 95.0,
+      "fate_hi": 1,
+      "s_c": 0.13394178781529215
+    }
+  ],
+  "seconds": 6462.276241064072
+}

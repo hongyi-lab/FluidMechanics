@@ -1,0 +1,163 @@
+# Gate 9 (DNS): blind test outside the nine patterns. Written 2026-11-19 ~00:40, before any Gate 9 run (user task of 2026-11-19
+# ~00:05). The criteria and constants are the user's: S* = 0.16553, c* = -2.8204, P* = 0.0020953 (unchanged).
+#
+# User spec (translated from the user's message):
+#   Gate 8 decision: accepted; 8b "partly" (0.172), 8c "real route". Recorded: the 8-ray median is unstable (bootstrap 95% CI
+#     ~[0.06, 0.46]); the third-condition definition lets G peak at t = 0 (the user's own definition), so on rays without wave
+#     growth it reduces to "initial wave energy large enough". Post-hoc (check first; descriptive): of the 25 rays with a converged
+#     truth (R#13-24, W#1-12, X#1), the 19 with s_pred <= 0.03 have median |ln err| 0.013, max 0.157; of the 6 with s_pred > 0.03,
+#     5 are at 0.23-0.95, all predicted low.
+#   From this round: no conclusion by "median crosses a line". Report error distributions, coverage of prediction intervals, gain
+#     over baselines and the truth's own uncertainty. Constants unchanged.
+#   9.0 criteria (fixed now; changes marked "post-hoc change, blind this round"):
+#     slow: s_slow = max(s_i, s_ii) as Gates 5/6.
+#     fast: E_w(t) = ||Pw delta(t)||^2 / ||U||^2 (unit amplitude, linearised about laminar); G = max_{0<=t<=20} E_w(t); g = G/E_w(0).
+#       g >= 2: s_fast = sqrt(P*/G); g < 2 or E_w(0) = 0: no fast route.
+#     s_pred = min(s_fast, s_slow); s_fast < s_slow -> "fast", otherwise "slow".
+#     Range: s_pred <= 0.03 "in range", otherwise "out of range"; out of range only a lower bound is claimed: s_c >= 0.8 s_pred.
+#     Prediction intervals (in range, by predicted route): split conformal, half-width = the ceil((n+1) p)-th smallest
+#       |ln(s_c/s_pred)| of the calibration set, p = 0.5 and 0.8. Calibration set = rays with a converged truth, s_pred <= 0.03, not
+#       used to set constants: slow: the 14 F rays, R#14-R#21, R#23, R#24; fast: W#2, W#3, W#5, W#7, W#9, W#10, X#1, R#22.
+#       User's values (for comparison; ours govern): slow n = 24, half-widths 0.010 / 0.014; fast n = 8, 0.056 / 0.157.
+#     Baselines, each with its own prediction: the Gate 8a frozen rule, two conditions, energy only.
+#   9.1 new rays (28; seeds in this config). Symmetry and divergence by the existing projection, then normalised to E = 1 at s = 1.
+#     Report each ray's energy fraction in the nine-mode subspace.
+#     G (10, general): all allowed modes with |kx| <= 2 alpha, |kz| <= 2 gamma, wall-normal index <= 3, independent Gaussian
+#       coefficients; nine-mode fraction <= 0.5, otherwise a new seed.
+#     O (6, oblique pairs): one wavenumber pair (kx, +-kz), random wall-normal shape (index <= 3): (alpha, gamma) x3,
+#       (alpha, 2 gamma), (2 alpha, gamma), (2 alpha, 2 gamma) one each.
+#     V (6, streamwise vortices + seed): kx = 0 (v, w) vortices, u = 0, kz = gamma and 2 gamma three each, random wall-normal shape;
+#       plus a G-class perturbation of relative amplitude 1e-2 as seed.
+#     M (6, two routes mixed, nine modes): cos(theta) a3 + sin(theta) a8, theta = 10, 25, 40, 55, 70, 80 deg.
+#   9.2 frozen predictions before any truth run: at 64 delta, q, S(s), c(s), E_w(t) per ray; s_i, s_ii, G, g, s_fast, s_pred,
+#     route, range, both intervals, the three baselines. G at 64 and 96, ratio reported. Written, committed and pushed (commit and
+#     time recorded) before 9.3.
+#   9.3 truth at 96x48x48 (spec as Gate 7 7a): local grid s_pred x {0.35, 0.5, 0.7, 1, 1.4, 2, 2.8, 4}, all fates and times recorded;
+#     not bracketed -> two more points outward on each side; still not -> flagged. First not-A point and the one before, bisection
+#     to rel width <= 0.01; t_hit_hi recorded. Non-monotone fates flagged as they are. Grid uncertainty: 3 rays (the
+#     highest-wavenumber O, G and V ray) redone at 128, Delta ln s_c reported. Per ray u = sqrt(bisection half-width^2 + grid
+#     difference^2) (rays without 128 use their class's value).
+#   9.4 report (no holds / does-not-hold verdict): by class (G, O, V, M) and in total, in range and out of range separately:
+#     (1) ln(s_pred/s_c): median, IQR, 90% quantile, max; |err| median with bootstrap 95% CI; per-ray list with u.
+#     (2) coverage of the 50% and 80% intervals, binomial test against the nominal value, p values.
+#     (3) against the baselines (Gate 8a rule, two conditions, energy only): median of the paired difference of |err| with a
+#         bootstrap 95% CI.
+#     (4) range rule: of the out-of-range rays, how many have s_c >= 0.8 s_pred.
+#     (5) route table predicted fast/slow x truth fast/slow (truth fast = t_hit_hi < 600), plus a histogram of t_hit_hi.
+#     (6) M class alone: x = s_c/s_slow, y = s_c/s_fast (on the right angle or inside it).
+#     (7) figures (white): prediction vs truth with intervals and u; empirical error distributions (rule and the three baselines);
+#         the M figure.
+#   Unattended. Order 9.2 -> 9.3 (G, O, M, V) -> 128 -> 9.4. Total budget 16 h; over budget: cut V first, then 128, and report.
+#   Resume and progress bars as before; parameter problems walk the ladder and are recorded; only solver-correctness problems stop.
+#   Then report, figures, push, stop and wait.
+#
+# Choices made here that the user did not specify (flagged in the report):
+#   (h1) Construction: on the 64 reference grid, physical white noise N(0, 1) per grid point and component (seeded) -> rfft (an
+#        isotropic Gaussian in the energy norm) -> band and class selection -> Leray projection (grid.proj) -> the DNS symmetry
+#        average (grid.clean: dealias + the 3 enforced generators) -> E = 1. Stored as compact coefficients over n = -3..3,
+#        l = -2..2, m = 0..2 (kx = m alpha, ky = n pi/2 of the extended domain, kz = l gamma) and embedded identically at 64, 96, 128.
+#        Checks at all three levels: E = 1, divergence and symmetry residual at round-off, no energy outside the band.
+#   (h2) G: the whole band, all three components. Nine-mode fraction = sum of the squared projections on the nine NJP modes
+#        (orthonormal; Gram = I to 1e-12, mode 1 included). If > 0.5: seed + reseed_step, repeated; every try recorded.
+#   (h3) O: m = k[0], |l| = k[1] exactly, all n <= 3, all components (the +- kz pair and its conjugate come together).
+#   (h4) V: m = 0, |l| = l, all n <= 3, u set to 0 before the projection (stays 0: Leray at kx = 0 and the symmetries do not mix
+#        components). Seed: an independent G-class field (own seed) times 1e-2 (amplitude ratio; energy 1e-4) added to the unit
+#        vortex; the sum normalised to E = 1. No nine-mode cap on V (not asked).
+#        REVISED 2026-11-19 00:45, before any prediction was frozen and before any truth run (code review, finding 1): with
+#        |n| <= 3 the kz = 2 gamma vortex has a single allowed shape (u = 0, walls, the 3 symmetries leave only n = 2), so
+#        V#4-V#6 were one vortex (overlaps 0.9999). The user's spec bounds the wall-normal index for G and O only; V now uses
+#        |n| <= 6 (kz = gamma: n = 1, 3, 5; kz = 2 gamma: n = 2, 4, 6; a 3-D shape space each; inside the dealias cut 10 at
+#        Ny = 32). Compact storage widened to |n| <= 6; G and O fields are unchanged (same seeds, same |n| <= 3 selection).
+#        The first build and the first 16 min of 9.2 are kept in superseded_pre_freeze/; the budget clock keeps its 00:23:37 start.
+#   (h5) M: d = cos(theta) e_3 + sin(theta) e_8 (NJP modes 3 and 8, indices 2 and 7).
+#   (h6) Implementation: the 22 G, O, V fields are appended to grid.modes after the nine NJP modes at every level, so the Gate 5-8
+#        routines (theory, gain, wave gain, nonlinear runs) take them as unit directions; dns.py, dns_theory.py, dns_local.py and
+#        dns_gate8.py are not changed.
+#   (h7) 9.2 at 64 as Gates 5/6 and as X#1 in Gate 8 (h4 there): run_delta_q to T_S = 800 every 1.0; S(s) = max_t A(t; s) on the
+#        Gate 5 grid s = sqrt(geomspace(r_A, E_B, 1000)); s_i = first crossing of S* (side +1, Gate 5 rule); c(s) = ln max_t
+#        ||y||^2 by run_gain (T_end 1500, every 1.0) at 13 amplitudes, ln s equally spaced within +-0.9 of ln s_i; s_ii by the
+#        Gate 6 first_cross; if clamped, one more block of 13 on that side (same spacing). S never reaching S* on the grid:
+#        s_i = +inf ("no crossing"), the c grid centred at the top of the S grid.
+#   (h8) E_w and G: Gate 8 wave_gain (every step to t = 20) at 64 and 96; E_w(0) its t = 0 value; G and g = G/E_w(0) from 96
+#        (the Gate 8 third condition was evaluated at 96); 64 reported with the ratio.
+#   (h9) Edge cases: s_ii clamped ("below"/"never" after the extension) is used at the grid end and flagged; s_fast = +inf when
+#        there is no fast route; tie -> "slow"; s_slow and s_fast both +inf -> no prediction (out of range, no bound, flagged).
+#   (h10) Baselines: Gate 8a rule min(sqrt(P*/G96), s_slow) (G including t = 0); two conditions s_slow; energy only
+#        exp(pred_E) of Gate 5 (a constant, 0.0070263).
+#   (h11) Calibration: s_pred by the 9.0 rule (G96 and E_w(0) from Gate 8 g_all.npz; s_slow from Gates 5/6); truth = the highest
+#        level available: 128 (W#3, W#7, W#9, R#22), 96 (W#2, W#5, W#10, X#1, R#14 Gate 8; R#15 Gate 7), 64 (R#16-21, R#23, R#24
+#        and F, Gate 5; slow rays, where 64 and 96 agree to 0.3% on the controls). Each set is checked to be in range and of its
+#        stated route under the 9.0 rule; a mismatch is reported, the user's set is kept.
+#   (h12) 9.3: "two more points outward on each side" = x0.25, 0.177 below and x5.6, 8 above (the sqrt2 progression), run on both
+#        sides once for a ray that is not bracketed. Bracket and undecided rule of Gate 7 (an undecided first not-A point or
+#        bisection midpoint flags the ray, no s_c). "Non-monotone" = more than one A / not-A switch on the grid + extension (the
+#        bisection still uses the first switch). r_A, E_B, T_det, the 5b re-run rule and dt as Gate 7 (96: 0.0625). A ray with no
+#        prediction (h9) is centred at s = 0.1 (flagged).
+#   (h13) 128 rays, chosen at construction: O#6 (2 alpha, 2 gamma); in G and in V the ray with the largest energy-weighted mean
+#        |k|^2 (kx^2 + ky^2 + kz^2). Spec: Gate 7 7a at 128 exactly (dt 0.03125, s_prev = s_c(96), factors 0.7-4, one extension),
+#        the unchanged find_sc_local. If a chosen ray has no s_c(96), the next one of its class by |k|^2 (O: after O#6).
+#   (h18, added 00:45 after the code review, before any freeze) Rays without a bracketed truth: 'all A' -> censored s_c > 8 s_pred,
+#        'first point not A' -> censored s_c < 0.177 s_pred (the extension ends); counted as not covered by any interval
+#        (all half-widths < ln 8), in the range rule by their bound, and listed apart from the error statistics; undecided rays
+#        are listed and excluded. Rays with no prediction (h9) are listed with their truth. A baseline without a prediction
+#        (two conditions when s_i never crosses) is left out of that baseline's statistics, with the count reported.
+#   (h14) u = sqrt(h_b^2 + d_grid^2), h_b = ln(hi/lo)/2 of the final 96 bracket; d_grid = |Delta ln s_c (96 -> 128)| of the class's
+#        128 ray (G, O, V); M (no 128 ray of its class): the nine-mode 96 -> 128 values of Gates 7/8c by predicted route
+#        (fast 0.0142, slow 0.0047). 128 cut: the nine-mode values for all classes, flagged.
+#   (h15) 9.4: err = ln(s_pred / s_c(96)); quantiles by numpy (linear); "90% quantile" and "max" of |err|; bootstrap = 10000
+#        percentile resamples (seed below); coverage = s_c(96) inside [s_pred e^-h, s_pred e^h]; exact two-sided binomial test
+#        (scipy binomtest). Paired difference = |err_rule| - |err_baseline| per ray. Route table on all rays with a truth.
+#   (h16) Budget clock from the start of 9.2. Before V: cut V if elapsed + est(V) + est(128) > 16 h, est(V) = 6 x the mean time
+#        per ray of the classes done, est(128) = 3.0 h (Gate 8c: 2.5 h for 3 rays at 128). Before 128: cut if elapsed + est(128)
+#        > 16 h. Decisions written to budget.json.
+#   (h17) Post-hoc check of the user's Gate 8 observations (stage posthoc8, descriptive): the 8-ray bootstrap CI (10000, seed
+#        below) and the 25-ray split, truths at the highest level available (as h11; R#13 the Gate 4b 96 ladder, W#11 128).
+name: gate9_dns
+seed: 20261119
+device: cuda
+constants: {S_star: 0.16552964560447833, c_star: -2.8204054051032426, P_star_source: experiments/20261118_gate8_dns_v1/predictions_8a.json}
+rule:
+  T_G: 20.0
+  g_min: 2.0
+  range_max: 0.03
+  out_of_range_bound: 0.8
+  p_levels: [0.5, 0.8]
+calibration:
+  slow: {F_exclude_eps: [1.0e-6], R: ["R#14", "R#15", "R#16", "R#17", "R#18", "R#19", "R#20", "R#21", "R#23", "R#24"]}
+  fast: ["W#2", "W#3", "W#5", "W#7", "W#9", "W#10", "X#1", "R#22"]
+  user_values: {slow: {n: 24, h50: 0.010, h80: 0.014}, fast: {n: 8, h50: 0.056, h80: 0.157}}
+rays9:
+  reference_level: "64"
+  G: {n_max: 3, seeds: [910001, 910002, 910003, 910004, 910005, 910006, 910007, 910008, 910009, 910010], max_nine_mode_fraction: 0.5, reseed_step: 100}
+  O: {n_max: 3, k: [[1, 1], [1, 1], [1, 1], [1, 2], [2, 1], [2, 2]], seeds: [920001, 920002, 920003, 920004, 920005, 920006]}
+  V: {n_max: 6, l: [1, 1, 1, 2, 2, 2], seeds: [930001, 930002, 930003, 930004, 930005, 930006], seed_seeds: [931001, 931002, 931003, 931004, 931005, 931006],
+      seed_rel_amplitude: 1.0e-2}
+  M: {theta_deg: [10, 25, 40, 55, 70, 80]}
+theory:
+  level: "64"
+  T_S: 800.0
+  output_every: 1.0
+  s_grid_points: 1000
+  gain: {T_end: 1500.0, output_every: 1.0, n_amp: 13, ln_half_width: 0.9}
+truth:
+  level: "96"
+  factors: [0.35, 0.5, 0.7, 1.0, 1.4, 2.0, 2.8, 4.0]
+  ext_down: [0.25, 0.177]
+  ext_up: [5.6, 8.0]
+  rel_width: 0.01
+  route_fast_below: 600.0
+  no_prediction_center: 0.1
+  class_order: ["G", "O", "M", "V"]
+truth128:
+  level: "128"
+  factors: [0.7, 1.0, 1.4, 2.0, 2.8, 4.0]
+  ext_up: [5.6, 8.0, 11.3]
+  ext_down: [0.5, 0.35, 0.25]
+  grid_9mode: {fast: 0.0142, slow: 0.0047}
+budget: {hours: 16.0, est_128_hours: 3.0}
+stats: {n_boot: 10000}
+data:
+  gate7_config: code/configs/gate7_dns.yaml
+  gate7_run: experiments/20261118_gate7_dns_v1
+  gate6_run: experiments/20261117_gate6_dns_v1
+  gate8_run: experiments/20261118_gate8_dns_v1

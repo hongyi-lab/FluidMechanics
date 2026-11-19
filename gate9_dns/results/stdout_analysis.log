@@ -1,0 +1,2 @@
+13:14:41     9.4: rays with s_c 28 / 28; all/in n 25, |err| median 0.07522342123758739, coverage 50% {'k': 9, 'n': 25, 'rate': 0.36, 'binom_p': 0.2295229434967041, 'n_censored_in_n': 0}, 80% {'k': 10, 'n': 25, 'rate': 0.4, 'binom_p': 1.3564842218638978e-05, 'n_censored_in_n': 0}; routes {'pred fast / true fast': 12, 'pred fast / true slow': 2, 'pred slow / true fast': 4, 'pred slow / true slow': 10}; flagged []
+13:14:41 --- analysis: 0.0 min
